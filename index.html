@@ -234,6 +234,7 @@
       <li><a href="orgonite.html">Orgonite Shop</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
       <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
     </ul>
   </nav>
@@ -248,7 +249,7 @@
       <a href="orgonite.html" class="btn-secondary">Shop Orgonite</a>
       <a href="about.html" class="btn-accent">About Us</a>
     </div>
-    <span class="free-badge">✓ All 14 Tools Currently Free — No Account Required</span>
+    <span class="free-badge">✓ 3 Tools Free Forever — Pro from $9.99/month</span>
     <div class="scroll-indicator">
       <span>Scroll</span>
       <div class="scroll-line"></div>
@@ -355,7 +356,7 @@
       <div class="pricing-card featured">
         <span class="featured-label">Coming Soon</span>
         <p class="plan-name">Pro</p>
-        <p class="plan-price"><sup>$</sup>19</p>
+        <p class="plan-price"><sup>$</sup>9<span style="font-size:1.2rem">.99</span></p>
         <span class="plan-period">Per Month</span>
         <ul class="plan-features">
           <li>Everything in Free</li>
@@ -367,7 +368,7 @@
           <li class="off">Custom branding <span class="soon">Business</span></li>
           <li class="off">API access <span class="soon">Business</span></li>
         </ul>
-        <a href="contact.html" class="btn-primary plan-btn">Join Waitlist</a>
+        <a href="pricing.html" class="btn-primary plan-btn">See Full Plans</a>
       </div>
 
       <div class="pricing-card">
@@ -409,6 +410,8 @@
       <li><a href="tools.html">AI Tools</a></li>
       <li><a href="orgonite.html">Shop</a></li>
       <li><a href="about.html">About</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="terms.html">Terms</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="footer-copy">
@@ -416,5 +419,15 @@
       <p>All Rights Reserved</p>
     </div>
   </footer>
+
+<script>
+// Auto-update tool count
+const TOOL_COUNT = 14;
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tool-count-display').forEach(el => {
+        el.textContent = TOOL_COUNT;
+    });
+});
+</script>
 </body>
 </html>
