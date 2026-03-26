@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — Existential Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .pricing-intro { text-align: center; margin-bottom: 60px; }
+    .pricing-intro p { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 80px;
+    }
+
+    .plan-card {
+      background: rgba(10,15,30,0.85);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 4px;
+      padding: 36px 24px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .plan-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      border-color: rgba(201,168,76,0.35);
+    }
+    .plan-card.featured {
+      border-color: rgba(201,168,76,0.5);
+      background: rgba(201,168,76,0.06);
+    }
+    .featured-badge {
+      position: absolute; top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--dark); padding: 4px 20px;
+      border-radius: 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem; letter-spacing: 2px;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .plan-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .plan-name {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--white); margin-bottom: 6px; letter-spacing: 2px;
+    }
+    .plan-tagline {
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: var(--muted); letter-spacing: 1px; margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .plan-price {
+      font-family: 'Cinzel', serif; font-size: 2.6rem;
+      font-weight: 900; color: var(--gold);
+      line-height: 1; margin-bottom: 4px;
+    }
+    .plan-price sup { font-size: 1.2rem; vertical-align: top; margin-top: 8px; }
+    .plan-period {
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: var(--muted); letter-spacing: 2px;
+      margin-bottom: 24px; display: block;
+    }
+    .plan-divider {
+      width: 40px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 0 auto 20px;
+    }
+    .plan-tools {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 3px; padding: 12px;
+      margin-bottom: 20px; text-align: left;
+    }
+    .plan-tools-label {
+      font-family: 'Space Mono', monospace; font-size: 0.55rem;
+      color: var(--gold); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 8px; display: block;
+    }
+    .plan-tool-item {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.82rem;
+      color: var(--muted); padding: 3px 0;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .plan-tool-item::before { content: '✦'; color: var(--gold); font-size: 0.5rem; }
+    .plan-features { list-style: none; text-align: left; margin-bottom: 28px; flex: 1; }
+    .plan-features li {
+      color: var(--muted); font-size: 0.84rem;
+      padding: 6px 0; border-bottom: 1px solid rgba(201,168,76,0.07);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .plan-features li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+    .plan-features li.off { opacity: 0.4; }
+    .plan-features li.off::before { content: '✕'; color: var(--muted); }
+    .plan-btn {
+      display: block; text-align: center;
+      width: 100%; margin-top: auto;
+    }
+
+    /* One-time service */
+    .service-card {
+      background: rgba(10,15,30,0.8);
+      border: 1px solid rgba(74,158,255,0.2);
+      border-radius: 4px; padding: 40px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: center;
+      margin-bottom: 60px;
+    }
+    .service-card h3 {
+      font-family: 'Cinzel', serif; font-size: 1.4rem;
+      color: var(--white); margin-bottom: 12px;
+    }
+    .service-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 16px; }
+    .service-price-display {
+      text-align: center; padding: 32px;
+      background: rgba(74,158,255,0.05);
+      border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 4px;
+    }
+    .service-price-amount {
+      font-family: 'Cinzel', serif; font-size: 3.5rem;
+      font-weight: 900; color: var(--accent);
+      display: block; line-height: 1;
+    }
+    .service-price-label {
+      font-family: 'Space Mono', monospace; font-size: 0.65rem;
+      color: var(--muted); letter-spacing: 2px;
+      text-transform: uppercase; margin-top: 8px; display: block;
+    }
+    .service-includes { list-style: none; margin-top: 16px; }
+    .service-includes li {
+      color: var(--muted); font-size: 0.86rem;
+      padding: 5px 0; display: flex; gap: 8px;
+    }
+    .service-includes li::before { content: '✓'; color: var(--accent); }
+
+    /* Collab section */
+    .collab-card {
+      background: linear-gradient(135deg, rgba(155,142,196,0.08) 0%, rgba(201,168,76,0.05) 100%);
+      border: 1px solid rgba(155,142,196,0.2);
+      border-radius: 4px; padding: 48px;
+      text-align: center; margin-bottom: 60px;
+    }
+    .collab-card h3 {
+      font-family: 'Cinzel', serif; font-size: 1.4rem;
+      color: var(--white); margin-bottom: 12px;
+    }
+    .collab-card p { color: var(--muted); font-size: 1rem; max-width: 600px; margin: 0 auto 24px; line-height: 1.8; }
+    .collab-types {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 32px;
+    }
+    .collab-type {
+      background: rgba(155,142,196,0.08);
+      border: 1px solid rgba(155,142,196,0.2);
+      color: var(--crystal); padding: 8px 18px;
+      border-radius: 2px; font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    @media (max-width: 1100px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+      .service-card { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Existential Gateway</span>
+      <span class="nav-logo-sub">LLC · Where Technology Meets Consciousness</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Orgonite Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="pricing.html" class="active">Pricing</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">// Pricing</p>
+    <h1>Simple, Transparent <span>Pricing</span></h1>
+    <p>Start free. Upgrade as your needs grow. All plans include access to AI-powered analysis tools built for real-world use cases.</p>
+  </div>
+
+  <div class="wrap">
+
+    <!-- Pricing Cards -->
+    <div class="pricing-intro">
+      <p>Every plan builds on the previous tier. Cancel anytime. No contracts.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="plan-card">
+        <span class="plan-icon">🆓</span>
+        <p class="plan-name">Free</p>
+        <p class="plan-tagline">Citizen Intelligence</p>
+        <p class="plan-price"><sup>$</sup>0</p>
+        <span class="plan-period">Forever Free</span>
+        <div class="plan-divider"></div>
+        <div class="plan-tools">
+          <span class="plan-tools-label">Included Tools</span>
+          <div class="plan-tool-item">💸 AI Debt Clock Analyzer</div>
+          <div class="plan-tool-item">📰 AI Media Bias Analyzer</div>
+          <div class="plan-tool-item">🏛️ AI Public Official Analyzer</div>
+        </div>
+        <ul class="plan-features">
+          <li>3 AI analysis tools</li>
+          <li>All analysis tabs</li>
+          <li>Text context input on every tab</li>
+          <li>PDF & PowerPoint reports</li>
+          <li>Live data feeds</li>
+          <li class="off">File upload (PDF/CSV/Excel)</li>
+          <li class="off">Priority processing</li>
+          <li class="off">Saved history</li>
+        </ul>
+        <a href="tools.html" class="btn-secondary plan-btn">Access Free Tools</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card featured">
+        <span class="featured-badge">Most Popular</span>
+        <span class="plan-icon">⚡</span>
+        <p class="plan-name">Pro</p>
+        <p class="plan-tagline">Faith & Finance</p>
+        <p class="plan-price"><sup>$</sup>9<span style="font-size:1.4rem">.99</span></p>
+        <span class="plan-period">Per Month</span>
+        <div class="plan-divider"></div>
+        <div class="plan-tools">
+          <span class="plan-tools-label">Everything in Free, Plus</span>
+          <div class="plan-tool-item">✝️ AI End Times Prophecy Analyzer</div>
+          <div class="plan-tool-item">💰 AI Monetary Reset Tracker</div>
+          <div class="plan-tool-item">🔜 More tools coming soon</div>
+        </div>
+        <ul class="plan-features">
+          <li>5 AI analysis tools</li>
+          <li>All analysis tabs</li>
+          <li>Text context input on every tab</li>
+          <li>PDF & PowerPoint reports</li>
+          <li>Live crypto & FOREX data</li>
+          <li>16-tab End Times analysis</li>
+          <li class="off">File upload (PDF/CSV/Excel)</li>
+          <li class="off">Industry analyzer tools</li>
+        </ul>
+        <a href="contact.html" class="btn-primary plan-btn">Join Waitlist</a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="plan-card">
+        <span class="plan-icon">🏢</span>
+        <p class="plan-name">Business</p>
+        <p class="plan-tagline">Industry Intelligence</p>
+        <p class="plan-price"><sup>$</sup>79</p>
+        <span class="plan-period">Per Month</span>
+        <div class="plan-divider"></div>
+        <div class="plan-tools">
+          <span class="plan-tools-label">Everything in Pro, Plus</span>
+          <div class="plan-tool-item">🛡️ AI Insurance Analyzer</div>
+          <div class="plan-tool-item">🏥 AI Healthcare Analyzer</div>
+          <div class="plan-tool-item">⚖️ AI Legal Analyzer</div>
+          <div class="plan-tool-item">🏠 AI Real Estate Analyzer</div>
+          <div class="plan-tool-item">🛒 AI Retail Analyzer</div>
+          <div class="plan-tool-item">🎓 AI Education Analyzer</div>
+          <div class="plan-tool-item">🚔 AI Crime Analyzer</div>
+          <div class="plan-tool-item">💹 AI Financial Analyzer</div>
+          <div class="plan-tool-item">💼 AI Investment Analyzer</div>
+        </div>
+        <ul class="plan-features">
+          <li>All 14 AI analysis tools</li>
+          <li>File upload on industry tools</li>
+          <li>PDF/CSV/Excel analysis</li>
+          <li>Priority processing</li>
+          <li>Advanced report customization</li>
+          <li>Email support</li>
+          <li class="off">Custom tool development</li>
+          <li class="off">AI Analytics service</li>
+        </ul>
+        <a href="contact.html" class="btn-secondary plan-btn">Join Waitlist</a>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="plan-card">
+        <span class="plan-icon">🚀</span>
+        <p class="plan-name">Enterprise</p>
+        <p class="plan-tagline">Custom AI Solutions</p>
+        <p class="plan-price"><sup>$</sup>799</p>
+        <span class="plan-period">Per Month</span>
+        <div class="plan-divider"></div>
+        <div class="plan-tools">
+          <span class="plan-tools-label">Everything in Business, Plus</span>
+          <div class="plan-tool-item">🤖 Custom AI Tool Development</div>
+          <div class="plan-tool-item">📊 AI Analytics Service</div>
+          <div class="plan-tool-item">🎯 Dedicated Account Manager</div>
+          <div class="plan-tool-item">🔧 Monthly tool requests</div>
+        </div>
+        <ul class="plan-features">
+          <li>All 14+ AI analysis tools</li>
+          <li>Custom AI tool built for your business</li>
+          <li>Monthly AI analytics reports</li>
+          <li>Tool added to Existential Gateway</li>
+          <li>White-label report options</li>
+          <li>Priority support & dedicated manager</li>
+          <li>API access</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="contact.html" class="btn-primary plan-btn">Contact Us</a>
+      </div>
+
+    </div>
+
+    <!-- One-Time Custom AI Tool Service -->
+    <div class="section-border" style="padding-top:60px; margin-bottom:60px;">
+      <p class="section-label">// One-Time Service</p>
+      <h2>Custom AI Tool <span>Development</span></h2>
+      <div class="divider"></div>
+      <div class="service-card">
+        <div>
+          <h3>We Build Your Custom AI Analyzer</h3>
+          <p>Need a specialized AI analysis tool built specifically for your industry, business, or use case? Existential Gateway will design, build, and deploy a custom multi-tab AI analyzer tool tailored to your exact specifications.</p>
+          <ul class="service-includes">
+            <li>Custom multi-tab AI analyzer (5-12 tabs)</li>
+            <li>Built with your industry's specific data needs</li>
+            <li>Live data integration where applicable</li>
+            <li>PDF and PowerPoint report generation</li>
+            <li>File upload (PDF/CSV/Excel/Image)</li>
+            <li>Deployed to your preferred platform</li>
+            <li>Full source code delivered</li>
+            <li>30 days post-delivery support</li>
+          </ul>
+          <a href="contact.html" class="btn-primary" style="margin-top:20px; display:inline-block;">Request Custom Tool</a>
+        </div>
+        <div class="service-price-display">
+          <span class="service-price-amount">$499</span>
+          <span class="service-price-label">One-Time Payment</span>
+          <p style="color:var(--muted); font-size:0.8rem; margin-top:16px; line-height:1.7;">
+            No monthly fees.<br>
+            Delivered within 7-14 business days.<br>
+            Unlimited revisions during development.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Creator Collaboration -->
+    <div class="section-border" style="padding-top:60px;">
+      <p class="section-label">// Collaborate</p>
+      <h2>Content Creator <span>Partnerships</span></h2>
+      <div class="divider"></div>
+      <div class="collab-card">
+        <h3>🎥 Let's Create Together</h3>
+        <p>Are you a content creator in the tech, finance, faith, wellness, or AI space? Existential Gateway is open to brand partnerships, sponsored content, co-created tools, and collaboration opportunities across TikTok, X, YouTube, and other platforms.</p>
+        <div class="collab-types">
+          <span class="collab-type">🎵 TikTok Collaborations</span>
+          <span class="collab-type">𝕏 X (Twitter) Partnerships</span>
+          <span class="collab-type">📺 YouTube Features</span>
+          <span class="collab-type">🤖 AI Tool Co-Creation</span>
+          <span class="collab-type">💰 Sponsored Content</span>
+          <span class="collab-type">🔮 Orgonite Unboxings</span>
+          <span class="collab-type">📱 Affiliate Programs</span>
+          <span class="collab-type">🎙️ Podcast Appearances</span>
+        </div>
+        <p style="font-size:0.9rem;">With 150,000+ followers across TikTok and X covering AI technology, biblical prophecy, financial literacy, and consciousness — we reach an engaged and unique audience.</p>
+        <a href="contact.html#collaborate" class="btn-primary">Apply to Collaborate</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div>
+      <span class="footer-brand-name">Existential Gateway</span>
+      <span class="footer-brand-sub">LLC · existentialgateway.com</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="terms.html">Terms</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="footer-copy">
+      <p>© 2026 Existential Gateway, LLC</p>
+      <p>All Rights Reserved</p>
+    </div>
+  </footer>
+</body>
+</html>
