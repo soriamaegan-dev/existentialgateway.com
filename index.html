@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Existential Gateway — Where Technology Meets Consciousness</title>
+  <meta name="description" content="AI-powered analysis tools for finance, faith, industry, and government. Free access now. Premium subscriptions coming soon." />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Hero */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; padding: 140px 40px 100px;
+      z-index: 1;
+    }
+    #hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(26,58,110,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 70%, rgba(201,168,76,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace; font-size: 0.62rem;
+      color: var(--gold); letter-spacing: 6px; text-transform: uppercase;
+      margin-bottom: 20px; opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    #hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3.2rem, 9vw, 7rem);
+      font-weight: 900; line-height: 1.0;
+      color: var(--white); margin-bottom: 8px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 0.4s;
+    }
+    #hero h1 span {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-tagline {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+      color: var(--gold-dim); letter-spacing: 5px;
+      text-transform: uppercase; margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 0.6s;
+    }
+    .hero-desc {
+      font-size: 1.1rem; color: var(--muted);
+      max-width: 560px; margin: 0 auto 44px;
+      line-height: 1.8; opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+    .hero-cta {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 32px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 1.0s;
+    }
+    .free-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.25);
+      color: var(--green); padding: 8px 20px;
+      border-radius: 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 1.2s;
+    }
+    .scroll-indicator {
+      position: absolute; bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 1.6s;
+    }
+    .scroll-indicator span {
+      font-family: 'Space Mono', monospace; font-size: 0.5rem;
+      letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* Stats */
+    .stats-bar {
+      position: relative; z-index: 1;
+      background: rgba(201,168,76,0.04);
+      border-top: 1px solid rgba(201,168,76,0.14);
+      border-bottom: 1px solid rgba(201,168,76,0.14);
+      padding: 46px 60px;
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 30px; text-align: center;
+    }
+    .stat h3 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 900; color: var(--gold); margin-bottom: 6px;
+    }
+    .stat p {
+      color: var(--muted); font-size: 0.65rem;
+      letter-spacing: 1.5px; font-family: 'Space Mono', monospace;
+      text-transform: uppercase;
+    }
+
+    /* Category Cards */
+    .categories-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
+    .cat-card {
+      background: rgba(10,15,30,0.8);
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 4px; padding: 32px;
+      text-decoration: none; color: inherit; display: block;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .cat-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .cat-card:hover { border-color: rgba(201,168,76,0.35); transform: translateY(-3px); }
+    .cat-card:hover::before { opacity: 1; }
+    .cat-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .cat-icon { font-size: 1.8rem; }
+    .cat-header h3 { font-family: 'Cinzel', serif; font-size: 1.05rem; color: var(--white); }
+    .cat-count {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      color: var(--gold); letter-spacing: 2px; margin-top: 2px; display: block;
+    }
+    .cat-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 14px; }
+    .cat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .cat-tag {
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.18);
+      color: var(--gold-dim); padding: 2px 9px;
+      border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.56rem;
+    }
+    .cat-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--gold); font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 0.76rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      transition: gap 0.2s;
+    }
+    .cat-link:hover { gap: 14px; }
+    .cat-link::after { content: '→'; }
+
+    /* Pricing */
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .pricing-card {
+      background: rgba(10,15,30,0.8);
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 4px; padding: 36px 28px;
+      text-align: center; position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    .pricing-card.featured {
+      border-color: rgba(201,168,76,0.45);
+      background: rgba(201,168,76,0.05);
+    }
+    .featured-label {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--dark); padding: 4px 20px; border-radius: 20px;
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+    }
+    .plan-name {
+      font-family: 'Cinzel', serif; font-size: 0.95rem;
+      color: var(--white); margin-bottom: 8px; letter-spacing: 2px;
+    }
+    .plan-price {
+      font-family: 'Cinzel', serif; font-size: 2.8rem;
+      font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 4px;
+    }
+    .plan-price sup { font-size: 1.2rem; vertical-align: top; margin-top: 8px; }
+    .plan-period {
+      font-family: 'Space Mono', monospace; font-size: 0.62rem;
+      color: var(--muted); letter-spacing: 2px; margin-bottom: 28px; display: block;
+    }
+    .plan-features { list-style: none; text-align: left; margin-bottom: 28px; }
+    .plan-features li {
+      color: var(--muted); font-size: 0.86rem; padding: 7px 0;
+      border-bottom: 1px solid rgba(201,168,76,0.07);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .plan-features li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+    .plan-features li.off { opacity: 0.4; }
+    .plan-features li.off::before { content: '✕'; color: var(--muted); }
+    .soon {
+      font-family: 'Space Mono', monospace; font-size: 0.52rem;
+      color: var(--gold); border: 1px solid rgba(201,168,76,0.3);
+      padding: 1px 6px; border-radius: 2px; margin-left: auto; flex-shrink: 0;
+    }
+    .plan-btn { display: block; text-align: center; width: 100%; margin-top: 0; }
+
+    /* CTA Strip */
+    .cta-strip {
+      position: relative; z-index: 1;
+      background: linear-gradient(135deg, rgba(26,58,110,0.35) 0%, rgba(201,168,76,0.06) 100%);
+      border-top: 1px solid rgba(201,168,76,0.15);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      padding: 60px; text-align: center;
+    }
+    .cta-strip h2 { margin-bottom: 14px; }
+    .cta-strip p { color: var(--muted); margin-bottom: 34px; font-size: 1.05rem; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 900px) {
+      .stats-bar { grid-template-columns: repeat(3, 1fr); padding: 36px 24px; }
+      .categories-grid, .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Existential Gateway</span>
+      <span class="nav-logo-sub">LLC · Where Technology Meets Consciousness</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Orgonite Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
+    </ul>
+  </nav>
+
+  <section id="hero">
+    <p class="hero-eyebrow">✦ Existential Gateway, LLC ✦</p>
+    <h1><span>Existential</span><br>Gateway</h1>
+    <p class="hero-tagline">Where Technology Meets Consciousness</p>
+    <p class="hero-desc">AI-powered analysis tools for finance, faith, industry, and government — built for citizens who want real answers. Free access now. Premium plans coming soon.</p>
+    <div class="hero-cta">
+      <a href="tools.html" class="btn-primary">Explore AI Tools</a>
+      <a href="orgonite.html" class="btn-secondary">Shop Orgonite</a>
+      <a href="about.html" class="btn-accent">About Us</a>
+    </div>
+    <span class="free-badge">✓ All 14 Tools Currently Free — No Account Required</span>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat"><h3>14</h3><p>Live AI Tools</p></div>
+    <div class="stat"><h3>FREE</h3><p>Current Access</p></div>
+    <div class="stat"><h3>150K+</h3><p>Social Followers</p></div>
+    <div class="stat"><h3>IBM</h3><p>AI Certified</p></div>
+    <div class="stat"><h3>2021</h3><p>Founded</p></div>
+  </div>
+
+  <div class="wrap">
+    <p class="section-label">// AI Tool Categories</p>
+    <h2>Explore Tools by <span>Category</span></h2>
+    <div class="divider"></div>
+    <div class="categories-grid">
+      <a href="tools.html#finance" class="cat-card">
+        <div class="cat-header">
+          <span class="cat-icon">💰</span>
+          <div><h3>Finance & Economy</h3><span class="cat-count">4 Tools</span></div>
+        </div>
+        <p>Track the US debt, monetary reset, XRP adoption, FOREX revaluations, and the global financial transformation in real time.</p>
+        <div class="cat-tags">
+          <span class="cat-tag">Debt Clock</span>
+          <span class="cat-tag">Monetary Reset</span>
+          <span class="cat-tag">Investment</span>
+          <span class="cat-tag">Financial</span>
+        </div>
+        <span class="cat-link">View Finance Tools</span>
+      </a>
+
+      <a href="tools.html#faith" class="cat-card">
+        <div class="cat-header">
+          <span class="cat-icon">✝️</span>
+          <div><h3>Faith & Prophecy</h3><span class="cat-count">1 Tool · 16 Tabs</span></div>
+        </div>
+        <p>Biblical prophecy analysis, the Book of Enoch, Jubilee calendar, Middle East wars, Rapture tracker, and Apocalypse score dashboard.</p>
+        <div class="cat-tags">
+          <span class="cat-tag">End Times</span>
+          <span class="cat-tag">Prophecy</span>
+          <span class="cat-tag">Enoch</span>
+          <span class="cat-tag">Jubilee</span>
+        </div>
+        <span class="cat-link">View Faith Tools</span>
+      </a>
+
+      <a href="tools.html#industry" class="cat-card">
+        <div class="cat-header">
+          <span class="cat-icon">🏭</span>
+          <div><h3>Industry Analyzers</h3><span class="cat-count">7 Tools</span></div>
+        </div>
+        <p>Specialized AI analysis for insurance, healthcare, legal, real estate, retail, education, and crime — each with 9-12 analysis tabs.</p>
+        <div class="cat-tags">
+          <span class="cat-tag">Insurance</span>
+          <span class="cat-tag">Healthcare</span>
+          <span class="cat-tag">Legal</span>
+          <span class="cat-tag">Real Estate</span>
+          <span class="cat-tag">Education</span>
+        </div>
+        <span class="cat-link">View Industry Tools</span>
+      </a>
+
+      <a href="tools.html#government" class="cat-card">
+        <div class="cat-header">
+          <span class="cat-icon">🏛️</span>
+          <div><h3>Government & Media</h3><span class="cat-count">2 Tools</span></div>
+        </div>
+        <p>Nonpartisan public official accountability scoring with .gov sourcing and A-F grading. Media bias analysis across all major outlets.</p>
+        <div class="cat-tags">
+          <span class="cat-tag">Accountability</span>
+          <span class="cat-tag">Media Bias</span>
+          <span class="cat-tag">Nonpartisan</span>
+        </div>
+        <span class="cat-link">View Government Tools</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="wrap section-border">
+    <p class="section-label">// Access Plans</p>
+    <h2>Simple, Transparent <span>Pricing</span></h2>
+    <div class="divider"></div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="plan-name">Free</p>
+        <p class="plan-price"><sup>$</sup>0</p>
+        <span class="plan-period">Always Free</span>
+        <ul class="plan-features">
+          <li>All 14 AI tools</li>
+          <li>All analysis tabs</li>
+          <li>PDF & PowerPoint reports</li>
+          <li>File upload (PDF/CSV/Excel)</li>
+          <li>Live data feeds</li>
+          <li class="off">Priority processing <span class="soon">Pro</span></li>
+          <li class="off">Saved history <span class="soon">Pro</span></li>
+          <li class="off">Custom branding <span class="soon">Business</span></li>
+        </ul>
+        <a href="tools.html" class="btn-secondary plan-btn">Access Free Tools</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <span class="featured-label">Coming Soon</span>
+        <p class="plan-name">Pro</p>
+        <p class="plan-price"><sup>$</sup>19</p>
+        <span class="plan-period">Per Month</span>
+        <ul class="plan-features">
+          <li>Everything in Free</li>
+          <li>Priority AI processing</li>
+          <li>Saved analysis history</li>
+          <li>Unlimited file uploads</li>
+          <li>Advanced report customization</li>
+          <li>Email support</li>
+          <li class="off">Custom branding <span class="soon">Business</span></li>
+          <li class="off">API access <span class="soon">Business</span></li>
+        </ul>
+        <a href="contact.html" class="btn-primary plan-btn">Join Waitlist</a>
+      </div>
+
+      <div class="pricing-card">
+        <p class="plan-name">Business</p>
+        <p class="plan-price"><sup>$</sup>79</p>
+        <span class="plan-period">Per Month</span>
+        <ul class="plan-features">
+          <li>Everything in Pro</li>
+          <li>Custom branding on reports</li>
+          <li>API access</li>
+          <li>Up to 5 team members</li>
+          <li>White-label reports</li>
+          <li>Priority support</li>
+          <li>Custom tool development</li>
+          <li>Dedicated account manager</li>
+        </ul>
+        <a href="contact.html" class="btn-secondary plan-btn">Contact Us</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <h2>Ready to <span>Get Started?</span></h2>
+    <p>All 14 AI tools are free to use right now. No account required. No credit card needed.</p>
+    <div class="cta-btns">
+      <a href="tools.html" class="btn-primary">Explore All AI Tools</a>
+      <a href="orgonite.html" class="btn-secondary">Shop Orgonite</a>
+      <a href="contact.html" class="btn-accent">Work With Us</a>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <span class="footer-brand-name">Existential Gateway</span>
+      <span class="footer-brand-sub">LLC · existentialgateway.com</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="footer-copy">
+      <p>© 2026 Existential Gateway, LLC</p>
+      <p>All Rights Reserved</p>
+    </div>
+  </footer>
+</body>
+</html>

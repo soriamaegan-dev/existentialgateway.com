@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Existential Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: start;
+    }
+    .about-text p {
+      color: var(--muted); margin-bottom: 20px;
+      font-size: 1.05rem; line-height: 1.8;
+    }
+    .about-text p strong { color: var(--white); }
+
+    .info-cards { display: grid; gap: 14px; margin-top: 0; }
+    .info-card {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.16);
+      border-radius: 4px; padding: 20px 24px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .info-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .info-label {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 3px; color: var(--gold); text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .info-card h4 {
+      font-family: 'Cinzel', serif; font-size: 0.95rem;
+      color: var(--white); margin-bottom: 3px;
+    }
+    .info-card p { color: var(--muted); font-size: 0.82rem; margin: 0; }
+
+    /* Skills */
+    .skills-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .skill-group h4 {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 3px; color: var(--gold); text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .skill-tag {
+      background: rgba(74,158,255,0.1);
+      border: 1px solid rgba(74,158,255,0.25);
+      color: var(--accent); padding: 3px 10px;
+      border-radius: 2px; font-family: 'Rajdhani', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+    }
+
+    /* Services */
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    }
+    .service-card {
+      background: rgba(10,15,30,0.7);
+      border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 4px; padding: 28px 24px;
+      transition: border-color 0.3s;
+    }
+    .service-card:hover { border-color: rgba(74,158,255,0.4); }
+    .service-icon { font-size: 1.6rem; margin-bottom: 14px; display: block; }
+    .service-card h3 {
+      font-family: 'Cinzel', serif; font-size: 0.95rem;
+      color: var(--white); margin-bottom: 10px;
+    }
+    .service-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.7; margin-bottom: 14px; }
+    .service-rate {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      color: var(--gold); letter-spacing: 1px;
+    }
+
+    /* Social */
+    .social-cards {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    }
+    .social-card {
+      background: rgba(10,15,30,0.8);
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 4px; padding: 24px;
+      text-align: center; text-decoration: none;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .social-card:hover { border-color: rgba(201,168,76,0.35); transform: translateY(-2px); }
+    .social-card .soc-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+    .social-card h4 {
+      font-family: 'Cinzel', serif; font-size: 0.9rem;
+      color: var(--white); margin-bottom: 4px;
+    }
+    .social-card .followers {
+      font-family: 'Space Mono', monospace; font-size: 0.65rem;
+      color: var(--gold); letter-spacing: 1px;
+    }
+    .social-card p { color: var(--muted); font-size: 0.82rem; margin-top: 6px; }
+
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .social-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Existential Gateway</span>
+      <span class="nav-logo-sub">LLC · Where Technology Meets Consciousness</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Orgonite Shop</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">// About</p>
+    <h1>Maegan <span>Soria-Wiley</span></h1>
+    <p>IBM Certified AI Developer · Data Analyst · Digital Strategist · Orgonite Artisan · Founder, Existential Gateway, LLC</p>
+  </div>
+
+  <!-- Bio -->
+  <div class="wrap">
+    <p class="section-label">// Who I Am</p>
+    <h2>Founder & <span>Creator</span></h2>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I am the founder of <strong>Existential Gateway, LLC</strong> — a multi-disciplinary brand at the intersection of technology, consciousness, and creative entrepreneurship. My work spans AI application development, data analysis, digital content strategy, and handcrafted metaphysical products.</p>
+        <p>As an <strong>IBM Certified AI Developer</strong>, I have independently designed, built, and deployed 14 production-grade AI-powered web applications across 14 industry domains — each a complete, publicly accessible platform with live data integration, interactive visualizations, and AI-generated reports.</p>
+        <p>As a <strong>Data Analyst</strong>, I specialize in exploratory data analysis, SQL reporting, machine learning model development, statistical hypothesis testing, and feature engineering on real-world datasets.</p>
+        <p>As a <strong>Digital Strategist and Content Creator</strong> with over 150,000 followers on TikTok and X, I create content that educates and empowers at the intersection of technology, faith, financial literacy, and consciousness.</p>
+        <p>As an <strong>Orgonite Artisan</strong>, I craft custom handmade orgonite pieces combining sacred geometry, crystals, metals, and resin — each made with intention for the person who receives it.</p>
+      </div>
+      <div class="info-cards">
+        <div class="info-card">
+          <span class="info-icon">🏢</span>
+          <div>
+            <p class="info-label">Business</p>
+            <h4>Existential Gateway, LLC</h4>
+            <p>Multi-disciplinary technology & wellness brand · Est. 2021</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🎓</span>
+          <div>
+            <p class="info-label">Certification</p>
+            <h4>IBM AI Developer Professional Certificate</h4>
+            <p>Issued by IBM via Coursera · Completed 2026</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🤖</span>
+          <div>
+            <p class="info-label">AI Portfolio</p>
+            <h4>14 Live Production AI Applications</h4>
+            <p>Deployed on HuggingFace Spaces · Free public access</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📱</span>
+          <div>
+            <p class="info-label">Social Media</p>
+            <h4>150,000+ Followers</h4>
+            <p>TikTok · X (Twitter) · AI, Faith, Finance, Orgonite</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🔮</span>
+          <div>
+            <p class="info-label">Artisan</p>
+            <h4>Custom Orgonite Creator</h4>
+            <p>Handcrafted crystal & resin energy tools made to order</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="wrap section-border">
+    <p class="section-label">// Technical Skills</p>
+    <h2>Skills & <span>Tech Stack</span></h2>
+    <div class="divider"></div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>AI & Development</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">Python 3.11</span>
+          <span class="skill-tag">Gradio</span>
+          <span class="skill-tag">LLM Integration</span>
+          <span class="skill-tag">Prompt Engineering</span>
+          <span class="skill-tag">HuggingFace</span>
+          <span class="skill-tag">REST APIs</span>
+          <span class="skill-tag">GitHub</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Data Analysis</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">pandas</span>
+          <span class="skill-tag">NumPy</span>
+          <span class="skill-tag">SciPy</span>
+          <span class="skill-tag">EDA</span>
+          <span class="skill-tag">Hypothesis Testing</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Machine Learning</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">scikit-learn</span>
+          <span class="skill-tag">Logistic Regression</span>
+          <span class="skill-tag">Random Forest</span>
+          <span class="skill-tag">Gradient Boosting</span>
+          <span class="skill-tag">ROC / AUC</span>
+          <span class="skill-tag">Feature Engineering</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Visualization</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">Plotly</span>
+          <span class="skill-tag">Matplotlib</span>
+          <span class="skill-tag">Seaborn</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Documents & Reports</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">python-pptx</span>
+          <span class="skill-tag">ReportLab</span>
+          <span class="skill-tag">pypdf</span>
+          <span class="skill-tag">OpenPyXL</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Live Data Sources</h4>
+        <div class="skill-tags">
+          <span class="skill-tag">Yahoo Finance</span>
+          <span class="skill-tag">US Treasury API</span>
+          <span class="skill-tag">NOAA API</span>
+          <span class="skill-tag">yfinance</span>
+          <span class="skill-tag">FRED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Digital Strategy -->
+  <div class="wrap section-border">
+    <p class="section-label">// Digital Presence</p>
+    <h2>Content Creator & <span>Digital Strategist</span></h2>
+    <div class="divider"></div>
+    <div class="social-cards">
+      <a href="https://tiktok.com" target="_blank" class="social-card">
+        <span class="soc-icon">🎵</span>
+        <h4>TikTok</h4>
+        <p class="followers">150,000+ Followers</p>
+        <p>AI technology, financial literacy, biblical prophecy, and orgonite content</p>
+      </a>
+      <a href="https://x.com" target="_blank" class="social-card">
+        <span class="soc-icon">𝕏</span>
+        <h4>X (Twitter)</h4>
+        <p class="followers">Growing Audience</p>
+        <p>Monetary reset, XRP, tech news, and faith-based financial content</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="wrap section-border">
+    <p class="section-label">// Services</p>
+    <h2>Available for <span>Contract Work</span></h2>
+    <div class="divider"></div>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🤖</span>
+        <h3>AI Tool Development</h3>
+        <p>Custom multi-tab AI analyzer tools built to your industry specifications. Full deployment to HuggingFace or your server.</p>
+        <p class="service-rate">$800 — $5,000 per tool</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📊</span>
+        <h3>Data Analysis & ML</h3>
+        <p>EDA, SQL reporting, machine learning models, statistical analysis, and interactive visualization dashboards.</p>
+        <p class="service-rate">$500 — $2,000 per project</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📱</span>
+        <h3>Digital Strategy</h3>
+        <p>Social media strategy, content creation, audience growth, AI-powered content workflows, and brand partnerships.</p>
+        <p class="service-rate">$75 — $150 per hour</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">⚡</span>
+        <h3>Prompt Engineering</h3>
+        <p>System prompt design, AI persona development, domain-specific context engineering, and LLM output optimization.</p>
+        <p class="service-rate">$75 — $125 per hour</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔮</span>
+        <h3>Custom Orgonite</h3>
+        <p>Handcrafted bespoke orgonite pieces made to your intentions and specifications. Wholesale inquiries welcome.</p>
+        <p class="service-rate">From $50 per piece</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🎙️</span>
+        <h3>Brand Partnerships</h3>
+        <p>Sponsored content and brand collaborations across TikTok and X. 150K+ engaged audience in tech, faith, and finance.</p>
+        <p class="service-rate">Contact for rates</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:40px;">
+      <a href="contact.html" class="btn-primary">Get In Touch</a>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <span class="footer-brand-name">Existential Gateway</span>
+      <span class="footer-brand-sub">LLC · existentialgateway.com</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="footer-copy">
+      <p>© 2026 Existential Gateway, LLC</p>
+      <p>All Rights Reserved</p>
+    </div>
+  </footer>
+</body>
+</html>

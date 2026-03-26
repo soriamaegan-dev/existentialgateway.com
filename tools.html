@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Tools — Existential Gateway</title>
+  <meta name="description" content="14 AI-powered analysis tools grouped by Finance, Faith, Industry, and Government categories. Free access." />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Category anchors */
+    .category-section { padding: 60px 0 20px; }
+    .category-section:first-child { padding-top: 0; }
+
+    .cat-heading {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+    }
+    .cat-heading-icon { font-size: 2rem; }
+    .cat-heading h3 {
+      font-family: 'Cinzel', serif; font-size: 1.4rem;
+      color: var(--white);
+    }
+    .cat-heading-count {
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: var(--gold); letter-spacing: 2px;
+      display: block; margin-top: 3px;
+    }
+
+    /* Tool Cards */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px; margin-bottom: 20px;
+    }
+    .tool-card {
+      background: rgba(10,15,30,0.85);
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 4px; padding: 28px;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .tool-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .tool-card:hover {
+      border-color: rgba(201,168,76,0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-icon { font-size: 1.8rem; margin-bottom: 12px; display: block; }
+    .tool-card h4 {
+      font-family: 'Cinzel', serif; font-size: 0.95rem;
+      color: var(--white); margin-bottom: 10px; line-height: 1.3;
+    }
+    .tool-card p {
+      color: var(--muted); font-size: 0.85rem;
+      line-height: 1.7; margin-bottom: 16px;
+    }
+    .tool-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
+    .tool-tab {
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.18);
+      color: var(--gold-dim); padding: 2px 9px;
+      border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.56px;
+      font-size: 0.56rem;
+    }
+    .tool-footer {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
+    }
+    .free-tag {
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.2);
+      color: var(--green); padding: 3px 10px;
+      border-radius: 2px; font-family: 'Space Mono', monospace;
+      font-size: 0.56rem; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .tool-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--gold); text-decoration: none;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 0.76rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: gap 0.2s;
+    }
+    .tool-link:hover { gap: 12px; }
+    .tool-link::after { content: '→'; }
+
+    /* Upload badge */
+    .upload-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(74,158,255,0.08);
+      border: 1px solid rgba(74,158,255,0.2);
+      color: var(--accent); padding: 3px 10px;
+      border-radius: 2px; font-family: 'Space Mono', monospace;
+      font-size: 0.54rem; letter-spacing: 1px;
+      margin-bottom: 12px; display: block; width: fit-content;
+    }
+
+    /* Access notice */
+    .access-notice {
+      position: relative; z-index: 1;
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 4px; padding: 24px 32px;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 20px;
+      margin-bottom: 0;
+    }
+    .access-notice p { color: var(--muted); font-size: 0.92rem; }
+    .access-notice p strong { color: var(--white); }
+
+    @media (max-width: 700px) {
+      .tools-grid { grid-template-columns: 1fr; }
+      .access-notice { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Existential Gateway</span>
+      <span class="nav-logo-sub">LLC · Where Technology Meets Consciousness</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">AI Tools</a></li>
+      <li><a href="orgonite.html">Orgonite Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">// AI Tools</p>
+    <h1>14 <span>AI Analysis Tools</span></h1>
+    <p>Grouped by category. All tools free to use. Upload PDFs, CSVs, Excel files, or images for personalized AI analysis.</p>
+  </div>
+
+  <div class="wrap">
+
+    <!-- Finance -->
+    <div class="category-section" id="finance">
+      <div class="cat-heading">
+        <span class="cat-heading-icon">💰</span>
+        <div>
+          <h3>Finance & Economy</h3>
+          <span class="cat-heading-count">4 Tools · Live Market Data</span>
+        </div>
+      </div>
+      <div class="tools-grid">
+
+        <div class="tool-card">
+          <span class="tool-icon">💸</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Debt Clock Analyzer</h4>
+          <p>Live US Treasury API, Federal Reserve monitor, gold & commodities tracking, BRICS vs Dollar scorecard, de-dollarization index, and Golden Age tracker.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Live Treasury</span><span class="tool-tab">Fed Monitor</span>
+            <span class="tool-tab">Gold & Silver</span><span class="tool-tab">BRICS</span>
+            <span class="tool-tab">Scenarios</span><span class="tool-tab">13 Tabs</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-debt-clock-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">💰</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Monetary Reset Tracker</h4>
+          <p>XRP & Ripple ecosystem, Metallicus & credit union stablecoins, FOREX revaluation (IQD, VND, IDR), Gods vs Beast financial systems, and CBDC analysis.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">XRP Live</span><span class="tool-tab">Metallicus</span>
+            <span class="tool-tab">FOREX</span><span class="tool-tab">Stablecoins</span>
+            <span class="tool-tab">Scenarios</span><span class="tool-tab">15 Tabs</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-monetary-reset-tracker" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">💼</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Investment Analyzer</h4>
+          <p>Stocks, crypto, ETFs, and 7 prediction market platforms including Polymarket and Kalshi. Portfolio analysis, risk scoring, and market trend forecasting.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Stocks</span><span class="tool-tab">Crypto</span>
+            <span class="tool-tab">Prediction Markets</span><span class="tool-tab">Portfolio</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-investment-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">💹</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Financial & Market Analyzer</h4>
+          <p>Market trends, portfolio risk assessment, financial ratios, fraud detection patterns, and economic indicator analysis with live data integration.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Markets</span><span class="tool-tab">Portfolio</span>
+            <span class="tool-tab">Fraud</span><span class="tool-tab">Ratios</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-financial-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Faith -->
+    <div class="category-section section-border" id="faith" style="padding-top:60px;">
+      <div class="cat-heading">
+        <span class="cat-heading-icon">✝️</span>
+        <div>
+          <h3>Faith & Prophecy</h3>
+          <span class="cat-heading-count">1 Tool · 16 Analysis Tabs · Live NOAA Data</span>
+        </div>
+      </div>
+      <div class="tools-grid">
+
+        <div class="tool-card">
+          <span class="tool-icon">✝️</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI End Times Prophecy Analyzer</h4>
+          <p>The most comprehensive biblical prophecy analysis tool available. 16 tabs covering solar activity, Middle East wars, Book of Enoch, Ethiopian canon, Jubilee calendar, Rapture tracker, Third Temple, and full Apocalypse score dashboard.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Solar Activity</span><span class="tool-tab">Middle East</span>
+            <span class="tool-tab">Book of Enoch</span><span class="tool-tab">Jubilee</span>
+            <span class="tool-tab">Rapture Tracker</span><span class="tool-tab">Third Temple</span>
+            <span class="tool-tab">Antichrist Score</span><span class="tool-tab">16 Tabs</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-endtimes-prophecy-tool" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Industry -->
+    <div class="category-section section-border" id="industry" style="padding-top:60px;">
+      <div class="cat-heading">
+        <span class="cat-heading-icon">🏭</span>
+        <div>
+          <h3>Industry Analyzers</h3>
+          <span class="cat-heading-count">7 Tools · 9-12 Tabs Each · File Upload Enabled</span>
+        </div>
+      </div>
+      <div class="tools-grid">
+
+        <div class="tool-card">
+          <span class="tool-icon">🛡️</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Insurance Data Analyzer</h4>
+          <p>Claims analysis, fraud detection, loss ratio tracking, underwriting analysis, risk scoring, and actuarial modeling for insurance professionals.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Claims</span><span class="tool-tab">Fraud Detection</span>
+            <span class="tool-tab">Underwriting</span><span class="tool-tab">Risk</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-insurance-data-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">🏥</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Healthcare & Medical Analyzer</h4>
+          <p>HIPAA-aware clinical data analysis, disease pattern recognition, medical billing audit, patient outcome analysis, and hospital efficiency metrics.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Clinical</span><span class="tool-tab">Disease Patterns</span>
+            <span class="tool-tab">Billing</span><span class="tool-tab">Outcomes</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-healthcare-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">⚖️</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Legal & Law Firm Analyzer</h4>
+          <p>Contract analysis, case outcome prediction, multi-document legal research, deposition analysis, and law firm performance metrics.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Contracts</span><span class="tool-tab">Case Analysis</span>
+            <span class="tool-tab">Research</span><span class="tool-tab">Depositions</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-legal-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">🏠</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Real Estate Analyzer</h4>
+          <p>Automated valuation modeling (AVM), investment ROI calculator, market trend analysis, rental yield projections, and 10-year property forecasts.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">AVM</span><span class="tool-tab">ROI</span>
+            <span class="tool-tab">Rental Yield</span><span class="tool-tab">Projections</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-realestate-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">🛒</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Retail & E-Commerce Analyzer</h4>
+          <p>RFM customer segmentation, churn prediction, price optimization, inventory analysis, and customer lifetime value modeling.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">RFM</span><span class="tool-tab">Churn</span>
+            <span class="tool-tab">Pricing</span><span class="tool-tab">CLV</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-retail-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">🎓</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Education Analyzer</h4>
+          <p>FERPA-aware student performance analysis, dropout risk prediction with 4 ML models, curriculum effectiveness scoring, and enrollment forecasting.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">EDA</span><span class="tool-tab">ML Models</span>
+            <span class="tool-tab">Dropout Risk</span><span class="tool-tab">Curriculum</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-education-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">🚔</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Crime & Law Enforcement Analyzer</h4>
+          <p>Predictive crime mapping, case correlation, recidivism risk scoring, police report analysis, and community safety trend analysis.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Predictive</span><span class="tool-tab">Case Analysis</span>
+            <span class="tool-tab">Recidivism</span><span class="tool-tab">Trends</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-crime-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Government -->
+    <div class="category-section section-border" id="government" style="padding-top:60px;">
+      <div class="cat-heading">
+        <span class="cat-heading-icon">🏛️</span>
+        <div>
+          <h3>Government & Media</h3>
+          <span class="cat-heading-count">2 Tools · .gov Sourcing · Nonpartisan Analysis</span>
+        </div>
+      </div>
+      <div class="tools-grid">
+
+        <div class="tool-card">
+          <span class="tool-icon">🏛️</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Public Official Accountability Analyzer</h4>
+          <p>18-rule nonpartisan scoring system with .gov evidence sourcing. A-F performance grading, voting record analysis, and citizen accountability reports for any elected official.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Nonpartisan</span><span class="tool-tab">A-F Grading</span>
+            <span class="tool-tab">.gov Sources</span><span class="tool-tab">Voting Records</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-public-official-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-icon">📰</span>
+          <span class="upload-badge">📎 File Upload Enabled</span>
+          <h4>AI Media Bias Analyzer</h4>
+          <p>Article and outlet bias profiling, story comparison across competing news sources, journalist analysis, and comprehensive media bias scoring with evidence.</p>
+          <div class="tool-tabs">
+            <span class="tool-tab">Bias Score</span><span class="tool-tab">Outlet Profile</span>
+            <span class="tool-tab">Story Compare</span><span class="tool-tab">Journalists</span>
+          </div>
+          <div class="tool-footer">
+            <span class="free-tag">✓ Free</span>
+            <a href="https://huggingface.co/spaces/Mae-Mae/ai-mediabias-analyzer" target="_blank" class="tool-link">Launch Tool</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Access notice -->
+    <div class="access-notice section-border" style="margin-top:60px; padding-top:40px; background:none; border:1px solid rgba(201,168,76,0.18); border-radius:4px; padding:28px 36px;">
+      <p><strong>All 14 tools are free.</strong> No account required. Upload PDFs, CSVs, Excel files for personalized AI analysis on every tab. Pro and Business plans with priority processing and saved history are coming soon.</p>
+      <a href="contact.html" class="btn-secondary" style="white-space:nowrap;">Join Pro Waitlist</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div>
+      <span class="footer-brand-name">Existential Gateway</span>
+      <span class="footer-brand-sub">LLC · existentialgateway.com</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="footer-copy">
+      <p>© 2026 Existential Gateway, LLC</p>
+      <p>All Rights Reserved</p>
+    </div>
+  </footer>
+</body>
+</html>

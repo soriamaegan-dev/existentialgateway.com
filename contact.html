@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Existential Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: start;
+    }
+
+    /* Contact cards */
+    .contact-cards { display: grid; gap: 14px; }
+    .contact-card {
+      background: rgba(10,15,30,0.8);
+      border: 1px solid rgba(201,168,76,0.14);
+      border-radius: 4px; padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+      text-decoration: none; color: inherit;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .contact-card:hover { border-color: rgba(201,168,76,0.35); transform: translateX(4px); }
+    .contact-card-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .contact-card-label {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      color: var(--gold); letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .contact-card h4 {
+      font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+      font-weight: 600; color: var(--white);
+    }
+    .contact-card p { color: var(--muted); font-size: 0.82rem; }
+
+    /* Inquiry form */
+    .inquiry-form { display: grid; gap: 16px; }
+    .form-group { display: grid; gap: 6px; }
+    .form-label {
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      color: var(--gold); letter-spacing: 3px; text-transform: uppercase;
+    }
+    .form-input, .form-select, .form-textarea {
+      background: rgba(10,15,30,0.8);
+      border: 1px solid rgba(201,168,76,0.18);
+      color: var(--white); padding: 12px 16px;
+      font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+      border-radius: 2px; width: 100%;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: rgba(201,168,76,0.5);
+    }
+    .form-select option { background: var(--dark2); }
+    .form-textarea { min-height: 140px; resize: vertical; }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Inquiry types */
+    .inquiry-types {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .inquiry-type {
+      background: rgba(10,15,30,0.7);
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 4px; padding: 16px 12px;
+      text-align: center; cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .inquiry-type:hover, .inquiry-type.active {
+      border-color: rgba(201,168,76,0.4);
+      background: rgba(201,168,76,0.06);
+    }
+    .inquiry-type-icon { font-size: 1.4rem; margin-bottom: 6px; display: block; }
+    .inquiry-type span {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      color: var(--muted); letter-spacing: 1px; text-transform: uppercase;
+      display: block;
+    }
+
+    /* Waitlist */
+    .waitlist-card {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 4px; padding: 32px;
+    }
+    .waitlist-card h3 {
+      font-family: 'Cinzel', serif; font-size: 1.1rem;
+      color: var(--white); margin-bottom: 10px;
+    }
+    .waitlist-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.7; }
+    .waitlist-tiers { display: grid; gap: 10px; margin-bottom: 20px; }
+    .waitlist-tier {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,15,30,0.6); border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 3px; padding: 12px 16px;
+    }
+    .waitlist-tier-name {
+      font-family: 'Cinzel', serif; font-size: 0.88rem; color: var(--white);
+    }
+    .waitlist-tier-price {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--gold);
+    }
+
+    @media (max-width: 900px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .inquiry-types { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .inquiry-types { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Existential Gateway</span>
+      <span class="nav-logo-sub">LLC · Where Technology Meets Consciousness</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html">Orgonite Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">// Contact</p>
+    <h1>Let's <span>Connect</span></h1>
+    <p>AI tool development, data analysis, digital strategy, orgonite orders, brand partnerships, or Pro plan waitlist — reach out below.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="contact-grid">
+
+      <!-- Left: Contact Links -->
+      <div>
+        <p class="section-label">// Get In Touch</p>
+        <h2>Contact <span>Channels</span></h2>
+        <div class="divider"></div>
+        <div class="contact-cards">
+          <a href="/cdn-cgi/l/email-protection#2c5f435e454d02414d494b4d426c4b414d4540024f4341" class="contact-card">
+            <span class="contact-card-icon">📧</span>
+            <div>
+              <p class="contact-card-label">Email</p>
+              <h4><span class="__cf_email__" data-cfemail="89fae6fbe0e8a7e4e8eceee8e7c9eee4e8e0e5a7eae6e4">[email&#160;protected]</span></h4>
+              <p>General inquiries, orders, partnerships</p>
+            </div>
+          </a>
+          <a href="https://tiktok.com" target="_blank" class="contact-card">
+            <span class="contact-card-icon">🎵</span>
+            <div>
+              <p class="contact-card-label">TikTok</p>
+              <h4>@MaeganSoriaWiley</h4>
+              <p>150,000+ followers · AI, Faith, Finance, Orgonite</p>
+            </div>
+          </a>
+          <a href="https://x.com" target="_blank" class="contact-card">
+            <span class="contact-card-icon">𝕏</span>
+            <div>
+              <p class="contact-card-label">X (Twitter)</p>
+              <h4>@MaeganSoriaWiley</h4>
+              <p>Monetary reset, XRP, tech, and faith content</p>
+            </div>
+          </a>
+          <a href="https://github.com/soriamaegan-dev" target="_blank" class="contact-card">
+            <span class="contact-card-icon">🐙</span>
+            <div>
+              <p class="contact-card-label">GitHub</p>
+              <h4>soriamaegan-dev</h4>
+              <p>Source code and portfolio repositories</p>
+            </div>
+          </a>
+          <a href="https://huggingface.co/Mae-Mae" target="_blank" class="contact-card">
+            <span class="contact-card-icon">🤗</span>
+            <div>
+              <p class="contact-card-label">HuggingFace</p>
+              <h4>Mae-Mae</h4>
+              <p>All 14 live AI tool demos</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Pro Waitlist -->
+        <div class="waitlist-card" style="margin-top:30px;">
+          <h3>🚀 Join the Pro Waitlist</h3>
+          <p>Pro and Business subscription plans are coming soon with priority processing, saved history, and advanced features. Join the waitlist to be notified first and lock in early pricing.</p>
+          <div class="waitlist-tiers">
+            <div class="waitlist-tier">
+              <span class="waitlist-tier-name">Pro Plan</span>
+              <span class="waitlist-tier-price">$19 / month</span>
+            </div>
+            <div class="waitlist-tier">
+              <span class="waitlist-tier-name">Business Plan</span>
+              <span class="waitlist-tier-price">$79 / month</span>
+            </div>
+          </div>
+          <a href="/cdn-cgi/l/email-protection#b9cad6cbd0d897d4d8dcded8d7f9ded4d8d0d597dad6d486caccdbd3dcdacd84e9cbd699e9d5d8d799eed8d0cdd5d0cacd995b392d99fcc1d0cacddcd7cdd0d8d599fed8cddcced8c0" class="btn-primary" style="width:100%;text-align:center;display:block;">Join Waitlist</a>
+        </div>
+      </div>
+
+      <!-- Right: Inquiry Form -->
+      <div>
+        <p class="section-label">// Send a Message</p>
+        <h2>What are you <span>reaching out about?</span></h2>
+        <div class="divider"></div>
+
+        <div class="inquiry-types" style="margin-bottom:24px;">
+          <div class="inquiry-type">
+            <span class="inquiry-type-icon">🤖</span>
+            <span>AI Tool</span>
+          </div>
+          <div class="inquiry-type">
+            <span class="inquiry-type-icon">📊</span>
+            <span>Data Analysis</span>
+          </div>
+          <div class="inquiry-type">
+            <span class="inquiry-type-icon">🔮</span>
+            <span>Orgonite</span>
+          </div>
+          <div class="inquiry-type">
+            <span class="inquiry-type-icon">📱</span>
+            <span>Partnership</span>
+          </div>
+          <div class="inquiry-type">
+            <span class="inquiry-type-icon">🚀</span>
+            <span>Pro Waitlist</span>
+          </div>
+          <div class="inquiry-type">
+            <span class="inquiry-type-icon">💬</span>
+            <span>General</span>
+          </div>
+        </div>
+
+        <form class="inquiry-form" action="mailto:soria.maegan@gmail.com" method="post" enctype="text/plain">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" placeholder="Your first name" name="firstname" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" placeholder="Your last name" name="lastname" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="your@email.com" name="email" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select class="form-select" name="subject">
+              <option value="">Select a topic...</option>
+              <option>AI Tool Development</option>
+              <option>Data Analysis Project</option>
+              <option>Orgonite Order / Custom Commission</option>
+              <option>Brand Partnership / Sponsorship</option>
+              <option>Pro Plan Waitlist</option>
+              <option>Business Plan Inquiry</option>
+              <option>Digital Strategy Consultation</option>
+              <option>General Inquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell me about your project, order, or inquiry..." name="message"></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%;">Send Message</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Business Info -->
+  <div class="wrap section-border" style="padding-top:40px; padding-bottom:40px;">
+    <div style="background:rgba(201,168,76,0.04); border:1px solid rgba(201,168,76,0.15); border-radius:4px; padding:24px 40px; text-align:center;">
+      <p style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); letter-spacing:3px; margin-bottom:8px;">Existential Gateway, LLC</p>
+      <p style="font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:2px; line-height:2;">
+        existentialgateway.com &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b283429323a75363a3e3c3a351b3c363a323775383436">[email&#160;protected]</a><br>
+        © 2026 Existential Gateway, LLC &nbsp;·&nbsp; All Rights Reserved
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <span class="footer-brand-name">Existential Gateway</span>
+      <span class="footer-brand-sub">LLC · existentialgateway.com</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home

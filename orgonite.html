@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orgonite Shop — Existential Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* What is Orgonite */
+    .intro-grid {
+      display: grid; grid-template-columns: 1.2fr 0.8fr;
+      gap: 60px; align-items: start; margin-bottom: 60px;
+    }
+    .intro-text p {
+      color: var(--muted); font-size: 1.05rem;
+      line-height: 1.8; margin-bottom: 18px;
+    }
+    .intro-text p strong { color: var(--white); }
+    .what-card {
+      background: rgba(155,142,196,0.06);
+      border: 1px solid rgba(155,142,196,0.2);
+      border-radius: 4px; padding: 28px 30px;
+    }
+    .what-card h3 {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--crystal); margin-bottom: 14px;
+    }
+    .what-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.8; margin-bottom: 14px; }
+    .what-list { list-style: none; }
+    .what-list li {
+      color: var(--muted); font-size: 0.86rem;
+      padding: 6px 0; border-bottom: 1px solid rgba(155,142,196,0.1);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .what-list li::before { content: '✦'; color: var(--crystal); flex-shrink: 0; }
+
+    /* Products */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 22px; margin-bottom: 50px;
+    }
+    .product-card {
+      background: rgba(10,15,30,0.9);
+      border: 1px solid rgba(201,168,76,0.14);
+      border-radius: 4px; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 56px rgba(0,0,0,0.5);
+      border-color: rgba(201,168,76,0.35);
+    }
+    .product-img {
+      width: 100%; height: 190px;
+      background: linear-gradient(135deg,
+        rgba(155,142,196,0.14) 0%,
+        rgba(184,115,51,0.14) 50%,
+        rgba(201,168,76,0.09) 100%);
+      display: flex; align-items: center;
+      justify-content: center; font-size: 3.8rem;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      position: relative; overflow: hidden;
+    }
+    .product-img::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(155,142,196,0.08) 0%, transparent 70%);
+    }
+    .product-body { padding: 22px; }
+    .product-body h3 {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .product-body p {
+      color: var(--muted); font-size: 0.84rem;
+      line-height: 1.65; margin-bottom: 14px;
+    }
+    .materials { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 18px; }
+    .material {
+      background: rgba(155,142,196,0.08);
+      border: 1px solid rgba(155,142,196,0.2);
+      color: var(--crystal); padding: 2px 9px;
+      border-radius: 2px; font-family: 'Space Mono', monospace;
+      font-size: 0.56rem; letter-spacing: 1px;
+    }
+    .product-footer {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
+    }
+    .price {
+      font-family: 'Cinzel', serif; font-size: 1.3rem;
+      color: var(--gold); font-weight: 600;
+    }
+    .order-btn {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--dark); padding: 8px 20px;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 0.76rem; letter-spacing: 2px; text-transform: uppercase;
+      text-decoration: none; border-radius: 2px; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s; display: inline-block;
+    }
+    .order-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(201,168,76,0.3); }
+
+    /* Custom process */
+    .process-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    }
+    .process-step {
+      background: rgba(10,15,30,0.7);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 4px; padding: 24px 20px; text-align: center;
+    }
+    .step-num {
+      font-family: 'Cinzel', serif; font-size: 2rem;
+      font-weight: 900; color: var(--gold-dim); margin-bottom: 10px;
+    }
+    .process-step h4 {
+      font-family: 'Cinzel', serif; font-size: 0.9rem;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .process-step p { color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
+
+    /* Shop notice */
+    .shop-notice {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 4px; padding: 22px 32px;
+      text-align: center;
+    }
+    .shop-notice p { color: var(--muted); font-size: 0.9rem; line-height: 1.8; }
+    .shop-notice p strong { color: var(--gold); }
+
+    @media (max-width: 900px) {
+      .intro-grid { grid-template-columns: 1fr; gap: 36px; }
+      .process-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: 1fr; }
+      .process-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Existential Gateway</span>
+      <span class="nav-logo-sub">LLC · Where Technology Meets Consciousness</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">AI Tools</a></li>
+      <li><a href="orgonite.html" class="active">Orgonite Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="tools.html" class="nav-cta">Access Tools Free</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">// Orgonite Shop</p>
+    <h1>Custom Handcrafted <span>Orgonite</span></h1>
+    <p>Each piece made with intention. Crystals, metals, and sacred geometry combined in resin — handcrafted by Maegan Soria-Wiley-Wiley for Existential Gateway, LLC.</p>
+  </div>
+
+  <div class="wrap">
+    <p class="section-label">// About Orgonite</p>
+    <h2>What is <span>Orgonite?</span></h2>
+    <div class="divider"></div>
+    <div class="intro-grid">
+      <div class="intro-text">
+        <p>Orgonite is a powerful combination of organic and inorganic materials that work together to balance and harmonize bio-energy — also known as <strong>orgone, chi, or prana</strong> in various traditions.</p>
+        <p>The concept was developed by Wilhelm Reich, who identified orgone as a universal life force energy that permeates all living things. Orgonite devices are designed to <strong>attract, accumulate, and transmute</strong> this energy from negative (stagnant) to positive (flowing).</p>
+        <p>Each piece I create is <strong>handmade with intention</strong> — I choose crystals and metals based on their specific metaphysical properties, incorporate sacred geometry, and set intentions during the creation process that are literally embedded into the resin matrix.</p>
+        <p>Whether you're looking for <strong>EMF protection, abundance attraction, emotional healing,</strong> or simply a beautiful piece of art with purpose — there is an orgonite piece for you.</p>
+      </div>
+      <div class="what-card">
+        <h3>✦ Components & Properties</h3>
+        <p>Every orgonite piece contains these essential elements:</p>
+        <ul class="what-list">
+          <li><strong>Crystals</strong> — amplify, direct, and program energy</li>
+          <li><strong>Metals</strong> — attract and repel energy fields</li>
+          <li><strong>Resin</strong> — organic matrix that creates piezoelectric effect</li>
+          <li><strong>Sacred Geometry</strong> — guides and focuses energy flow</li>
+          <li><strong>Intentions</strong> — set during creation, locked into resin</li>
+          <li><strong>Copper coils</strong> — enhance energy amplification</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <p class="section-label">// Products</p>
+    <h2>Shop <span>Ready-Made Pieces</span></h2>
+    <div class="divider"></div>
+    <div class="products-grid">
+
+      <div class="product-card">
+        <div class="product-img">🔮</div>
+        <div class="product-body">
+          <h3>Protection Pyramid</h3>
+          <p>Powerful EMF protection pyramid with black tourmaline and shungite anchored by copper coils. Ideal for placing near electronics, WiFi routers, or in your workspace.</p>
+          <div class="materials">
+            <span class="material">Black Tourmaline</span>
+            <span class="material">Shungite</span>
+            <span class="material">Copper Coil</span>
+            <span class="material">Clear Quartz</span>
+          </div>
+          <div class="product-footer">
+            <span class="price">$45</span>
+            <a href="/cdn-cgi/l/email-protection#84f7ebf6ede5aae9e5e1e3e5eac4e3e9e5ede8aae7ebe9bbf7f1e6eee1e7f0b9cbf6e0e1f6bea4d4f6ebf0e1e7f0edebeaa4d4fdf6e5e9ede0a4660410a4c1fcedf7f0e1eaf0ede5e8a4c3e5f0e1f3e5fd" class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img">💛</div>
+        <div class="product-body">
+          <h3>Abundance Tower</h3>
+          <p>Citrine and pyrite tower for attracting abundance, prosperity, and positive financial energy. Gold leaf and pyrite create a powerful wealth-attraction matrix.</p>
+          <div class="materials">
+            <span class="material">Citrine</span>
+            <span class="material">Pyrite</span>
+            <span class="material">Gold Leaf</span>
+            <span class="material">Copper</span>
+          </div>
+          <div class="product-footer">
+            <span class="price">$55</span>
+            <a href="/cdn-cgi/l/email-protection#3e4d514c575f10535f5b595f507e59535f5752105d5153014d4b5c545b5d4a03714c5a5b4c041e7f5c4b505a5f505d5b1e6a51495b4c1edcbeaa1e7b46574d4a5b504a575f521e795f4a5b495f47" class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img">💗</div>
+        <div class="product-body">
+          <h3>Love & Harmony Disc</h3>
+          <p>Rose quartz and amethyst disc infused with the Flower of Life sacred geometry pattern. Perfect for bedrooms, meditation spaces, or as a heart chakra healing tool.</p>
+          <div class="materials">
+            <span class="material">Rose Quartz</span>
+            <span class="material">Amethyst</span>
+            <span class="material">Silver Leaf</span>
+            <span class="material">Flower of Life</span>
+          </div>
+          <div class="product-footer">
+            <span class="price">$38</span>
+            <a href="/cdn-cgi/l/email-protection#93e0fce1faf2bdfef2f6f4f2fdd3f4fef2faffbdf0fcfeace0e6f1f9f6f0e7aedce1f7f6e1a9b3dffce5f6b3dbf2e1fefcfdeab3d7fae0f0b3711307b3d6ebfae0e7f6fde7faf2ffb3d4f2e7f6e4f2ea" class="order-btn">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img">⭐</div>
+        <div class="product-body">
+          <h3>Custom Commission</h3>
+          <p>Work directly with me to design a completely custom piece. Choose your crystals, intentions, shape, size, and color palette. Truly one-of-a-kind, made just for you.</p>
+          <div class="materials">
+            <span class="material">Your Crystals</span>
+            <span class="material">Custom Size</span>
+            <span class="material">Any Shape</span>
+            <span class="material">Your Intention</span>
+          </div>
+          <div class="product-footer">
+            <span class="price">From $50</span>
+            <a href="/cdn-cgi/l/email-protection#f98a968b9098d794989c9e9897b99e94989095d79a9694c68a8c9b939c9a8dc4ba8c8a8d9694d9b68b9e9697908d9cd9ba969494908a8a909697d91b796dd9bc81908a8d9c978d909895d9be988d9c8e9880" class="order-btn">Inquire</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="shop-notice">
+      <p>
+        💳 All orders processed securely via <strong>PayPal or Stripe</strong> &nbsp;·&nbsp;
+        📦 Ships within <strong>5-7 business days</strong> &nbsp;·&nbsp;
+        ✉️ Custom orders: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc8f938e959dd2919d999b9d92bc9b919d9590d29f9391">[email&#160;protected]</a></strong> &nbsp;·&nbsp;
+        🔮 Wholesale inquiries welcome
+      </p>
+    </div>
+  </div>
+
+  <!-- Custom Process -->
+  <div class="wrap section-border">
+    <p class="section-label">// Custom Orders</p>
+    <h2>How Custom <span>Commissions Work</span></h2>
+    <div class="divider"></div>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <h4>Reach Out</h4>
+        <p>Email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2b584459424a05464a4e4c4a456b4c464a424705484446">[email&#160;protected]</a> with your intentions, preferred crystals, size, and any special requests.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <h4>Design Together</h4>
+        <p>I'll work with you to choose the right crystals, metals, and sacred geometry for your specific intentions and goals.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <h4>Crafted with Intention</h4>
+        <p>Your piece is handmade with full intention setting during the creation process. Every detail is intentional.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <h4>Shipped to You</h4>
+        <p>Your piece is carefully packaged and shipped within 5-7 business days with tracking provided.</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:40px;">
+      <a href="/cdn-cgi/l/email-protection#c2b1adb0aba3ecafa3a7a5a3ac82a5afa3abaeeca1adaffdb1b7a0a8a7a1b6ff81b7b
