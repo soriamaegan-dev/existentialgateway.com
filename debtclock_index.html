@@ -343,6 +343,10 @@
 <script>
 (async function() {
   const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    await sb.auth.exchangeCodeForSession(window.location.href);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
   const { data: { session } } = await sb.auth.getSession();
   if (!session?.user) { window.location.href = '/dashboard.html'; return; }
   const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
