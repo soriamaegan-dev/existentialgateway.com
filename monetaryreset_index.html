@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monetary Reset Tracker — ExistentialGateway.com</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a1628'/><circle cx='90' cy='88' r='72' fill='none' stroke='%23c9a84c' stroke-width='14'/><rect x='34' y='108' width='18' height='30' fill='%23c9a84c' opacity='0.6' rx='2'/><rect x='56' y='88' width='18' height='50' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='78' y='62' width='18' height='76' fill='%23c9a84c' rx='2'/><rect x='100' y='78' width='18' height='60' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='122' y='98' width='18' height='40' fill='%23c9a84c' opacity='0.6' rx='2'/><line x1='138' y1='134' x2='170' y2='168' stroke='%23c9a84c' stroke-width='14' stroke-linecap='round'/></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;
+      --white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);
+      --success:#2dd4a0;--error:#ff6b6b;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+    nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 40px;background:rgba(10,22,40,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-left{display:flex;align-items:center;gap:16px;}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-brand-name{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--white);}
+    .nav-brand-name span{color:var(--gold);}
+    .nav-divider{width:1px;height:22px;background:var(--border);}
+    .nav-tool{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .nav-right{display:flex;align-items:center;gap:14px;}
+    .nav-plan{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+    .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all 0.2s;}
+    .nav-back:hover{color:var(--gold);border-color:var(--gold);}
+    .tool-header{position:relative;z-index:1;padding:20px 40px;background:rgba(17,34,64,0.6);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .tool-header-left{display:flex;align-items:center;gap:16px;}
+    .tool-icon{font-size:2rem;}
+    .tool-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--white);font-weight:400;}
+    .tool-tagline{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
+    .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;line-height:1.6;}
+    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .disclaimer strong{color:var(--gold);}
+    .pii-notice{position:relative;z-index:1;margin:12px 40px 0;padding:14px 20px;background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.2);border-left:3px solid var(--error);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .pii-notice strong{color:var(--error);}
+    .tabs-container{position:relative;z-index:1;margin:24px 40px 0;}
+    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+    .tabs-nav::-webkit-scrollbar{display:none;}
+    .tab-btn{padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;}
+    .tab-btn:hover{color:var(--white);}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.05);}
+    .tab-panel{display:none;padding:28px 0;}
+    .tab-panel.active{display:block;}
+    .upload-zone{border:2px dashed rgba(201,168,76,0.3);border-radius:8px;padding:40px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(17,34,64,0.4);position:relative;}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+    .upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upload-icon{font-size:2.5rem;margin-bottom:12px;display:block;}
+    .upload-title{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:6px;}
+    .upload-sub{font-size:0.78rem;color:var(--muted);}
+    .upload-filename{margin-top:12px;padding:8px 16px;background:rgba(201,168,76,0.1);border-radius:4px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold);display:none;}
+    .context-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
+    textarea.context-input{width:100%;min-height:80px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
+    textarea.context-input:focus{outline:none;border-color:var(--gold);}
+    textarea.context-input::placeholder{color:var(--muted);}
+    select.styled-select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;cursor:pointer;transition:border-color 0.2s;}
+    select.styled-select:focus{outline:none;border-color:var(--gold);}
+    .btn-analyze{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+    .btn-analyze:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
+    .btn-analyze:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .results-area{margin-top:24px;background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:120px;overflow:hidden;}
+    .results-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .results-label{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .results-body{padding:20px;font-size:0.85rem;color:var(--white);line-height:1.8;white-space:pre-wrap;}
+    .results-body.empty{color:var(--muted);font-style:italic;}
+    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000000;}
+    .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
+    .loading-bar.active{display:block;}
+    @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;}}
+    .watermark{position:relative;z-index:1;text-align:center;padding:20px 40px;margin-top:40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(136,146,164,0.5);letter-spacing:1px;}
+    .results-body h1,.results-body h2,.results-body h3{color:var(--gold);font-family:'DM Serif Display',serif;margin:16px 0 8px;font-weight:400;}
+    .results-body h1{font-size:1.2rem;}
+    .results-body h2{font-size:1.05rem;}
+    .results-body h3{font-size:0.95rem;}
+    .results-body strong{color:var(--white);font-weight:600;}
+    .results-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+    .chat-messages{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:16px;}
+    .chat-msg{margin-bottom:16px;}
+    .chat-msg.user .bubble{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px 8px 2px 8px;padding:10px 14px;font-size:0.85rem;max-width:80%;margin-left:auto;}
+    .chat-msg.assistant .bubble{background:rgba(17,34,64,0.8);border:1px solid var(--border);border-radius:2px 8px 8px 8px;padding:10px 14px;font-size:0.85rem;max-width:90%;white-space:pre-wrap;}
+    .chat-input-row{display:flex;gap:10px;}
+    .chat-input{flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;}
+    .chat-input:focus{outline:none;border-color:var(--gold);}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <a href="https://existentialgateway.com" class="nav-brand">
+      <svg width="26" height="26" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/>
+        <rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/>
+        <rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/>
+        <rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/>
+        <rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/>
+        <rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/>
+        <line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
+    </a>
+    <div class="nav-divider"></div>
+    <span class="nav-tool">Monetary Reset Tracker</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-plan">The Gateway Plan</span>
+    <a href="https://existentialgateway.com" class="nav-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="tool-header">
+  <div class="tool-header-left">
+    <span class="tool-icon">🔄</span>
+    <div>
+      <div class="tool-title">Monetary Reset Tracker</div>
+      <div class="tool-tagline">AI-Powered Monetary Intelligence</div>
+    </div>
+  </div>
+  <div class="tool-desc">CBDC tracking, gold/silver ratio analysis, fiat currency collapse indicators, and monetary reset scenario modeling.</div>
+</div>
+
+<div class="disclaimer">
+  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified professional. © 2026 Existential Gateway, LLC. All Rights Reserved.
+</div>
+
+
+<div class="tabs-container">
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">🏦 Blockchain Banking</button>
+    <button class="tab-btn " onclick="switchTab(1)">₿ Crypto Stablecoins</button>
+    <button class="tab-btn " onclick="switchTab(2)">📜 Crypto Regulations</button>
+    <button class="tab-btn " onclick="switchTab(3)">🏅 Gold & Silver</button>
+    <button class="tab-btn " onclick="switchTab(4)">💵 Fiat Collapse</button>
+    <button class="tab-btn " onclick="switchTab(5)">🌐 CBDC Tracking</button>
+  </div>
+  <div class="tab-panel active" id="tab-0">
+    <div class="two-col">
+      <div>
+                <div>
+          <label class="context-label">Context / Instructions</label>
+          <textarea class="context-input" id="context-0" placeholder="e.g. Analyze the move toward blockchain-based banking"></textarea>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(0, '/analyze_blockchain_banking', false)" id="btn-0">🔍 Analyze</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-0"></div>
+          <div class="results-header">
+            <span class="results-label">Results</span>
+            <button onclick="copyResults(0)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-0">Results will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel " id="tab-1">
+    <div class="two-col">
+      <div>
+                <div>
+          <label class="context-label">Context / Instructions</label>
+          <textarea class="context-input" id="context-1" placeholder="e.g. Analyze USDT and USDC stability risks"></textarea>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(1, '/analyze_crypto_stablecoin', false)" id="btn-1">🔍 Analyze Stablecoins</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-1"></div>
+          <div class="results-header">
+            <span class="results-label">Results</span>
+            <button onclick="copyResults(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-1">Results will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel " id="tab-2">
+    <div class="two-col">
+      <div>
+                <div>
+          <label class="context-label">Context / Instructions</label>
+          <textarea class="context-input" id="context-2" placeholder="e.g. Analyze SEC crypto regulation impact"></textarea>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(2, '/analyze_crypto_regulations', false)" id="btn-2">🔍 Analyze Regulations</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-2"></div>
+          <div class="results-header">
+            <span class="results-label">Results</span>
+            <button onclick="copyResults(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-2">Results will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel " id="tab-3">
+    <div class="two-col">
+      <div>
+                <div>
+          <label class="context-label">Context / Instructions</label>
+          <textarea class="context-input" id="context-3" placeholder="e.g. Analyze gold as a hedge against dollar collapse"></textarea>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(3, '/analyze_gold_silver', false)" id="btn-3">🔍 Analyze Metals</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-3"></div>
+          <div class="results-header">
+            <span class="results-label">Results</span>
+            <button onclick="copyResults(3)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-3">Results will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel " id="tab-4">
+    <div class="two-col">
+      <div>
+                <div>
+          <label class="context-label">Context / Instructions</label>
+          <textarea class="context-input" id="context-4" placeholder="e.g. Analyze indicators of USD fiat currency collapse"></textarea>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(4, '/analyze_fiat_collapse', false)" id="btn-4">🔍 Analyze Fiat Risk</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-4"></div>
+          <div class="results-header">
+            <span class="results-label">Results</span>
+            <button onclick="copyResults(4)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-4">Results will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel " id="tab-5">
+    <div class="two-col">
+      <div>
+                <div>
+          <label class="context-label">Context / Instructions</label>
+          <textarea class="context-input" id="context-5" placeholder="e.g. Track global CBDC adoption and implications"></textarea>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(5, '/analyze_cbdc', false)" id="btn-5">🔍 Track CBDCs</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-5"></div>
+          <div class="results-header">
+            <span class="results-label">Results</span>
+            <button onclick="copyResults(5)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-5">Results will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="watermark">© 2026 Existential Gateway, LLC · Monetary Reset Tracker · Unauthorized reproduction strictly prohibited · existentialgateway@gmail.com</div>
+
+<script>
+  const GRADIO_URL = '/gradio_api';
+  const uploadedFiles = {};
+
+  function switchTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+    document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  }
+
+  function triggerUpload(idx, event) {
+    if (event && (event.target.tagName === 'INPUT' || event.target.closest('input'))) return;
+    const input = document.getElementById('file-' + idx);
+    if (input) { input.click(); }
+  }
+
+  function handleFile(idx) {
+    const file = document.getElementById('file-' + idx).files[0];
+    if (!file) return;
+    uploadedFiles[idx] = file;
+    const fn = document.getElementById('filename-' + idx);
+    fn.textContent = '📎 ' + file.name;
+    fn.style.display = 'block';
+  }
+
+  function setLoading(idx, on) {
+    document.getElementById('loading-' + idx).classList.toggle('active', on);
+    const btn = document.getElementById('btn-' + idx);
+    if (btn) btn.disabled = on;
+  }
+
+  function renderMarkdown(text) {
+    return text
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^---$/gm, '<hr>');
+  }
+
+  async function runAnalysis(tabIdx, endpoint, hasFile) {
+    const ctx = document.getElementById('context-' + tabIdx);
+    const context = ctx ? ctx.value.trim() : '';
+
+    if (hasFile && !uploadedFiles[tabIdx] && !context) {
+      alert('Please upload a file or enter context first.');
+      return;
+    }
+
+    setLoading(tabIdx, true);
+    const resultsEl = document.getElementById('results-' + tabIdx);
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
+
+    try {
+      let data = [];
+
+      if (hasFile && uploadedFiles[tabIdx]) {
+        const formData = new FormData();
+        formData.append('files', uploadedFiles[tabIdx]);
+        const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+        if (!uploadRes.ok) throw new Error('File upload failed. Status: ' + uploadRes.status);
+        const uploadData = await uploadRes.json();
+        data.push({ path: uploadData[0], orig_name: uploadedFiles[tabIdx].name, size: uploadedFiles[tabIdx].size, mime_type: uploadedFiles[tabIdx].type, meta: { "_type": "gradio.FileData" } });
+      }
+
+      // Only send context if file was also uploaded
+      if (hasFile && uploadedFiles[tabIdx] && context) data.push(context);
+      if (!hasFile && context) data.push(context);
+
+      const extraEl = document.getElementById('extra-' + tabIdx);
+      if (extraEl) data.push(extraEl.value);
+
+      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      if (!res.ok) throw new Error('Request failed: ' + await res.text());
+      const result = await res.json();
+      const text = result.data?.[0] || 'No results returned.';
+      resultsEl.innerHTML = renderMarkdown(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(tabIdx, false);
+  }
+
+  function copyResults(idx) {
+    const el = document.getElementById('results-' + idx);
+    const text = el.innerText;
+    const clipItem = new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }) });
+    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
+  }
+
+  function addChatMsg(role, text) {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.innerHTML = '<div class="bubble">' + text + '</div>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  async function sendChat(tabIdx, endpoint) {
+    const input = document.getElementById('chat-input-' + tabIdx);
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    addChatMsg('user', msg);
+    const thinking = document.createElement('div');
+    thinking.className = 'chat-msg assistant';
+    thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
+    document.getElementById('chat-messages').appendChild(thinking);
+    try {
+      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [msg, null] })
+      });
+      const result = await res.json();
+      thinking.querySelector('.bubble').innerHTML = renderMarkdown(result.data?.[0] || 'No response.');
+    } catch(e) {
+      thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+  }
+
+  document.querySelectorAll('.upload-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('dragover');
+      const idx = zone.id.replace('upload-', '');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        uploadedFiles[idx] = file;
+        const fn = document.getElementById('filename-' + idx);
+        fn.textContent = '📎 ' + file.name;
+        fn.style.display = 'block';
+      }
+    });
+  });
+</script>
+</body>
+</html>
