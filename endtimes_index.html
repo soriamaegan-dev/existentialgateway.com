@@ -1,71 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js">
-  async function signOutUser() {
-    const { createClient } = supabase
-    const sb = supabase.createClient(
-      'https://jolvnzhwwchbkuzkeqjt.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs'
-    )
-    await sb.auth.signOut()
-    window.location.href = '/dashboard.html'
-  }
-</script>
-<script>
-(async function() {
-  const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
-  const plan = data.plan;
-  const PREMIUM_PLANS = ['professional', 'business', 'owner'];
-  const isPremium = PREMIUM_PLANS.includes(plan);
-  const PLAN_NAMES = { 'basic': 'Basic Plan — $29/mo', 'professional': 'Professional Plan — $79/mo', 'business': 'Business Plan — $199/mo', 'owner': 'Owner Access' };
-  const applyPlan = () => {
-    document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
-    if (!isPremium) {
-      const PREMIUM_KEYWORDS = ['Cleaning', 'Dataset', 'Chat', 'Visual', 'Reports'];
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
-        const label = btn.textContent.trim();
-        const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
-        if (isLocked) {
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'not-allowed';
-          btn.title = 'Upgrade to Professional to unlock';
-          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert('This feature requires a Professional or Business plan.
-Visit quantusdata.ai to upgrade.'); };
-          btn.innerHTML = '🔒 ' + btn.innerHTML;
-        }
-      });
-    }
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyPlan);
-  } else {
-    applyPlan();
-  }
-})();
-</script>
-
-
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>End Times Prophecy Analyzer — ExistentialGateway.com</title>
+  <title>End Times Prophecy Analyzer — QuantusData™.ai</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a1628'/><circle cx='90' cy='88' r='72' fill='none' stroke='%23c9a84c' stroke-width='14'/><rect x='34' y='108' width='18' height='30' fill='%23c9a84c' opacity='0.6' rx='2'/><rect x='56' y='88' width='18' height='50' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='78' y='62' width='18' height='76' fill='%23c9a84c' rx='2'/><rect x='100' y='78' width='18' height='60' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='122' y='98' width='18' height='40' fill='%23c9a84c' opacity='0.6' rx='2'/><line x1='138' y1='134' x2='170' y2='168' stroke='%23c9a84c' stroke-width='14' stroke-linecap='round'/></svg>" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;
-      --white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);
-      --success:#2dd4a0;--error:#ff6b6b;
-    }
+    :root{--navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;--white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);--error:#ff6b6b;--success:#2dd4a0;}
     *{margin:0;padding:0;box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
     body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;}
     body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
     nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 40px;background:rgba(10,22,40,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
@@ -87,72 +30,56 @@ Visit quantusdata.ai to upgrade.'); };
     .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;line-height:1.6;}
     .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
     .disclaimer strong{color:var(--gold);}
-    .pii-notice{position:relative;z-index:1;margin:12px 40px 0;padding:14px 20px;background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.2);border-left:3px solid var(--error);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
-    .pii-notice strong{color:var(--error);}
-    .tabs-container{position:relative;z-index:1;margin:24px 40px 0;}
-    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
-    .tabs-nav::-webkit-scrollbar{display:none;}
-    .tab-btn{padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;}
+    .tabs-wrapper{position:relative;margin:24px 40px 0;}
+    .tabs-wrapper::after{content:'';position:absolute;right:0;top:0;bottom:3px;width:40px;background:linear-gradient(to right,transparent,var(--navy));pointer-events:none;}
+    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent;align-items:flex-end;}
+    .tabs-nav::-webkit-scrollbar{height:3px;}
+    .tabs-nav::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:3px;}
+    .tab-btn{padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;flex-shrink:0;}
     .tab-btn:hover{color:var(--white);}
     .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.05);}
-    .tab-panel{display:none;padding:28px 0;}
+    .tab-panel{display:none;padding:28px 40px;}
     .tab-panel.active{display:block;}
-    .upload-zone{border:2px dashed rgba(201,168,76,0.3);border-radius:8px;padding:40px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(17,34,64,0.4);position:relative;}
-    .upload-zone:hover,.upload-zone.dragover{border-color:var(--gold);background:rgba(201,168,76,0.05);}
-    .upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-    .upload-icon{font-size:2.5rem;margin-bottom:12px;display:block;}
-    .upload-title{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:6px;}
-    .upload-sub{font-size:0.78rem;color:var(--muted);}
-    .upload-filename{margin-top:12px;padding:8px 16px;background:rgba(201,168,76,0.1);border-radius:4px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold);display:none;}
-    .context-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
-    textarea.context-input{width:100%;min-height:80px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
-    textarea.context-input:focus{outline:none;border-color:var(--gold);}
-    textarea.context-input::placeholder{color:var(--muted);}
-    select.styled-select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;cursor:pointer;transition:border-color 0.2s;}
-    select.styled-select:focus{outline:none;border-color:var(--gold);}
-    .btn-analyze{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
-    .btn-analyze:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
-    .btn-analyze:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-    .results-area{margin-top:24px;background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:120px;overflow:hidden;}
-    .results-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;}.tab-panel{padding:20px;}}
+    .field-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
+    textarea.ctx{width:100%;min-height:100px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
+    textarea.ctx:focus{outline:none;border-color:var(--gold);}
+    textarea.ctx::placeholder{color:var(--muted);}
+    select.sel{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;cursor:pointer;transition:border-color 0.2s;margin-bottom:12px;}
+    select.sel:focus{outline:none;border-color:var(--gold);}
+    .btn-go{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:16px;}
+    .btn-go:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
+    .btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .results-box{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:200px;overflow:hidden;}
+    .results-head{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .results-label{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;}
     .results-body{padding:20px;font-size:0.85rem;color:var(--white);line-height:1.8;white-space:pre-wrap;}
     .results-body.empty{color:var(--muted);font-style:italic;}
-    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000000;}
+    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000;}
     .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
     .loading-bar.active{display:block;}
     @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;}}
-    .watermark{position:relative;z-index:1;text-align:center;padding:20px 40px;margin-top:40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(136,146,164,0.5);letter-spacing:1px;}
     .results-body h1,.results-body h2,.results-body h3{color:var(--gold);font-family:'DM Serif Display',serif;margin:16px 0 8px;font-weight:400;}
-    .results-body h1{font-size:1.2rem;}
-    .results-body h2{font-size:1.05rem;}
-    .results-body h3{font-size:0.95rem;}
     .results-body strong{color:var(--white);font-weight:600;}
     .results-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
-    .chat-messages{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:16px;}
+    .chat-msgs{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:300px;max-height:450px;overflow-y:auto;margin-bottom:12px;}
     .chat-msg{margin-bottom:16px;}
     .chat-msg.user .bubble{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px 8px 2px 8px;padding:10px 14px;font-size:0.85rem;max-width:80%;margin-left:auto;}
-    .chat-msg.assistant .bubble{background:rgba(17,34,64,0.8);border:1px solid var(--border);border-radius:2px 8px 8px 8px;padding:10px 14px;font-size:0.85rem;max-width:90%;white-space:pre-wrap;}
-    .chat-input-row{display:flex;gap:10px;}
+    .chat-msg.bot .bubble{background:rgba(17,34,64,0.8);border:1px solid var(--border);border-radius:2px 8px 8px 8px;padding:10px 14px;font-size:0.85rem;max-width:90%;white-space:pre-wrap;}
+    .chat-row{display:flex;gap:10px;}
     .chat-input{flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;}
     .chat-input:focus{outline:none;border-color:var(--gold);}
+    .watermark{position:relative;z-index:1;text-align:center;padding:20px 40px;margin-top:40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(136,146,164,0.5);letter-spacing:1px;}
   </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-left">
-    <a href="https://existentialgateway.com" class="nav-brand">
-      <svg width="26" height="26" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/>
-        <rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/>
-        <rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/>
-        <rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/>
-        <rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/>
-        <rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/>
-        <line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/>
-      </svg>
+    <a href="/dashboard.html" class="nav-brand">
+      <svg width="26" height="26" viewBox="0 0 180 180"><circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/><rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/><rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/><rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/><rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/><rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/><line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/></svg>
       <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
     </a>
     <div class="nav-divider"></div>
@@ -160,7 +87,8 @@ Visit quantusdata.ai to upgrade.'); };
   </div>
   <div class="nav-right">
     <span class="nav-plan">The Gateway Plan</span>
-    <a href="https://existentialgateway.com" class="nav-back">← Dashboard</a>
+    <a href="/dashboard.html" class="nav-back">← Dashboard</a>
+    <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;">Sign Out</a>
   </div>
 </nav>
 
@@ -172,267 +100,414 @@ Visit quantusdata.ai to upgrade.'); };
       <div class="tool-tagline">AI-Powered Prophetic Intelligence</div>
     </div>
   </div>
-  <div class="tool-desc">Biblical prophecy analysis, current events correlation, eschatological timeline modeling, scripture cross-reference.</div>
+  <div class="tool-desc">16-tab biblical prophecy analysis, current events correlation, eschatological timeline modeling, solar activity tracking, Middle East wars, Third Temple, Rapture readiness, and Apocalypse Score dashboard.</div>
 </div>
 
 <div class="disclaimer">
-  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified professional. © 2026 Existential Gateway, LLC. All Rights Reserved.
+  <strong>DISCLAIMER:</strong> This tool is for educational and faith-based research purposes only. All analysis is AI-generated and should be considered alongside personal Bible study and counsel from trusted spiritual leaders. © 2026 Existential Gateway, LLC.
 </div>
 
-
-<div class="tabs-container">
+<div class="tabs-wrapper">
   <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab(0)">🌞 Solar Activity</button>
-    <button class="tab-btn " onclick="switchTab(1)">🌍 Earth Changes</button>
-    <button class="tab-btn " onclick="switchTab(2)">✝️ Biblical Prophecy</button>
-    <button class="tab-btn " onclick="switchTab(3)">🌐 Geopolitical Signs</button>
-    <button class="tab-btn " onclick="switchTab(4)">💱 Economic Signs</button>
-    <button class="tab-btn " onclick="switchTab(5)">🔮 Timeline</button>
+    <button class="tab-btn active" onclick="switchTab(0)">☀️ Solar Activity</button>
+    <button class="tab-btn" onclick="switchTab(1)">🌍 Earth Changes</button>
+    <button class="tab-btn" onclick="switchTab(2)">⚔️ Middle East Wars</button>
+    <button class="tab-btn" onclick="switchTab(3)">📖 Extra-Biblical Texts</button>
+    <button class="tab-btn" onclick="switchTab(4)">📅 Jubilee Calendar</button>
+    <button class="tab-btn" onclick="switchTab(5)">🕊️ Rapture Tracker</button>
+    <button class="tab-btn" onclick="switchTab(6)">🕍 Third Temple</button>
+    <button class="tab-btn" onclick="switchTab(7)">👿 Antichrist Score</button>
+    <button class="tab-btn" onclick="switchTab(8)">📜 Biblical Prophecy</button>
+    <button class="tab-btn" onclick="switchTab(9)">🌑 Prophetic Calendar</button>
+    <button class="tab-btn" onclick="switchTab(10)">🐉 One World System</button>
+    <button class="tab-btn" onclick="switchTab(11)">🕎 Noahide & Abraham</button>
+    <button class="tab-btn" onclick="switchTab(12)">🌅 Deliverer Timeline</button>
+    <button class="tab-btn" onclick="switchTab(13)">🎯 Apocalypse Score</button>
+    <button class="tab-btn" onclick="switchTab(14)">📄 Reports</button>
+    <button class="tab-btn" onclick="switchTab(15)">💬 Prophecy Chat</button>
   </div>
+
+  <!-- TAB 0: SOLAR ACTIVITY -->
   <div class="tab-panel active" id="tab-0">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-0" placeholder="e.g. Analyze recent solar flare activity and biblical signs"></textarea>
-        </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(0, '/analyze_solar_activity', false)" id="btn-0">🔍 Analyze Solar</button>
-        </div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-0" placeholder="e.g. Analyze recent solar flares and their correlation to biblical signs, NOAA data, solar cycle 25..."></textarea>
+        <button class="btn-go" onclick="run(0,'/analyze_solar_activity')" id="btn-0">☀️ Analyze Solar Activity</button>
       </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-0"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(0)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-0">Results will appear here...</div>
-        </div>
-      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-0"></div><div class="results-head"><span class="results-label">Solar Analysis</span><button class="copy-btn" onclick="cp(0)">📋 Copy</button></div><div class="results-body empty" id="rb-0">Results will appear here after analysis...</div></div></div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-1">
+
+  <!-- TAB 1: EARTH CHANGES -->
+  <div class="tab-panel" id="tab-1">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-1" placeholder="e.g. Analyze earthquakes, volcanoes, and end times signs"></textarea>
-        </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(1, '/analyze_earth_changes', false)" id="btn-1">🔍 Analyze Earth Changes</button>
-        </div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-1" placeholder="e.g. Analyze earthquakes, volcanoes, floods, famines as end times signs, Matthew 24 birth pangs..."></textarea>
+        <button class="btn-go" onclick="run(1,'/analyze_earth_changes')" id="btn-1">🌍 Analyze Earth Changes</button>
       </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-1"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-1">Results will appear here...</div>
-        </div>
-      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-1"></div><div class="results-head"><span class="results-label">Earth Changes</span><button class="copy-btn" onclick="cp(1)">📋 Copy</button></div><div class="results-body empty" id="rb-1">Results will appear here after analysis...</div></div></div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-2">
+
+  <!-- TAB 2: MIDDLE EAST WARS -->
+  <div class="tab-panel" id="tab-2">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-2" placeholder="e.g. Analyze Revelation 6 in context of current events"></textarea>
-        </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(2, '/analyze_biblical_prophecy', false)" id="btn-2">🔍 Analyze Prophecy</button>
-        </div>
+        <label class="field-label">Specific Focus (Optional)</label>
+        <select class="sel" id="sel-2">
+          <option>All Middle East Conflicts</option>
+          <option>Israel-Hamas War</option>
+          <option>Israel-Iran Tensions</option>
+          <option>Gog and Magog (Ezekiel 38-39)</option>
+          <option>Damascus Prophecy (Isaiah 17)</option>
+          <option>Psalm 83 War</option>
+          <option>Abraham Accords</option>
+        </select>
+        <label class="field-label">Additional Context (Optional)</label>
+        <textarea class="ctx" id="ctx-2" placeholder="e.g. Analyze current Israel-Hamas conflict in context of Ezekiel 38 Gog-Magog prophecy..."></textarea>
+        <button class="btn-go" onclick="run(2,'/analyze_middle_east')" id="btn-2">⚔️ Analyze Middle East Wars</button>
       </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-2"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-2">Results will appear here...</div>
-        </div>
-      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-2"></div><div class="results-head"><span class="results-label">Middle East Analysis</span><button class="copy-btn" onclick="cp(2)">📋 Copy</button></div><div class="results-body empty" id="rb-2">Results will appear here after analysis...</div></div></div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-3">
+
+  <!-- TAB 3: EXTRA-BIBLICAL TEXTS -->
+  <div class="tab-panel" id="tab-3">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-3" placeholder="e.g. Analyze Israel-Hamas conflict in biblical context"></textarea>
-        </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(3, '/analyze_geopolitical', false)" id="btn-3">🔍 Analyze Geopolitics</button>
-        </div>
+        <label class="field-label">Text Focus</label>
+        <select class="sel" id="sel-3">
+          <option>All Extra-Biblical Texts</option>
+          <option>Book of Enoch</option>
+          <option>Ethiopian Canon (81 Books)</option>
+          <option>Book of Jasher</option>
+          <option>Book of Jubilees</option>
+          <option>Dead Sea Scrolls</option>
+          <option>Apocrypha</option>
+        </select>
+        <label class="field-label">Specific Passage (Optional)</label>
+        <textarea class="ctx" id="ctx-3a" placeholder="e.g. Enoch chapter 6-7 (Watchers), Ethiopian Canon on end times..."></textarea>
+        <label class="field-label" style="margin-top:12px;">Additional Context (Optional)</label>
+        <textarea class="ctx" id="ctx-3" placeholder="e.g. How does Book of Enoch describe the Nephilim and final judgment?"></textarea>
+        <button class="btn-go" onclick="run(3,'/analyze_extra_biblical')" id="btn-3">📖 Analyze Extra-Biblical Texts</button>
       </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-3"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(3)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-3">Results will appear here...</div>
-        </div>
-      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-3"></div><div class="results-head"><span class="results-label">Extra-Biblical Analysis</span><button class="copy-btn" onclick="cp(3)">📋 Copy</button></div><div class="results-body empty" id="rb-3">Results will appear here after analysis...</div></div></div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-4">
+
+  <!-- TAB 4: JUBILEE CALENDAR -->
+  <div class="tab-panel" id="tab-4">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-4" placeholder="e.g. Analyze the mark of the beast and cashless society"></textarea>
-        </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(4, '/analyze_economic_signs', false)" id="btn-4">🔍 Analyze Economic Signs</button>
-        </div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-4" placeholder="e.g. Analyze biblical Jubilee cycles, Shemitah years, Daniel's 70 weeks, 2025-2026 Jubilee implications..."></textarea>
+        <button class="btn-go" onclick="run(4,'/analyze_jubilee')" id="btn-4">📅 Analyze Jubilee Calendar</button>
       </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-4"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(4)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-4">Results will appear here...</div>
-        </div>
-      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-4"></div><div class="results-head"><span class="results-label">Jubilee Calendar</span><button class="copy-btn" onclick="cp(4)">📋 Copy</button></div><div class="results-body empty" id="rb-4">Results will appear here after analysis...</div></div></div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-5">
+
+  <!-- TAB 5: RAPTURE TRACKER -->
+  <div class="tab-panel" id="tab-5">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-5" placeholder="e.g. Map current events to the book of Revelation timeline"></textarea>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-5" placeholder="e.g. Analyze pre-tribulation rapture signs, 1 Thessalonians 4:16-17, current rapture readiness indicators..."></textarea>
+        <button class="btn-go" onclick="run(5,'/analyze_rapture_harpazo')" id="btn-5">🕊️ Analyze Rapture Readiness</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-5"></div><div class="results-head"><span class="results-label">Rapture Analysis</span><button class="copy-btn" onclick="cp(5)">📋 Copy</button></div><div class="results-body empty" id="rb-5">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 6: THIRD TEMPLE -->
+  <div class="tab-panel" id="tab-6">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-6" placeholder="e.g. Analyze Third Temple construction plans, Temple Institute, red heifer, Temple Mount tensions, Daniel 9:27..."></textarea>
+        <button class="btn-go" onclick="run(6,'/analyze_third_temple')" id="btn-6">🕍 Analyze Third Temple</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-6"></div><div class="results-head"><span class="results-label">Third Temple Analysis</span><button class="copy-btn" onclick="cp(6)">📋 Copy</button></div><div class="results-body empty" id="rb-6">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 7: ANTICHRIST SCORE -->
+  <div class="tab-panel" id="tab-7">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Public Figures to Analyze (Optional)</label>
+        <textarea class="ctx" id="ctx-7a" placeholder="e.g. Analyze specific world leaders or public figures against biblical Antichrist criteria..."></textarea>
+        <label class="field-label" style="margin-top:12px;">Additional Context (Optional)</label>
+        <textarea class="ctx" id="ctx-7" placeholder="e.g. Focus on Daniel 11, Revelation 13, the 7 heads 10 horns, one world government signs..."></textarea>
+        <button class="btn-go" onclick="run(7,'/analyze_antichrist')" id="btn-7">👿 Analyze Antichrist Score</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-7"></div><div class="results-head"><span class="results-label">Antichrist Analysis</span><button class="copy-btn" onclick="cp(7)">📋 Copy</button></div><div class="results-body empty" id="rb-7">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 8: BIBLICAL PROPHECY -->
+  <div class="tab-panel" id="tab-8">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Specific Prophecy</label>
+        <select class="sel" id="sel-8">
+          <option>All Major End Times Prophecies</option>
+          <option>Seven Seals (Revelation 6-8)</option>
+          <option>Seven Trumpets (Revelation 8-11)</option>
+          <option>Seven Bowls (Revelation 16)</option>
+          <option>Daniel's 70 Weeks</option>
+          <option>Ezekiel 37-39</option>
+          <option>Matthew 24 (Olivet Discourse)</option>
+          <option>Isaiah 17 (Damascus)</option>
+          <option>Zechariah 12-14</option>
+          <option>Revelation 13 (Mark of Beast)</option>
+        </select>
+        <label class="field-label">Additional Context (Optional)</label>
+        <textarea class="ctx" id="ctx-8" placeholder="e.g. Correlate current events to the opening of the seals, which seal are we on?"></textarea>
+        <button class="btn-go" onclick="run(8,'/analyze_biblical_prophecy')" id="btn-8">📜 Analyze Biblical Prophecy</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-8"></div><div class="results-head"><span class="results-label">Prophecy Analysis</span><button class="copy-btn" onclick="cp(8)">📋 Copy</button></div><div class="results-body empty" id="rb-8">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 9: PROPHETIC CALENDAR -->
+  <div class="tab-panel" id="tab-9">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-9" placeholder="e.g. Analyze signs in the heavens, biblical feast days, astronomical alignments, blood moons, solar eclipses..."></textarea>
+        <button class="btn-go" onclick="run(9,'/analyze_prophetic_calendar')" id="btn-9">🌑 Analyze Prophetic Calendar</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-9"></div><div class="results-head"><span class="results-label">Prophetic Calendar</span><button class="copy-btn" onclick="cp(9)">📋 Copy</button></div><div class="results-body empty" id="rb-9">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 10: ONE WORLD SYSTEM -->
+  <div class="tab-panel" id="tab-10">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-10" placeholder="e.g. Analyze Mark of the Beast (Rev 13:16-17), CBDC, digital ID, WHO pandemic treaty, UN Agenda 2030, WEF Great Reset..."></textarea>
+        <button class="btn-go" onclick="run(10,'/analyze_one_world_system')" id="btn-10">🐉 Analyze One World System</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-10"></div><div class="results-head"><span class="results-label">One World System</span><button class="copy-btn" onclick="cp(10)">📋 Copy</button></div><div class="results-body empty" id="rb-10">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 11: NOAHIDE & ABRAHAM -->
+  <div class="tab-panel" id="tab-11">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-11" placeholder="e.g. Analyze Noahide Laws, Abrahamic Family House, interfaith movement, one world religion signs..."></textarea>
+        <button class="btn-go" onclick="run(11,'/analyze_noahide_abraham')" id="btn-11">🕎 Analyze Noahide & Abraham</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-11"></div><div class="results-head"><span class="results-label">Noahide & Abraham</span><button class="copy-btn" onclick="cp(11)">📋 Copy</button></div><div class="results-body empty" id="rb-11">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 12: DELIVERER TIMELINE -->
+  <div class="tab-panel" id="tab-12">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Context / Focus (Optional)</label>
+        <textarea class="ctx" id="ctx-12" placeholder="e.g. Analyze Second Coming timeline, Great Tribulation events, Armageddon, Millennium Kingdom, Revelation 19-20..."></textarea>
+        <button class="btn-go" onclick="run(12,'/analyze_deliverer_timeline')" id="btn-12">🌅 Analyze Deliverer Timeline</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-12"></div><div class="results-head"><span class="results-label">Deliverer Timeline</span><button class="copy-btn" onclick="cp(12)">📋 Copy</button></div><div class="results-body empty" id="rb-12">Results will appear here after analysis...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 13: APOCALYPSE SCORE -->
+  <div class="tab-panel" id="tab-13">
+    <div class="two-col">
+      <div>
+        <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:16px;margin-bottom:16px;">
+          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🎯 COMPREHENSIVE DASHBOARD</p>
+          <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;">The Apocalypse Score analyzes all 16 prophetic indicators simultaneously and generates a comprehensive readiness score based on current world events correlated to biblical prophecy.</p>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(5, '/analyze_timeline', false)" id="btn-5">🔍 Analyze Timeline</button>
+        <button class="btn-go" onclick="run(13,'/analyze_apocalypse_score')" id="btn-13" style="margin-top:0;">🎯 Generate Apocalypse Score</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-13"></div><div class="results-head"><span class="results-label">Apocalypse Score</span><button class="copy-btn" onclick="cp(13)">📋 Copy</button></div><div class="results-body empty" id="rb-13">The comprehensive Apocalypse Score dashboard will appear here...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 14: REPORTS -->
+  <div class="tab-panel" id="tab-14">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Report Type</label>
+        <select class="sel" id="sel-14">
+          <option>Full End Times Report</option>
+          <option>Prophecy Summary</option>
+          <option>Faith Community Briefing</option>
+          <option>Current Events & Prophecy</option>
+          <option>Watchman Alert Report</option>
+          <option>Executive Summary</option>
+        </select>
+        <label class="field-label">Focus Area</label>
+        <select class="sel" id="sel-14b">
+          <option>All Topics</option>
+          <option>Israel & Middle East</option>
+          <option>One World System</option>
+          <option>Natural Disasters & Signs</option>
+          <option>Rapture & Second Coming</option>
+          <option>Biblical Timeline</option>
+        </select>
+        <label class="field-label">Target Audience</label>
+        <select class="sel" id="sel-14c">
+          <option>General Believers</option>
+          <option>Church Leadership</option>
+          <option>Bible Study Group</option>
+          <option>New Believers</option>
+          <option>Researchers</option>
+        </select>
+        <label class="field-label">Additional Instructions</label>
+        <textarea class="ctx" id="ctx-14" placeholder="e.g. Focus on current Middle East events and their prophetic significance..."></textarea>
+        <button class="btn-go" onclick="run(14,'/generate_endtimes_report')" id="btn-14">📄 Generate Report</button>
+      </div>
+      <div><div class="results-box"><div class="loading-bar" id="lb-14"></div><div class="results-head"><span class="results-label">Generated Report</span><button class="copy-btn" onclick="cp(14)">📋 Copy</button></div><div class="results-body empty" id="rb-14">Report will appear here after generation...</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB 15: PROPHECY CHAT -->
+  <div class="tab-panel" id="tab-15">
+    <div class="two-col">
+      <div>
+        <label class="field-label">Example Questions</label>
+        <div style="background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;">
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Click any question to ask it:</p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button onclick="askChat('What seal of Revelation do you think we are currently in?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">What seal of Revelation do you think we are currently in?</button>
+            <button onclick="askChat('How does the Israel-Hamas war relate to Ezekiel 38-39 Gog and Magog prophecy?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">How does the Israel-Hamas war relate to Ezekiel 38-39 Gog and Magog prophecy?</button>
+            <button onclick="askChat('What does the Book of Enoch say about the end times?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">What does the Book of Enoch say about the end times?</button>
+            <button onclick="askChat('Is CBDC the Mark of the Beast from Revelation 13?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">Is CBDC the Mark of the Beast from Revelation 13?</button>
+            <button onclick="askChat('When is the next Jubilee year and what does it mean prophetically?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">When is the next Jubilee year and what does it mean prophetically?</button>
+            <button onclick="askChat('What are the signs that the Third Temple will soon be built?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">What are the signs that the Third Temple will soon be built?</button>
+          </div>
         </div>
       </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-5"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(5)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-5">Results will appear here...</div>
+      <div style="display:flex;flex-direction:column;">
+        <label class="field-label" style="margin-bottom:8px;">AI Prophecy Chat</label>
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="chat-msg bot"><div class="bubble">✝️ Greetings! I'm your AI Prophecy Analyst. Ask me anything about biblical end times prophecy, current events, the Book of Enoch, Jubilee calendars, the Third Temple, or any prophetic topic.</div></div>
+        </div>
+        <div class="chat-row">
+          <input type="text" class="chat-input" id="chat-in" placeholder="Ask about biblical prophecy..." onkeydown="if(event.key==='Enter') sendChat()">
+          <button class="btn-go" onclick="sendChat()" style="margin-top:0;padding:10px 18px;">Send</button>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+</div><!-- end tabs -->
 
 <div class="watermark">© 2026 Existential Gateway, LLC · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
 
+<!-- Report an Issue -->
+<div id="report-btn" onclick="document.getElementById('report-modal').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">⚠️ Report an Issue</div>
+<div id="report-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
+    <button onclick="document.getElementById('report-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:20px;">Report an Issue</h3>
+    <select id="r-type" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;margin-bottom:12px;">
+      <option>Tool not working correctly</option><option>Analysis results seem incorrect</option><option>Login / access issue</option><option>Feature request</option><option>Other</option>
+    </select>
+    <textarea id="r-desc" placeholder="Describe the issue..." style="width:100%;min-height:100px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;margin-bottom:16px;"></textarea>
+    <div style="display:flex;gap:10px;">
+      <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-weight:700;cursor:pointer;">Submit</button>
+      <button onclick="document.getElementById('report-modal').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;cursor:pointer;">Cancel</button>
+    </div>
+    <p id="r-ok" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Report submitted!</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-  const GRADIO_URL = '/tools/endtimes/gradio_api';
-  const uploadedFiles = {};
+(async function() {
+  const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
+  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
+  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+  const plan = data.plan;
+  const PLAN_NAMES = { basic:'Basic Plan — $29/mo', professional:'Professional Plan — $79/mo', business:'Business Plan — $199/mo', owner:'Owner Access', gateway:'The Gateway Plan — $9.99/mo' };
+  const applyPlan = () => { document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); }); };
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', applyPlan); } else { applyPlan(); }
+})();
+</script>
 
-  function switchTab(idx) {
-    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
-    document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+<script>
+  const G = '/tools/endtimes/gradio_api';
+
+  function switchTab(i) {
+    document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', i===j));
+    document.querySelectorAll('.tab-panel').forEach((p,j) => p.classList.toggle('active', i===j));
   }
 
-  function triggerUpload(idx, event) {
-    if (event && (event.target.tagName === 'INPUT' || event.target.closest('input'))) return;
-    const input = document.getElementById('file-' + idx);
-    if (input) { input.click(); }
+  function md(text) {
+    return text.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>');
   }
 
-  function handleFile(idx) {
-    const file = document.getElementById('file-' + idx).files[0];
-    if (!file) return;
-    uploadedFiles[idx] = file;
-    const fn = document.getElementById('filename-' + idx);
-    fn.textContent = '📎 ' + file.name;
-    fn.style.display = 'block';
+  function cp(i) {
+    const el = document.getElementById('rb-'+i);
+    const clipItem = new ClipboardItem({'text/plain': new Blob([el.innerText], {type:'text/plain'})});
+    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
   }
 
-  function setLoading(idx, on) {
-    document.getElementById('loading-' + idx).classList.toggle('active', on);
-    const btn = document.getElementById('btn-' + idx);
-    if (btn) btn.disabled = on;
-  }
-
-  function renderMarkdown(text) {
-    return text
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^---$/gm, '<hr>');
-  }
-
-  async function runAnalysis(tabIdx, endpoint, hasFile) {
-    const ctx = document.getElementById('context-' + tabIdx);
-    const context = ctx ? ctx.value.trim() : '';
-
-    if (hasFile && !uploadedFiles[tabIdx] && !context) {
-      alert('Please upload a file or enter context first.');
-      return;
-    }
-
-    setLoading(tabIdx, true);
-    const resultsEl = document.getElementById('results-' + tabIdx);
-    resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
+  async function run(idx, endpoint) {
+    const lb = document.getElementById('lb-'+idx);
+    const rb = document.getElementById('rb-'+idx);
+    const btn = document.getElementById('btn-'+idx);
+    lb.classList.add('active');
+    if(btn) btn.disabled = true;
+    rb.className = 'results-body';
+    rb.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
 
     try {
-      let data = [];
+      const ctx = document.getElementById('ctx-'+idx)?.value || '';
+      const sel = document.getElementById('sel-'+idx)?.value || '';
+      const selB = document.getElementById('sel-'+idx+'b')?.value || '';
+      const selC = document.getElementById('sel-'+idx+'c')?.value || '';
+      const ctxA = document.getElementById('ctx-'+idx+'a')?.value || '';
 
-      if (hasFile && uploadedFiles[tabIdx]) {
-        const formData = new FormData();
-        formData.append('files', uploadedFiles[tabIdx]);
-        const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
-        if (!uploadRes.ok) throw new Error('File upload failed. Status: ' + uploadRes.status);
-        const uploadData = await uploadRes.json();
-        data.push({ path: uploadData[0], orig_name: uploadedFiles[tabIdx].name, size: uploadedFiles[tabIdx].size, mime_type: uploadedFiles[tabIdx].type, meta: { "_type": "gradio.FileData" } });
+      let data = [];
+      if (endpoint === '/analyze_middle_east') {
+        data = [sel, ctx];
+      } else if (endpoint === '/analyze_extra_biblical') {
+        data = [sel, ctxA, ctx];
+      } else if (endpoint === '/analyze_antichrist') {
+        data = [ctxA, ctx];
+      } else if (endpoint === '/analyze_biblical_prophecy') {
+        data = [sel, ctx];
+      } else if (endpoint === '/analyze_apocalypse_score') {
+        data = [];
+      } else if (endpoint === '/generate_endtimes_report') {
+        data = [sel, selB, selC, ctx];
+      } else {
+        data = [ctx];
       }
 
-      // Only send context if file was also uploaded
-      if (hasFile && uploadedFiles[tabIdx] && context) data.push(context);
-      if (!hasFile && context) data.push(context);
-
-      const extraEl = document.getElementById('extra-' + tabIdx);
-      if (extraEl) data.push(extraEl.value);
-
-      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+      const res = await fetch(G + '/run' + endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data})
       });
       if (!res.ok) throw new Error('Request failed: ' + await res.text());
       const result = await res.json();
       const text = result.data?.[0] || 'No results returned.';
-      resultsEl.innerHTML = renderMarkdown(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
+      rb.innerHTML = md(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
     } catch(e) {
-      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+      rb.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }
-    setLoading(tabIdx, false);
+    lb.classList.remove('active');
+    if(btn) btn.disabled = false;
   }
 
-  function copyResults(idx) {
-    const el = document.getElementById('results-' + idx);
-    const text = el.innerText;
-    const clipItem = new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }) });
-    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
-  }
-
-  function addChatMsg(role, text) {
-    const msgs = document.getElementById('chat-messages');
+  function addMsg(role, text) {
+    const msgs = document.getElementById('chat-msgs');
     const div = document.createElement('div');
     div.className = 'chat-msg ' + role;
     div.innerHTML = '<div class="bubble">' + text + '</div>';
@@ -440,121 +515,50 @@ Visit quantusdata.ai to upgrade.'); };
     msgs.scrollTop = msgs.scrollHeight;
   }
 
-  async function sendChat(tabIdx, endpoint) {
-    const input = document.getElementById('chat-input-' + tabIdx);
+  function askChat(q) {
+    document.getElementById('chat-in').value = q;
+    sendChat();
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chat-in');
     const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
-    addChatMsg('user', msg);
+    addMsg('user', msg);
     const thinking = document.createElement('div');
-    thinking.className = 'chat-msg assistant';
+    thinking.className = 'chat-msg bot';
     thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
-    document.getElementById('chat-messages').appendChild(thinking);
+    document.getElementById('chat-msgs').appendChild(thinking);
     try {
-      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+      const res = await fetch(G + '/run/prophecy_chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: [msg, null] })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data: [msg]})
       });
       const result = await res.json();
-      thinking.querySelector('.bubble').innerHTML = renderMarkdown(result.data?.[0] || 'No response.');
+      thinking.querySelector('.bubble').innerHTML = md(result.data?.[0] || 'No response.');
     } catch(e) {
       thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }
-    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+    document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
   }
 
-  document.querySelectorAll('.upload-zone').forEach(zone => {
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault(); zone.classList.remove('dragover');
-      const idx = zone.id.replace('upload-', '');
-      const file = e.dataTransfer.files[0];
-      if (file) {
-        uploadedFiles[idx] = file;
-        const fn = document.getElementById('filename-' + idx);
-        fn.textContent = '📎 ' + file.name;
-        fn.style.display = 'block';
-      }
-    });
-  });
-</script>
-
-<!-- Report an Issue Button -->
-<div id="report-btn" onclick="document.getElementById('report-modal').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;transition:all 0.2s;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">
-  ⚠️ Report an Issue
-</div>
-
-<!-- Report Modal -->
-<div id="report-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
-    <button onclick="document.getElementById('report-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
-    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:8px;">Report an Issue</h3>
-    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;">Help us improve QuantusData™</p>
-    <div style="margin-bottom:16px;">
-      <label style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px;">Issue Type</label>
-      <select id="report-type" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;">
-        <option>Tool not working correctly</option>
-        <option>Analysis results seem incorrect</option>
-        <option>File upload issue</option>
-        <option>Login / access issue</option>
-        <option>Billing issue</option>
-        <option>Feature request</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div style="margin-bottom:20px;">
-      <label style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px;">Description</label>
-      <textarea id="report-desc" placeholder="Please describe the issue in detail..." style="width:100%;min-height:120px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;"></textarea>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">Submit Report</button>
-      <button onclick="document.getElementById('report-modal').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;">Cancel</button>
-    </div>
-    <p id="report-success" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Report submitted! We'll look into this shortly.</p>
-    <p id="report-error" style="display:none;color:#ff6b6b;font-size:0.82rem;margin-top:12px;text-align:center;">⚠️ Failed to submit. Please email existentialgateway@gmail.com</p>
-  </div>
-</div>
-
-<script>
-async function submitReport() {
-  const type = document.getElementById('report-type').value;
-  const desc = document.getElementById('report-desc').value.trim();
-  if (!desc) { alert('Please describe the issue.'); return; }
-
-  const tool = document.title.split(' —')[0];
-  const email = window.userEmail || 'Unknown';
-
-  try {
-    const res = await fetch('https://formspree.io/f/xwvwlyke', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tool: tool,
-        type: type,
-        description: desc,
-        user_email: email,
-        _subject: 'QuantusData Issue Report: ' + type
-      })
-    });
-
-    if (res.ok) {
-      document.getElementById('report-success').style.display = 'block';
-      document.getElementById('report-error').style.display = 'none';
-      document.getElementById('report-desc').value = '';
-      setTimeout(() => {
-        document.getElementById('report-modal').style.display = 'none';
-        document.getElementById('report-success').style.display = 'none';
-      }, 3000);
-    } else {
-      document.getElementById('report-error').style.display = 'block';
-    }
-  } catch(e) {
-    document.getElementById('report-error').style.display = 'block';
+  async function submitReport() {
+    const type = document.getElementById('r-type').value;
+    const desc = document.getElementById('r-desc').value.trim();
+    if (!desc) { alert('Please describe the issue.'); return; }
+    try {
+      const res = await fetch('https://formspree.io/f/xwvwlyke', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'End Times Prophecy Analyzer',type,description:desc,_subject:'QuantusData Issue: '+type})});
+      if (res.ok) { document.getElementById('r-ok').style.display='block'; document.getElementById('r-desc').value=''; setTimeout(()=>{document.getElementById('report-modal').style.display='none';document.getElementById('r-ok').style.display='none';},2000); }
+    } catch(e) { alert('Failed. Please email existentialgateway@gmail.com'); }
   }
-}
-</script>
 
+  async function signOutUser() {
+    const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
+    await sb.auth.signOut();
+    window.location.href = '/dashboard.html';
+  }
+</script>
 </body>
 </html>
