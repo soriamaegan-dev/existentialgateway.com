@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js">
+  async function signOutUser() {
+    const { createClient } = supabase
+    const sb = supabase.createClient(
+      'https://jolvnzhwwchbkuzkeqjt.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs'
+    )
+    await sb.auth.signOut()
+    window.location.href = '/dashboard.html'
+  }
+</script>
 <script>
 (async function() {
   const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
