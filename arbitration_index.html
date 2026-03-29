@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insurance Arbitration Assistant — QuantusData™.ai</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a1628'/><circle cx='90' cy='88' r='72' fill='none' stroke='%23c9a84c' stroke-width='14'/><rect x='34' y='108' width='18' height='30' fill='%23c9a84c' opacity='0.6' rx='2'/><rect x='56' y='88' width='18' height='50' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='78' y='62' width='18' height='76' fill='%23c9a84c' rx='2'/><rect x='100' y='78' width='18' height='60' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='122' y='98' width='18' height='40' fill='%23c9a84c' opacity='0.6' rx='2'/><line x1='138' y1='134' x2='170' y2='168' stroke='%23c9a84c' stroke-width='14' stroke-linecap='round'/></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:#0a1628; --navy-mid:#112240; --gold:#c9a84c; --gold-light:#e8c96a;
+      --white:#f8f9fc; --muted:#8892a4; --border:rgba(201,168,76,0.15);
+      --success:#2dd4a0; --error:#ff6b6b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--navy); color:var(--white); font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.7; min-height:100vh; }
+    body::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+    nav { position:sticky; top:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:12px 40px; background:rgba(10,22,40,0.98); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
+    .nav-left { display:flex; align-items:center; gap:16px; }
+    .nav-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .nav-brand-name { font-family:'DM Serif Display',serif; font-size:1.2rem; color:var(--white); }
+    .nav-brand-name span { color:var(--gold); }
+    .nav-divider { width:1px; height:22px; background:var(--border); }
+    .nav-tool { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--gold); letter-spacing:2px; text-transform:uppercase; }
+    .nav-right { display:flex; align-items:center; gap:14px; }
+    .nav-plan { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+    .nav-back { font-size:0.78rem; color:var(--muted); text-decoration:none; padding:6px 14px; border:1px solid var(--border); border-radius:4px; transition:all 0.2s; }
+    .nav-back:hover { color:var(--gold); border-color:var(--gold); }
+    .tool-header { position:relative; z-index:1; padding:20px 40px; background:rgba(17,34,64,0.6); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .tool-header-left { display:flex; align-items:center; gap:16px; }
+    .tool-icon { font-size:2rem; }
+    .tool-title { font-family:'DM Serif Display',serif; font-size:1.4rem; color:var(--white); font-weight:400; }
+    .tool-tagline { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-top:3px; }
+    .tool-desc { font-size:0.82rem; color:var(--muted); max-width:520px; line-height:1.6; }
+    .disclaimer { position:relative; z-index:1; margin:24px 40px 0; padding:14px 20px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.2); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; font-size:0.76rem; color:var(--muted); line-height:1.6; }
+    .disclaimer strong { color:var(--gold); }
+    .tabs-container { position:relative; z-index:1; margin:24px 40px 0; }
+    .tabs-nav { display:flex; gap:2px; border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
+    .tabs-nav::-webkit-scrollbar { display:none; }
+    .tab-btn { padding:10px 18px; font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; color:var(--muted); background:transparent; border:none; border-bottom:2px solid transparent; cursor:pointer; white-space:nowrap; transition:all 0.2s; margin-bottom:-1px; }
+    .tab-btn:hover { color:var(--white); }
+    .tab-btn.active { color:var(--gold); border-bottom-color:var(--gold); background:rgba(201,168,76,0.05); }
+    .tab-panel { display:none; padding:28px 0; }
+    .tab-panel.active { display:block; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+    .full-col { grid-column:1/-1; }
+    @media(max-width:768px) { .form-grid,.form-grid-3 { grid-template-columns:1fr; } }
+    .field-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; display:block; }
+    input.styled-input, select.styled-select, textarea.styled-textarea {
+      width:100%; background:rgba(17,34,64,0.6); border:1px solid var(--border);
+      border-radius:6px; color:var(--white); font-family:'DM Sans',sans-serif;
+      font-size:0.85rem; padding:10px 14px; transition:border-color 0.2s;
+    }
+    input.styled-input:focus, select.styled-select:focus, textarea.styled-textarea:focus { outline:none; border-color:var(--gold); }
+    input.styled-input::placeholder, textarea.styled-textarea::placeholder { color:var(--muted); }
+    textarea.styled-textarea { min-height:80px; resize:vertical; }
+    select.styled-select option { background:#112240; }
+    .upload-zone { border:2px dashed rgba(201,168,76,0.3); border-radius:8px; padding:20px; text-align:center; cursor:pointer; transition:all 0.2s; background:rgba(17,34,64,0.4); position:relative; min-height:80px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+    .upload-zone:hover { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+    .upload-zone input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+    .upload-zone-icon { font-size:1.4rem; }
+    .upload-zone-text { font-size:0.78rem; color:var(--muted); }
+    .upload-zone-name { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--gold); display:none; }
+    .photo-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+    @media(max-width:768px) { .photo-grid { grid-template-columns:repeat(2,1fr); } }
+    .photo-slot { border:2px dashed rgba(201,168,76,0.2); border-radius:6px; aspect-ratio:1; cursor:pointer; position:relative; overflow:hidden; transition:all 0.2s; background:rgba(17,34,64,0.4); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; }
+    .photo-slot:hover { border-color:var(--gold); }
+    .photo-slot input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+    .photo-slot img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .photo-slot-icon { font-size:1.2rem; color:var(--muted); }
+    .photo-slot-label { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--muted); }
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    @media(max-width:900px) { .two-col { grid-template-columns:1fr; } }
+    .btn-analyze { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--navy); font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:700; border:none; border-radius:6px; cursor:pointer; transition:all 0.2s; letter-spacing:0.5px; }
+    .btn-analyze:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(201,168,76,0.3); }
+    .btn-analyze:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+    .results-area { background:rgba(17,34,64,0.5); border:1px solid var(--border); border-radius:8px; min-height:200px; overflow:hidden; }
+    .results-header { padding:12px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .results-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:2px; text-transform:uppercase; }
+    .results-body { padding:20px; font-size:0.85rem; color:var(--white); line-height:1.8; white-space:pre-wrap; }
+    .results-body.empty { color:var(--muted); font-style:italic; }
+    .results-body::selection,.results-body *::selection { background:#c9a84c; color:#000000; }
+    .loading-bar { height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); background-size:200% 100%; animation:shimmer 1.5s infinite; display:none; }
+    .loading-bar.active { display:block; }
+    @keyframes shimmer { 0%{background-position:-200% 0;}100%{background-position:200% 0;} }
+    .section-title { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin:20px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    .chat-messages { background:rgba(17,34,64,0.5); border:1px solid var(--border); border-radius:8px; padding:16px; min-height:200px; max-height:400px; overflow-y:auto; margin-bottom:16px; }
+    .chat-msg { margin-bottom:16px; }
+    .chat-msg.user .bubble { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); border-radius:8px 8px 2px 8px; padding:10px 14px; font-size:0.85rem; max-width:80%; margin-left:auto; }
+    .chat-msg.assistant .bubble { background:rgba(17,34,64,0.8); border:1px solid var(--border); border-radius:2px 8px 8px 8px; padding:10px 14px; font-size:0.85rem; max-width:90%; white-space:pre-wrap; }
+    .chat-input-row { display:flex; gap:10px; }
+    .chat-input { flex:1; background:rgba(17,34,64,0.6); border:1px solid var(--border); border-radius:6px; color:var(--white); font-family:'DM Sans',sans-serif; font-size:0.85rem; padding:10px 16px; }
+    .chat-input:focus { outline:none; border-color:var(--gold); }
+    .watermark { position:relative; z-index:1; text-align:center; padding:20px 40px; margin-top:40px; border-top:1px solid var(--border); font-family:'DM Mono',monospace; font-size:0.65rem; color:rgba(136,146,164,0.5); letter-spacing:1px; }
+    .results-body h1,.results-body h2,.results-body h3 { color:var(--gold); font-family:'DM Serif Display',serif; margin:16px 0 8px; font-weight:400; }
+    .results-body strong { color:var(--white); font-weight:600; }
+    .results-body hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="https://quantusdata.ai/dashboard.html" class="nav-brand">
+      <svg width="26" height="26" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/>
+        <rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/>
+        <rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/>
+        <rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/>
+        <rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/>
+        <rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/>
+        <line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
+    </a>
+    <div class="nav-divider"></div>
+    <span class="nav-tool">Insurance Arbitration Assistant</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-plan">QuantusData Professional</span>
+    <a href="https://quantusdata.ai/dashboard.html" class="nav-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="tool-header">
+  <div class="tool-header-left">
+    <span class="tool-icon">🛡️⚖️</span>
+    <div>
+      <div class="tool-title">Insurance Arbitration Assistant</div>
+      <div class="tool-tagline">AI-Powered Dispute Resolution</div>
+    </div>
+  </div>
+  <div class="tool-desc">Liability reconstruction, repair estimates, rental disputes, total loss valuation, and bodily injury analysis — built for adjusters and attorneys.</div>
+</div>
+
+<div class="disclaimer">
+  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified insurance professional or attorney before use in actual claims decisions. © 2026 Existential Gateway, LLC. All Rights Reserved. Proprietary Software.
+</div>
+
+<div class="tabs-container">
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">⚖️ Liability Analysis</button>
+    <button class="tab-btn" onclick="switchTab(1)">🔧 Repair Estimate</button>
+    <button class="tab-btn" onclick="switchTab(2)">🚗 Rental Dispute</button>
+    <button class="tab-btn" onclick="switchTab(3)">💰 Total Loss</button>
+    <button class="tab-btn" onclick="switchTab(4)">🏥 Bodily Injury</button>
+    <button class="tab-btn" onclick="switchTab(5)">💬 Document Chat</button>
+  </div>
+
+  <!-- TAB 0: LIABILITY -->
+  <div class="tab-panel active" id="tab-0">
+    <div class="two-col">
+      <div>
+        <div class="section-title">Loss Information</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Loss State</label>
+            <select class="styled-select" id="liability-loss-state">
+              <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option selected>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Number of Vehicles</label>
+            <select class="styled-select" id="liability-num-vehicles">
+              <option>2</option><option>3</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Intersection / Road</label>
+            <input class="styled-input" id="liability-intersection" placeholder="e.g. Main St & 5th Ave" />
+          </div>
+          <div>
+            <label class="field-label">City</label>
+            <input class="styled-input" id="liability-city" placeholder="e.g. Dallas" />
+          </div>
+          <div>
+            <label class="field-label">Traffic Controls</label>
+            <select class="styled-select" id="liability-traffic">
+              <option>Traffic Signal (stoplight)</option>
+              <option>Stop Sign</option>
+              <option>Yield Sign</option>
+              <option>No Controls</option>
+              <option>School Zone</option>
+              <option>Construction Zone</option>
+              <option>Railroad Crossing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">Vehicle Information</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Vehicle 1 Direction</label>
+            <select class="styled-select" id="liability-v1-dir">
+              <option>Northbound</option><option>Southbound</option><option>Eastbound</option><option>Westbound</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Vehicle 1 Damage Areas</label>
+            <input class="styled-input" id="liability-v1-damage" placeholder="e.g. Front bumper, hood" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle 2 Direction</label>
+            <select class="styled-select" id="liability-v2-dir">
+              <option>Northbound</option><option>Southbound</option><option>Eastbound</option><option>Westbound</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Vehicle 2 Damage Areas</label>
+            <input class="styled-input" id="liability-v2-damage" placeholder="e.g. Driver side door" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle 3 Direction</label>
+            <select class="styled-select" id="liability-v3-dir">
+              <option>N/A</option><option>Northbound</option><option>Southbound</option><option>Eastbound</option><option>Westbound</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Vehicle 3 Damage Areas</label>
+            <input class="styled-input" id="liability-v3-damage" placeholder="e.g. N/A" />
+          </div>
+        </div>
+
+        <div class="section-title">Loss Description</div>
+        <textarea class="styled-textarea" id="liability-desc" placeholder="Describe how the accident occurred in detail..." style="min-height:100px;"></textarea>
+
+        <div class="section-title">Photos (up to 8)</div>
+        <div class="photo-grid">
+          <div class="photo-slot" id="photo-slot-0"><input type="file" accept="image/*" onchange="handlePhoto(0)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 1</span></div>
+          <div class="photo-slot" id="photo-slot-1"><input type="file" accept="image/*" onchange="handlePhoto(1)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 2</span></div>
+          <div class="photo-slot" id="photo-slot-2"><input type="file" accept="image/*" onchange="handlePhoto(2)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 3</span></div>
+          <div class="photo-slot" id="photo-slot-3"><input type="file" accept="image/*" onchange="handlePhoto(3)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 4</span></div>
+          <div class="photo-slot" id="photo-slot-4"><input type="file" accept="image/*" onchange="handlePhoto(4)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 5</span></div>
+          <div class="photo-slot" id="photo-slot-5"><input type="file" accept="image/*" onchange="handlePhoto(5)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 6</span></div>
+          <div class="photo-slot" id="photo-slot-6"><input type="file" accept="image/*" onchange="handlePhoto(6)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 7</span></div>
+          <div class="photo-slot" id="photo-slot-7"><input type="file" accept="image/*" onchange="handlePhoto(7)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 8</span></div>
+        </div>
+
+        <div class="section-title">Documents (Optional)</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Police Report (PDF)</label>
+            <div class="upload-zone" id="doc-police">
+              <input type="file" accept=".pdf" onchange="handleDoc('police', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Police Report</span>
+              <span class="upload-zone-name" id="doc-police-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Insured Recorded Statement (PDF)</label>
+            <div class="upload-zone" id="doc-additional">
+              <input type="file" accept=".pdf" onchange="handleDoc('additional', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Insured Statement</span>
+              <span class="upload-zone-name" id="doc-additional-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Third Party Recorded Statement (PDF)</label>
+            <div class="upload-zone" id="doc-adverse">
+              <input type="file" accept=".pdf" onchange="handleDoc('adverse', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Third Party Statement</span>
+              <span class="upload-zone-name" id="doc-adverse-name"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button class="btn-analyze" onclick="runLiability()" id="btn-0">⚖️ Analyze Liability</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-0"></div>
+          <div class="results-header">
+            <span class="results-label">Liability Analysis</span>
+            <button onclick="copyResults(0)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-0">Complete the form and click Analyze Liability to get AI-powered liability reconstruction...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 1: REPAIR ESTIMATE -->
+  <div class="tab-panel" id="tab-1">
+    <div class="two-col">
+      <div>
+        <div class="section-title">Vehicle Information</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Vehicle Year</label>
+            <input class="styled-input" id="repair-year" placeholder="e.g. 2021" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle Make</label>
+            <input class="styled-input" id="repair-make" placeholder="e.g. Toyota" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle Model</label>
+            <input class="styled-input" id="repair-model" placeholder="e.g. Camry" />
+          </div>
+          <div>
+            <label class="field-label">Loss State</label>
+            <select class="styled-select" id="repair-loss-state">
+              <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>Michigan</option><option>New York</option><option>Ohio</option><option>Pennsylvania</option><option selected>Texas</option><option>Washington</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Repair State</label>
+            <select class="styled-select" id="repair-repair-state">
+              <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>Michigan</option><option>New York</option><option>Ohio</option><option>Pennsylvania</option><option selected>Texas</option><option>Washington</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">Repair Estimate PDF (Optional)</div>
+        <div class="upload-zone" id="repair-estimate-zone">
+          <input type="file" accept=".pdf" onchange="handleDoc('repair-estimate', this)" onclick="event.stopPropagation()">
+          <span class="upload-zone-icon">📄</span>
+          <span class="upload-zone-text">Upload Repair Estimate PDF</span>
+          <span class="upload-zone-name" id="doc-repair-estimate-name"></span>
+        </div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="repair-no-estimate" style="accent-color:var(--gold);">
+          <label for="repair-no-estimate" style="font-size:0.82rem;color:var(--muted);">No estimate available — analyze photos only</label>
+        </div>
+
+        <div class="section-title">Vehicle Photos (up to 6)</div>
+        <div class="photo-grid">
+          <div class="photo-slot" id="repair-photo-slot-0"><input type="file" accept="image/*" onchange="handleRepairPhoto(0)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 1</span></div>
+          <div class="photo-slot" id="repair-photo-slot-1"><input type="file" accept="image/*" onchange="handleRepairPhoto(1)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 2</span></div>
+          <div class="photo-slot" id="repair-photo-slot-2"><input type="file" accept="image/*" onchange="handleRepairPhoto(2)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 3</span></div>
+          <div class="photo-slot" id="repair-photo-slot-3"><input type="file" accept="image/*" onchange="handleRepairPhoto(3)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 4</span></div>
+          <div class="photo-slot" id="repair-photo-slot-4"><input type="file" accept="image/*" onchange="handleRepairPhoto(4)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 5</span></div>
+          <div class="photo-slot" id="repair-photo-slot-5"><input type="file" accept="image/*" onchange="handleRepairPhoto(5)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 6</span></div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button class="btn-analyze" onclick="runRepairEstimate()" id="btn-1">🔧 Analyze Repair Estimate</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-1"></div>
+          <div class="results-header">
+            <span class="results-label">Repair Estimate Analysis</span>
+            <button onclick="copyResults(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-1">Results will appear here after analysis...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: RENTAL -->
+  <div class="tab-panel" id="tab-2">
+    <div class="two-col">
+      <div>
+        <div class="section-title">Rental Information</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Vehicle Class</label>
+            <select class="styled-select" id="rental-vehicle-class">
+              <option>Economy/Compact (e.g. Toyota Corolla, Honda Civic)</option>
+              <option>Intermediate (e.g. Toyota Camry, Honda Accord)</option>
+              <option>Full Size (e.g. Ford Fusion, Chevrolet Malibu)</option>
+              <option>Premium (e.g. BMW 3 Series, Mercedes C-Class)</option>
+              <option>Luxury (e.g. BMW 5 Series, Mercedes E-Class)</option>
+              <option>SUV/Crossover (e.g. Toyota RAV4, Honda CR-V)</option>
+              <option>Full Size SUV (e.g. Ford Explorer, Chevrolet Tahoe)</option>
+              <option>Pickup Truck (e.g. Ford F-150, Chevrolet Silverado)</option>
+              <option>Minivan (e.g. Honda Odyssey, Chrysler Pacifica)</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Loss State</label>
+            <select class="styled-select" id="rental-loss-state">
+              <option>Alabama</option><option>California</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>New York</option><option>Ohio</option><option selected>Texas</option><option>Washington</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Repair State</label>
+            <select class="styled-select" id="rental-repair-state">
+              <option>Alabama</option><option>California</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>New York</option><option>Ohio</option><option selected>Texas</option><option>Washington</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Repair Start Date</label>
+            <input class="styled-input" type="date" id="rental-start-date" />
+          </div>
+          <div>
+            <label class="field-label">Repair End Date</label>
+            <input class="styled-input" type="date" id="rental-end-date" />
+          </div>
+        </div>
+
+        <div class="section-title">Documents</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Rental Invoice (PDF)</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf" onchange="handleDoc('rental-invoice', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Rental Invoice</span>
+              <span class="upload-zone-name" id="doc-rental-invoice-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Repair Invoice (PDF)</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf" onchange="handleDoc('rental-repair', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Repair Invoice</span>
+              <span class="upload-zone-name" id="doc-rental-repair-name"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button class="btn-analyze" onclick="runRental()" id="btn-2">🚗 Analyze Rental Dispute</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-2"></div>
+          <div class="results-header">
+            <span class="results-label">Rental Analysis</span>
+            <button onclick="copyResults(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-2">Results will appear here after analysis...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: TOTAL LOSS -->
+  <div class="tab-panel" id="tab-3">
+    <div class="two-col">
+      <div>
+        <div class="section-title">Vehicle Information</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Vehicle Year</label>
+            <input class="styled-input" id="tl-year" placeholder="e.g. 2019" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle Make</label>
+            <input class="styled-input" id="tl-make" placeholder="e.g. Honda" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle Model</label>
+            <input class="styled-input" id="tl-model" placeholder="e.g. Accord" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle Trim</label>
+            <input class="styled-input" id="tl-trim" placeholder="e.g. EX-L" />
+          </div>
+          <div>
+            <label class="field-label">Mileage</label>
+            <input class="styled-input" id="tl-mileage" placeholder="e.g. 45000" />
+          </div>
+          <div>
+            <label class="field-label">Loss Date</label>
+            <input class="styled-input" type="date" id="tl-loss-date" />
+          </div>
+          <div>
+            <label class="field-label">Loss State</label>
+            <select class="styled-select" id="tl-loss-state">
+              <option>Alabama</option><option>California</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>New York</option><option>Ohio</option><option selected>Texas</option><option>Washington</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Market ZIP Code</label>
+            <input class="styled-input" id="tl-zip" placeholder="e.g. 75001" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle Condition</label>
+            <select class="styled-select" id="tl-condition">
+              <option>Excellent</option><option>Good</option><option selected>Average</option><option>Rough</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">Documents</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Valuation Report (PDF)</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf" onchange="handleDoc('tl-valuation', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Valuation Report</span>
+              <span class="upload-zone-name" id="doc-tl-valuation-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Repair Estimate (PDF)</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf" onchange="handleDoc('tl-estimate', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span>
+              <span class="upload-zone-text">Upload Repair Estimate</span>
+              <span class="upload-zone-name" id="doc-tl-estimate-name"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button class="btn-analyze" onclick="runTotalLoss()" id="btn-3">💰 Analyze Total Loss</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-3"></div>
+          <div class="results-header">
+            <span class="results-label">Total Loss Analysis</span>
+            <button onclick="copyResults(3)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-3">Results will appear here after analysis...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: BODILY INJURY -->
+  <div class="tab-panel" id="tab-4">
+    <div class="two-col">
+      <div>
+        <div class="section-title">Injury Information</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Loss State</label>
+            <select class="styled-select" id="bi-loss-state">
+              <option>Alabama</option><option>California</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>New York</option><option>Ohio</option><option selected>Texas</option><option>Washington</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Impact Speed Estimate</label>
+            <input class="styled-input" id="bi-speed" placeholder="e.g. 35 mph" />
+          </div>
+          <div class="full-col">
+            <label class="field-label">Impact Description</label>
+            <textarea class="styled-textarea" id="bi-impact" placeholder="Describe the nature of the impact and injuries claimed..."></textarea>
+          </div>
+          <div>
+            <label class="field-label">Vehicle 1 Damage Areas</label>
+            <input class="styled-input" id="bi-v1-damage" placeholder="e.g. Rear bumper, trunk" />
+          </div>
+          <div>
+            <label class="field-label">Vehicle 2 Damage Areas</label>
+            <input class="styled-input" id="bi-v2-damage" placeholder="e.g. Front bumper" />
+          </div>
+        </div>
+
+        <div class="section-title">Medical Records (PDF)</div>
+        <div class="upload-zone">
+          <input type="file" accept=".pdf" onchange="handleDoc('bi-medical', this)" onclick="event.stopPropagation()">
+          <span class="upload-zone-icon">🏥</span>
+          <span class="upload-zone-text">Upload Medical Records PDF</span>
+          <span class="upload-zone-name" id="doc-bi-medical-name"></span>
+        </div>
+
+        <div class="section-title">Vehicle Photos (up to 4)</div>
+        <div class="photo-grid">
+          <div class="photo-slot" id="bi-photo-slot-0"><input type="file" accept="image/*" onchange="handleBIPhoto(0)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 1</span></div>
+          <div class="photo-slot" id="bi-photo-slot-1"><input type="file" accept="image/*" onchange="handleBIPhoto(1)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 2</span></div>
+          <div class="photo-slot" id="bi-photo-slot-2"><input type="file" accept="image/*" onchange="handleBIPhoto(2)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 3</span></div>
+          <div class="photo-slot" id="bi-photo-slot-3"><input type="file" accept="image/*" onchange="handleBIPhoto(3)" onclick="event.stopPropagation()"><span class="photo-slot-icon">📷</span><span class="photo-slot-label">Photo 4</span></div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button class="btn-analyze" onclick="runBodilyInjury()" id="btn-4">🏥 Analyze Bodily Injury</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-4"></div>
+          <div class="results-header">
+            <span class="results-label">Bodily Injury Analysis</span>
+            <button onclick="copyResults(4)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-4">Results will appear here after analysis...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: CHAT -->
+  <div class="tab-panel" id="tab-5">
+    <div class="two-col">
+      <div>
+        <div class="section-title">Upload Documents for Chat Context (up to 4)</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Document 1</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc1', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
+              <span class="upload-zone-name" id="doc-chat-doc1-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Document 2</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc2', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
+              <span class="upload-zone-name" id="doc-chat-doc2-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Document 3</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc3', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
+              <span class="upload-zone-name" id="doc-chat-doc3-name"></span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Document 4</label>
+            <div class="upload-zone">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc4', this)" onclick="event.stopPropagation()">
+              <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
+              <span class="upload-zone-name" id="doc-chat-doc4-name"></span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-label">Additional Context</label>
+          <textarea class="styled-textarea" id="chat-context" placeholder="e.g. This is a disputed BI claim from a rear-end collision in Texas..."></textarea>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <label class="field-label" style="margin-bottom:8px;">AI Arbitration Chat</label>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg assistant">
+            <div class="bubble">👋 Hello! I'm your AI Arbitration Assistant. Upload your claim documents and ask me anything about liability, damages, coverage disputes, or settlement analysis.</div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Ask about your claim..." onkeydown="if(event.key==='Enter') sendChat()">
+          <button class="btn-analyze" onclick="sendChat()" style="padding:10px 18px;">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="watermark">© 2026 Existential Gateway, LLC · AI Insurance Arbitration Assistant · Unauthorized reproduction strictly prohibited · existentialgateway@gmail.com</div>
+
+<script>
+  const GRADIO_URL = '/gradio_api';
+  const docs = {};
+  const photos = {};
+  const repairPhotos = {};
+  const biPhotos = {};
+
+  function switchTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+    document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  }
+
+  function handlePhoto(idx) {
+    const input = document.querySelectorAll('.photo-slot input[type="file"]')[idx];
+    const file = input.files[0];
+    if (!file) return;
+    photos[idx] = file;
+    const slot = document.getElementById('photo-slot-' + idx);
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    slot.appendChild(img);
+  }
+
+  function handleRepairPhoto(idx) {
+    const inputs = document.querySelectorAll('[id^="repair-photo-slot"] input[type="file"]');
+    const file = inputs[idx].files[0];
+    if (!file) return;
+    repairPhotos[idx] = file;
+    const slot = document.getElementById('repair-photo-slot-' + idx);
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    slot.appendChild(img);
+  }
+
+  function handleBIPhoto(idx) {
+    const inputs = document.querySelectorAll('[id^="bi-photo-slot"] input[type="file"]');
+    const file = inputs[idx].files[0];
+    if (!file) return;
+    biPhotos[idx] = file;
+    const slot = document.getElementById('bi-photo-slot-' + idx);
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    slot.appendChild(img);
+  }
+
+  function handleDoc(key, input) {
+    const file = input.files[0];
+    if (!file) return;
+    docs[key] = file;
+    const nameEl = document.getElementById('doc-' + key + '-name');
+    if (nameEl) { nameEl.textContent = '📎 ' + file.name; nameEl.style.display = 'block'; }
+  }
+
+  async function uploadFile(file) {
+    if (!file) return null;
+    const formData = new FormData();
+    formData.append('files', file);
+    const res = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+    if (!res.ok) throw new Error('Upload failed: ' + res.status);
+    const data = await res.json();
+    return { path: data[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+  }
+
+  async function uploadImage(file) {
+    if (!file) return null;
+    const formData = new FormData();
+    formData.append('files', file);
+    const res = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return { path: data[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+  }
+
+  function setLoading(idx, on) {
+    document.getElementById('loading-' + idx).classList.toggle('active', on);
+    const btn = document.getElementById('btn-' + idx);
+    if (btn) btn.disabled = on;
+  }
+
+  function setResult(idx, text) {
+    const el = document.getElementById('results-' + idx);
+    el.className = 'results-body';
+    el.innerHTML = text.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>');
+  }
+
+  function copyResults(idx) {
+    const el = document.getElementById('results-' + idx);
+    const text = el.innerText;
+    const clipItem = new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }) });
+    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
+  }
+
+  async function runLiability() {
+    setLoading(0, true);
+    document.getElementById('results-0').className = 'results-body';
+    document.getElementById('results-0').innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing liability... this may take 1-2 minutes</span>';
+    try {
+      const photoUploads = await Promise.all([0,1,2,3,4,5,6,7].map(i => uploadImage(photos[i])));
+      const policeFile = await uploadFile(docs['police']);
+      const additionalFile = await uploadFile(docs['additional']);
+      const adverseFile = await uploadFile(docs['adverse']);
+
+      const data = [
+        document.getElementById('liability-loss-state').value,
+        document.getElementById('liability-intersection').value,
+        document.getElementById('liability-city').value,
+        document.getElementById('liability-num-vehicles').value,
+        document.getElementById('liability-v1-dir').value,
+        document.getElementById('liability-v1-damage').value,
+        document.getElementById('liability-v2-dir').value,
+        document.getElementById('liability-v2-damage').value,
+        document.getElementById('liability-v3-dir').value,
+        document.getElementById('liability-v3-damage').value,
+        document.getElementById('liability-desc').value,
+        document.getElementById('liability-traffic').value,
+        ...photoUploads,
+        policeFile,
+        additionalFile,
+        adverseFile,
+      ];
+
+      const res = await fetch(GRADIO_URL + '/run/analyze_liability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      const result = await res.json();
+      setResult(0, result.data?.[0] || 'No results returned.');
+    } catch(e) {
+      document.getElementById('results-0').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(0, false);
+  }
+
+  async function runRepairEstimate() {
+    setLoading(1, true);
+    document.getElementById('results-1').className = 'results-body';
+    document.getElementById('results-1').innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing repair estimate...</span>';
+    try {
+      const estimateFile = await uploadFile(docs['repair-estimate']);
+      const photoUploads = await Promise.all([0,1,2,3,4,5].map(i => uploadImage(repairPhotos[i])));
+      const data = [
+        estimateFile,
+        document.getElementById('repair-no-estimate').checked,
+        ...photoUploads,
+        document.getElementById('repair-loss-state').value,
+        document.getElementById('repair-repair-state').value,
+        document.getElementById('repair-year').value,
+        document.getElementById('repair-make').value,
+        document.getElementById('repair-model').value,
+      ];
+      const res = await fetch(GRADIO_URL + '/run/analyze_repair_estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      const result = await res.json();
+      setResult(1, result.data?.[0] || 'No results returned.');
+    } catch(e) {
+      document.getElementById('results-1').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(1, false);
+  }
+
+  async function runRental() {
+    setLoading(2, true);
+    document.getElementById('results-2').className = 'results-body';
+    document.getElementById('results-2').innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing rental dispute...</span>';
+    try {
+      const rentalFile = await uploadFile(docs['rental-invoice']);
+      const repairFile = await uploadFile(docs['rental-repair']);
+      const data = [
+        rentalFile,
+        repairFile,
+        document.getElementById('rental-vehicle-class').value,
+        document.getElementById('rental-loss-state').value,
+        document.getElementById('rental-repair-state').value,
+        document.getElementById('rental-start-date').value,
+        document.getElementById('rental-end-date').value,
+      ];
+      const res = await fetch(GRADIO_URL + '/run/analyze_rental', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      const result = await res.json();
+      setResult(2, result.data?.[0] || 'No results returned.');
+    } catch(e) {
+      document.getElementById('results-2').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(2, false);
+  }
+
+  async function runTotalLoss() {
+    setLoading(3, true);
+    document.getElementById('results-3').className = 'results-body';
+    document.getElementById('results-3').innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing total loss...</span>';
+    try {
+      const valuationFile = await uploadFile(docs['tl-valuation']);
+      const estimateFile = await uploadFile(docs['tl-estimate']);
+      const data = [
+        valuationFile,
+        estimateFile,
+        document.getElementById('tl-year').value,
+        document.getElementById('tl-make').value,
+        document.getElementById('tl-model').value,
+        document.getElementById('tl-trim').value,
+        document.getElementById('tl-mileage').value,
+        document.getElementById('tl-loss-date').value,
+        document.getElementById('tl-loss-state').value,
+        document.getElementById('tl-zip').value,
+        document.getElementById('tl-condition').value,
+      ];
+      const res = await fetch(GRADIO_URL + '/run/analyze_total_loss', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      const result = await res.json();
+      setResult(3, result.data?.[0] || 'No results returned.');
+    } catch(e) {
+      document.getElementById('results-3').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(3, false);
+  }
+
+  async function runBodilyInjury() {
+    setLoading(4, true);
+    document.getElementById('results-4').className = 'results-body';
+    document.getElementById('results-4').innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing bodily injury claim...</span>';
+    try {
+      const medicalFile = await uploadFile(docs['bi-medical']);
+      const photoUploads = await Promise.all([0,1,2,3].map(i => uploadImage(biPhotos[i])));
+      const data = [
+        medicalFile,
+        ...photoUploads,
+        document.getElementById('bi-loss-state').value,
+        document.getElementById('bi-impact').value,
+        document.getElementById('bi-v1-damage').value,
+        document.getElementById('bi-v2-damage').value,
+        document.getElementById('bi-speed').value,
+      ];
+      const res = await fetch(GRADIO_URL + '/run/analyze_bodily_injury', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      const result = await res.json();
+      setResult(4, result.data?.[0] || 'No results returned.');
+    } catch(e) {
+      document.getElementById('results-4').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(4, false);
+  }
+
+  function addChatMsg(role, text) {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.innerHTML = '<div class="bubble">' + text + '</div>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    addChatMsg('user', msg);
+    const thinking = document.createElement('div');
+    thinking.className = 'chat-msg assistant';
+    thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
+    document.getElementById('chat-messages').appendChild(thinking);
+    try {
+      const doc1 = await uploadFile(docs['chat-doc1']);
+      const doc2 = await uploadFile(docs['chat-doc2']);
+      const doc3 = await uploadFile(docs['chat-doc3']);
+      const doc4 = await uploadFile(docs['chat-doc4']);
+      const context = document.getElementById('chat-context').value;
+      const data = [msg, doc1, doc2, doc3, doc4, context];
+      const res = await fetch(GRADIO_URL + '/run/chat_with_documents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      });
+      const result = await res.json();
+      const text = result.data?.[0] || 'No response.';
+      thinking.querySelector('.bubble').innerHTML = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    } catch(e) {
+      thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+  }
+</script>
+</body>
+</html>
