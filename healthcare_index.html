@@ -131,6 +131,7 @@
 </div>
 
 <div class="tabs-container">
+  <div class="tabs-wrapper">
   <div class="tabs-nav">
     <button class="tab-btn active" onclick="switchTab(0)">📊 Data Overview</button>
     <button class="tab-btn " onclick="switchTab(1)">❤️ Patient Outcomes</button>
@@ -140,7 +141,9 @@
     <button class="tab-btn " onclick="switchTab(5)">🔬 Clinical Trials</button>
     <button class="tab-btn " onclick="switchTab(6)">📊 Visualizations</button>
     <button class="tab-btn " onclick="switchTab(7)">📄 Reports</button>
-    <button class="tab-btn " onclick="switchTab(8)">💬 AI Chat</button>
+    <button class="tab-btn " onclick="switchTab(8)">🧹 Data Cleaning</button>
+    <button class="tab-btn" onclick="switchTab(9)">🔗 Multi-Dataset</button>
+    <button class="tab-btn" onclick="switchTab(10)">💬 AI Chat</button>
   </div>
   <div class="tab-panel active" id="tab-0">
     <div class="two-col">
@@ -410,13 +413,130 @@
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-8">
+  <!-- TAB 8: DATA CLEANING -->
+  <div class="tab-panel" id="tab-7">
+    <div class="two-col">
+      <div>
+        <label class="context-label">Upload Dataset to Clean</label>
+        <div class="upload-zone" id="upload-8" onclick="triggerUpload(8, event)">
+          <input type="file" id="file-8" accept=".csv,.xlsx,.xls" onchange="handleFile(8)" onclick="event.stopPropagation()">
+          <span class="upload-icon">🧹</span>
+          <div class="upload-title">Drop file here or click to upload</div>
+          <div class="upload-sub">CSV or Excel files supported</div>
+          <div class="upload-filename" id="filename-8"></div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Cleaning Instructions (Optional)</label>
+          <textarea class="context-input" id="context-8" placeholder="e.g. Remove duplicates, fill missing values with median, standardize date formats, remove rows where claim amount is 0..."></textarea>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Cleaning Options</label>
+          <select class="styled-select" id="extra-8">
+            <option value="full">Full Clean — Remove duplicates, fix nulls, standardize formats</option>
+            <option value="nulls">Fix Missing Values Only</option>
+            <option value="duplicates">Remove Duplicates Only</option>
+            <option value="formats">Standardize Formats Only</option>
+            <option value="outliers">Detect & Flag Outliers</option>
+            <option value="report">Data Quality Report Only</option>
+          </select>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runCleaning()" id="btn-7">🧹 Clean Dataset</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-7"></div>
+          <div class="results-header">
+            <span class="results-label">Data Cleaning Report</span>
+            <button onclick="copyResults(8)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-7">Upload a dataset and click Clean to get a data quality report and cleaning recommendations...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 9: MULTI-DATASET ANALYSIS -->
+  <div class="tab-panel" id="tab-9">
+    <div style="margin-bottom:20px;padding:16px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:6px;">
+      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--gold);">ℹ️ MULTI-DATASET ANALYSIS</span>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.6;">Upload up to 3 related datasets and the AI will cross-reference, compare, and find patterns across all of them simultaneously. Perfect for comparing claims vs policy data, year-over-year analysis, or multi-region comparisons.</p>
+    </div>
+    <div class="two-col">
+      <div>
+        <label class="context-label">Dataset 1 (Primary)</label>
+        <div class="upload-zone" id="upload-multi-1" onclick="triggerMultiUpload(1, event)">
+          <input type="file" id="file-multi-1" accept=".csv,.xlsx,.xls" onchange="handleMultiFile(1)" onclick="event.stopPropagation()">
+          <span class="upload-icon">📂</span>
+          <div class="upload-title">Primary Dataset</div>
+          <div class="upload-sub">e.g. Claims Data 2024</div>
+          <div class="upload-filename" id="filename-multi-1"></div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <label class="context-label">Dataset 2</label>
+          <div class="upload-zone" id="upload-multi-2" onclick="triggerMultiUpload(2, event)">
+            <input type="file" id="file-multi-2" accept=".csv,.xlsx,.xls" onchange="handleMultiFile(2)" onclick="event.stopPropagation()">
+            <span class="upload-icon">📂</span>
+            <div class="upload-title">Second Dataset</div>
+            <div class="upload-sub">e.g. Policy Data 2024</div>
+            <div class="upload-filename" id="filename-multi-2"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <label class="context-label">Dataset 3 (Optional)</label>
+          <div class="upload-zone" id="upload-multi-3" onclick="triggerMultiUpload(3, event)">
+            <input type="file" id="file-multi-3" accept=".csv,.xlsx,.xls" onchange="handleMultiFile(3)" onclick="event.stopPropagation()">
+            <span class="upload-icon">📂</span>
+            <div class="upload-title">Third Dataset (Optional)</div>
+            <div class="upload-sub">e.g. Claims Data 2023</div>
+            <div class="upload-filename" id="filename-multi-3"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <label class="context-label">Analysis Instructions</label>
+          <textarea class="context-input" id="context-multi" placeholder="e.g. Compare claims frequency between 2023 and 2024, identify which policy types have the highest loss ratios, find correlations between vehicle age and claim amount..."></textarea>
+        </div>
+
+        <div style="margin-top:16px;">
+          <label class="context-label">Analysis Type</label>
+          <select class="styled-select" id="extra-multi">
+            <option value="compare">Cross-Dataset Comparison</option>
+            <option value="correlate">Correlation Analysis</option>
+            <option value="trends">Year-over-Year Trends</option>
+            <option value="merge">Merge & Unified Analysis</option>
+            <option value="anomalies">Anomaly Detection Across Datasets</option>
+            <option value="full">Full Multi-Dataset Report</option>
+          </select>
+        </div>
+
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runMultiDataset()" id="btn-9">🔗 Analyze All Datasets</button>
+        </div>
+      </div>
+      <div>
+        <div class="results-area">
+          <div class="loading-bar" id="loading-9"></div>
+          <div class="results-header">
+            <span class="results-label">Multi-Dataset Analysis</span>
+            <button onclick="copyResults(9)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+          </div>
+          <div class="results-body empty" id="results-9">Upload 2-3 related datasets and click Analyze to get AI-powered cross-dataset insights...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel " id="tab-10">
     <div class="chat-messages" id="chat-messages">
       <div class="chat-msg assistant"><div class="bubble">👋 Hello! I'm your AI analyst. Ask me anything about your data.</div></div>
     </div>
     <div class="chat-input-row">
-      <input type="text" class="chat-input" id="chat-input-8" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendChat(8, '/chat_with_data')">
-      <button class="btn-analyze" onclick="sendChat(8, '/chat_with_data')" style="padding:10px 18px;">Send</button>
+      <input type="text" class="chat-input" id="chat-input-10" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendChat(10, '/chat_with_data')">
+      <button class="btn-analyze" onclick="sendChat(10, '/chat_with_data')" style="padding:10px 18px;">Send</button>
     </div>
   </div>
 </div>
@@ -565,6 +685,140 @@
       }
     });
   });
+
+  const multiFiles = {};
+
+  function triggerMultiUpload(idx, event) {
+    if (event && event.target.tagName === 'INPUT') return;
+    document.getElementById('file-multi-' + idx).click();
+  }
+
+  function handleMultiFile(idx) {
+    const file = document.getElementById('file-multi-' + idx).files[0];
+    if (!file) return;
+    multiFiles[idx] = file;
+    const fn = document.getElementById('filename-multi-' + idx);
+    fn.textContent = '📎 ' + file.name;
+    fn.style.display = 'block';
+  }
+
+  async function runCleaning() {
+    if (!uploadedFiles[8]) { alert('Please upload a dataset first.'); return; }
+    setLoading(8, true);
+    const resultsEl = document.getElementById('results-8');
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing data quality... this may take 1-2 minutes</span>';
+    try {
+      // Read file content
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const csvContent = e.target.result.slice(0, 8000);
+        const cleaningType = document.getElementById('extra-8').value;
+        const instructions = document.getElementById('context-8').value;
+
+        const prompt = `You are a professional data analyst. Analyze this dataset and provide a ${cleaningType} report.
+
+Dataset sample (first 8000 chars):
+${csvContent}
+
+${instructions ? 'Additional instructions: ' + instructions : ''}
+
+Please provide:
+1. **Data Quality Summary** — rows, columns, completeness score
+2. **Issues Found** — missing values, duplicates, format inconsistencies, outliers
+3. **Cleaning Recommendations** — specific steps to clean this data
+4. **Column Analysis** — data types, value ranges, anomalies per column
+5. **Cleaned Data Preview** — show what the first 5 rows would look like after cleaning
+6. **Overall Data Health Score** — rate 1-10 with explanation
+
+Format your response with clear headers and be specific about column names and row counts.`;
+
+        const API_KEY = '';  // Uses server-side proxy
+        const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: [{ path: await uploadFileGetPath(uploadedFiles[8]), orig_name: uploadedFiles[8].name, size: uploadedFiles[8].size, mime_type: uploadedFiles[8].type, meta: { "_type": "gradio.FileData" } }, prompt] })
+        });
+        const result = await res.json();
+        resultsEl.className = 'results-body';
+        resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
+        setLoading(8, false);
+      };
+      reader.readAsText(uploadedFiles[8]);
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+      setLoading(8, false);
+    }
+  }
+
+  async function uploadFileGetPath(file) {
+    const formData = new FormData();
+    formData.append('files', file);
+    const res = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    return data[0];
+  }
+
+  async function runMultiDataset() {
+    if (!multiFiles[1]) { alert('Please upload at least Dataset 1.'); return; }
+    if (!multiFiles[2]) { alert('Please upload at least Dataset 2.'); return; }
+    setLoading(9, true);
+    const resultsEl = document.getElementById('results-9');
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Reading and cross-referencing datasets... this may take 2-3 minutes</span>';
+
+    try {
+      const readFile = (file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result.slice(0, 5000));
+        reader.readAsText(file);
+      });
+
+      const dataset1 = await readFile(multiFiles[1]);
+      const dataset2 = await readFile(multiFiles[2]);
+      const dataset3 = multiFiles[3] ? await readFile(multiFiles[3]) : null;
+      const analysisType = document.getElementById('extra-multi').value;
+      const instructions = document.getElementById('context-multi').value;
+
+      const prompt = `You are a senior data analyst. Perform a ${analysisType} across these ${dataset3 ? '3' : '2'} related datasets.
+
+**Dataset 1** (${multiFiles[1].name}):
+${dataset1}
+
+**Dataset 2** (${multiFiles[2].name}):
+${dataset2}
+
+${dataset3 ? `**Dataset 3** (${multiFiles[3].name}):
+${dataset3}` : ''}
+
+${instructions ? 'Analysis instructions: ' + instructions : ''}
+
+Please provide:
+1. **Dataset Overview** — summarize each dataset (rows, columns, key fields)
+2. **Cross-Dataset Findings** — patterns, correlations, and relationships between datasets
+3. **Key Insights** — top 5 actionable insights from comparing the datasets
+4. **Anomalies & Discrepancies** — anything unusual when comparing across datasets
+5. **Recommendations** — what actions should be taken based on this analysis
+6. **Summary Table** — create a comparison table of key metrics across datasets
+
+Be specific, use numbers from the actual data, and reference column names.`;
+
+      // Use the chat endpoint which accepts text input
+      const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [{ path: await uploadFileGetPath(multiFiles[1]), orig_name: multiFiles[1].name, size: multiFiles[1].size, mime_type: multiFiles[1].type, meta: { "_type": "gradio.FileData" } }, prompt] })
+      });
+      const result = await res.json();
+      resultsEl.className = 'results-body';
+      resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(9, false);
+  }
+
+
 </script>
 </body>
 </html>
