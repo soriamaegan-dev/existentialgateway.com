@@ -520,5 +520,81 @@ Visit quantusdata.ai to upgrade.'); };
     });
   });
 </script>
+
+<!-- Report an Issue Button -->
+<div id="report-btn" onclick="document.getElementById('report-modal').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;transition:all 0.2s;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">
+  ⚠️ Report an Issue
+</div>
+
+<!-- Report Modal -->
+<div id="report-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
+    <button onclick="document.getElementById('report-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:8px;">Report an Issue</h3>
+    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;">Help us improve QuantusData™</p>
+    <div style="margin-bottom:16px;">
+      <label style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px;">Issue Type</label>
+      <select id="report-type" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;">
+        <option>Tool not working correctly</option>
+        <option>Analysis results seem incorrect</option>
+        <option>File upload issue</option>
+        <option>Login / access issue</option>
+        <option>Billing issue</option>
+        <option>Feature request</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px;">Description</label>
+      <textarea id="report-desc" placeholder="Please describe the issue in detail..." style="width:100%;min-height:120px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">Submit Report</button>
+      <button onclick="document.getElementById('report-modal').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;">Cancel</button>
+    </div>
+    <p id="report-success" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Report submitted! We'll look into this shortly.</p>
+    <p id="report-error" style="display:none;color:#ff6b6b;font-size:0.82rem;margin-top:12px;text-align:center;">⚠️ Failed to submit. Please email existentialgateway@gmail.com</p>
+  </div>
+</div>
+
+<script>
+async function submitReport() {
+  const type = document.getElementById('report-type').value;
+  const desc = document.getElementById('report-desc').value.trim();
+  if (!desc) { alert('Please describe the issue.'); return; }
+
+  const tool = document.title.split(' —')[0];
+  const email = window.userEmail || 'Unknown';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xwvwlyke', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tool: tool,
+        type: type,
+        description: desc,
+        user_email: email,
+        _subject: 'QuantusData Issue Report: ' + type
+      })
+    });
+
+    if (res.ok) {
+      document.getElementById('report-success').style.display = 'block';
+      document.getElementById('report-error').style.display = 'none';
+      document.getElementById('report-desc').value = '';
+      setTimeout(() => {
+        document.getElementById('report-modal').style.display = 'none';
+        document.getElementById('report-success').style.display = 'none';
+      }, 3000);
+    } else {
+      document.getElementById('report-error').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('report-error').style.display = 'block';
+  }
+}
+</script>
+
 </body>
 </html>
