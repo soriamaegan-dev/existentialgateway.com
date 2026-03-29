@@ -1,6 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(async function() {
+  const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
+  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
+  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+  const plan = data.plan;
+  const PREMIUM_PLANS = ['professional', 'business', 'owner'];
+  const isPremium = PREMIUM_PLANS.includes(plan);
+  const PLAN_NAMES = { 'basic': 'Basic Plan — $29/mo', 'professional': 'Professional Plan — $79/mo', 'business': 'Business Plan — $199/mo', 'owner': 'Owner Access' };
+  const applyPlan = () => {
+    document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    if (!isPremium) {
+      const PREMIUM_KEYWORDS = ['Cleaning', 'Dataset', 'Chat', 'Visual', 'Reports'];
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        const label = btn.textContent.trim();
+        const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
+        if (isLocked) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+          btn.title = 'Upgrade to Professional to unlock';
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert('This feature requires a Professional or Business plan.
+Visit quantusdata.ai to upgrade.'); };
+          btn.innerHTML = '🔒 ' + btn.innerHTML;
+        }
+      });
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyPlan);
+  } else {
+    applyPlan();
+  }
+})();
+</script>
+
+
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>End Times Prophecy Analyzer — ExistentialGateway.com</title>
@@ -286,7 +328,7 @@
 <div class="watermark">© 2026 Existential Gateway, LLC · End Times Prophecy Analyzer · Unauthorized reproduction strictly prohibited · existentialgateway@gmail.com</div>
 
 <script>
-  const GRADIO_URL = '/gradio_api';
+  const GRADIO_URL = '/tools/endtimes/gradio_api';
   const uploadedFiles = {};
 
   function switchTab(idx) {
