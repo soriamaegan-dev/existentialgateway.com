@@ -11,6 +11,39 @@
     await sb.auth.signOut()
     window.location.href = '/dashboard.html'
   }
+
+  async function sendMediaChat() {
+    const input = document.getElementById('media-chat-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    const msgs = document.getElementById('media-chat-messages');
+    const userDiv = document.createElement('div');
+    userDiv.style.marginBottom = '16px';
+    userDiv.innerHTML = '<div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px 8px 2px 8px;padding:10px 14px;font-size:0.85rem;max-width:80%;margin-left:auto;">' + msg + '</div>';
+    msgs.appendChild(userDiv);
+    const thinking = document.createElement('div');
+    thinking.style.marginBottom = '16px';
+    thinking.innerHTML = '<div style="background:rgba(17,34,64,0.8);border:1px solid var(--border);border-radius:2px 8px 8px 8px;padding:10px 14px;font-size:0.85rem;color:var(--gold);font-family:'DM Mono',monospace;">⟳ Analyzing...</div>';
+    msgs.appendChild(thinking);
+    msgs.scrollTop = msgs.scrollHeight;
+    try {
+      const GRADIO_URL = '/tools/mediabias/gradio_api';
+      const res = await fetch(GRADIO_URL + '/run/media_chat', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data: [msg]})
+      });
+      const result = await res.json();
+      const text = result.data?.[0] || 'No response.';
+      thinking.querySelector('div').style.color = 'var(--white)';
+      thinking.querySelector('div').style.fontFamily = ''DM Sans', sans-serif';
+      thinking.querySelector('div').innerHTML = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    } catch(e) {
+      thinking.querySelector('div').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
 </script>
 <script>
 (async function() {
@@ -382,6 +415,29 @@ Visit quantusdata.ai to upgrade.'); };
   </div>
 </div>
 
+  <div class="tab-panel" id="tab-8">
+    <div class="two-col">
+      <div>
+        <div style="background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;">
+          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Example Questions</p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button onclick="document.getElementById('media-chat-input').value='Is CNN biased left or right?';sendMediaChat()" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;">Is CNN biased left or right?</button>
+            <button onclick="document.getElementById('media-chat-input').value='What is the most trusted news source?';sendMediaChat()" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;">What is the most trusted news source?</button>
+            <button onclick="document.getElementById('media-chat-input').value='How do I spot fake news?';sendMediaChat()" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;">How do I spot fake news?</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <div id="media-chat-messages" style="background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:250px;max-height:400px;overflow-y:auto;margin-bottom:12px;">
+          <div style="margin-bottom:16px;"><div style="background:rgba(17,34,64,0.8);border:1px solid var(--border);border-radius:2px 8px 8px 8px;padding:10px 14px;font-size:0.85rem;max-width:90%;">Ask me anything about media bias, news credibility, or how to spot misinformation.</div></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <input type="text" id="media-chat-input" placeholder="Ask about media bias..." style="flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;" onkeydown="if(event.key==='Enter') sendMediaChat()">
+          <button class="btn-analyze" onclick="sendMediaChat()" style="padding:10px 18px;">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class="watermark">© 2026 Existential Gateway, LLC · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
 
 <script>
