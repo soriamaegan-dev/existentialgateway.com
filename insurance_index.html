@@ -3,19 +3,21 @@
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-(async function() {
+(function() {
   const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  // Handle magic link token in URL hash
-  if (window.location.hash && window.location.hash.includes('access_token')) {
-    await sb.auth.exchangeCodeForSession(window.location.href);
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, storageKey: 'quantusdata-auth' } });
+
+  let authDone = false;
+  let authTimeout = null;
+
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (authDone) return;
+    if (session?.user) {
+      authDone = true;
+      if (authTimeout) clearTimeout(authTimeout);
+    const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
+    if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
   const plan = data.plan;
   const PREMIUM_PLANS = ['professional', 'business', 'owner'];
   const isPremium = PREMIUM_PLANS.includes(plan);
@@ -43,6 +45,12 @@
   } else {
     applyPlan();
   }
+  });
+
+  // Only redirect if no session after 5 seconds
+  authTimeout = setTimeout(() => {
+    if (!authDone) window.location.href = '/dashboard.html';
+  }, 5000);
 })();
 </script>
 
@@ -448,6 +456,7 @@
     .results-body hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
     .results-body::selection, .results-body *::selection { background: #c9a84c; color: #000000; }
 </style>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 </head>
 <body>
 
@@ -1209,6 +1218,21 @@ Format your response with clear headers and be specific about column names and r
         const result = await res.json();
         resultsEl.className = 'results-body';
         resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
+      const chartData = result.data?.[1];
+      if (chartData && chartData.type === 'plotly' && chartData.plot) {
+        const chartDiv = document.createElement('div');
+        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
+        resultsEl.appendChild(chartDiv);
+        try {
+          const plotData = JSON.parse(chartData.plot);
+          plotData.layout = plotData.layout || {};
+          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+        } catch(e) { console.warn('Chart error:', e); }
+      }
         setLoading(8, false);
       };
       reader.readAsText(uploadedFiles[8]);
@@ -1279,6 +1303,21 @@ Be specific, use numbers from the actual data, and reference column names.`;
       const result = await res.json();
       resultsEl.className = 'results-body';
       resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
+      const chartData = result.data?.[1];
+      if (chartData && chartData.type === 'plotly' && chartData.plot) {
+        const chartDiv = document.createElement('div');
+        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
+        resultsEl.appendChild(chartDiv);
+        try {
+          const plotData = JSON.parse(chartData.plot);
+          plotData.layout = plotData.layout || {};
+          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+        } catch(e) { console.warn('Chart error:', e); }
+      }
     } catch(e) {
       resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }

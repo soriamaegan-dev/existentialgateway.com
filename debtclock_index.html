@@ -245,6 +245,7 @@
   </div>
 </div>
 
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <script>
   const G = '/tools/debtclock/gradio_api';
 
@@ -279,6 +280,22 @@
       if (!res.ok) throw new Error(await res.text());
       const result = await res.json();
       rb.innerHTML = md(result.data?.[0] || 'No results.');
+      // Render Plotly chart if present
+      const chartData = result.data?.[1];
+      if (chartData && chartData.type === 'plotly' && chartData.plot) {
+        const chartDiv = document.createElement('div');
+        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
+        rb.appendChild(chartDiv);
+        try {
+          const plotData = JSON.parse(chartData.plot);
+          plotData.layout = plotData.layout || {};
+          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+          plotData.layout.margin = plotData.layout.margin || { t: 40, r: 20, b: 40, l: 60 };
+          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+        } catch(chartErr) { console.warn('Chart render error:', chartErr); }
+      }
     } catch(e) { rb.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>'; }
     lb.classList.remove('active'); btn.disabled = false;
   }
