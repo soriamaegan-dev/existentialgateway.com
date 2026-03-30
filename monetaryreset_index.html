@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a1628'/><circle cx='90' cy='88' r='72' fill='none' stroke='%23c9a84c' stroke-width='14'/><rect x='34' y='108' width='18' height='30' fill='%23c9a84c' opacity='0.6' rx='2'/><rect x='56' y='88' width='18' height='50' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='78' y='62' width='18' height='76' fill='%23c9a84c' rx='2'/><rect x='100' y='78' width='18' height='60' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='122' y='98' width='18' height='40' fill='%23c9a84c' opacity='0.6' rx='2'/><line x1='138' y1='134' x2='170' y2='168' stroke='%23c9a84c' stroke-width='14' stroke-linecap='round'/></svg>" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root{--navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;--white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);--error:#ff6b6b;--success:#2dd4a0;}
+    :root{--navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;--white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);--error:#ff6b6b;}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;}
     body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
@@ -19,7 +19,6 @@
     .nav-divider{width:1px;height:22px;background:var(--border);}
     .nav-tool{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
     .nav-right{display:flex;align-items:center;gap:14px;}
-    .nav-plan{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
     .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all 0.2s;}
     .nav-back:hover{color:var(--gold);border-color:var(--gold);}
     .tool-header{position:relative;z-index:1;padding:20px 40px;background:rgba(17,34,64,0.6);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
@@ -28,11 +27,11 @@
     .tool-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--white);font-weight:400;}
     .tool-tagline{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
     .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;line-height:1.6;}
-    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);}
     .disclaimer strong{color:var(--gold);}
     .tabs-wrapper{position:relative;margin:24px 40px 0;}
     .tabs-wrapper::after{content:'';position:absolute;right:0;top:0;bottom:3px;width:40px;background:linear-gradient(to right,transparent,var(--navy));pointer-events:none;}
-    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent;align-items:flex-end;}
+    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent;}
     .tabs-nav::-webkit-scrollbar{height:3px;}
     .tabs-nav::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:3px;}
     .tab-btn{padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;flex-shrink:0;}
@@ -41,13 +40,12 @@
     .tab-panel{display:none;padding:28px 40px;}
     .tab-panel.active{display:block;}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;}.tab-panel{padding:20px;}.tool-header,.nav{padding-left:20px;padding-right:20px;}.tabs-wrapper{margin:16px 0 0;}}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;}.tab-panel{padding:20px;}}
     .field-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
-    textarea.ctx{width:100%;min-height:100px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
-    textarea.ctx:focus{outline:none;border-color:var(--gold);}
-    textarea.ctx::placeholder{color:var(--muted);}
-    select.sel{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;cursor:pointer;transition:border-color 0.2s;margin-bottom:12px;}
-    select.sel:focus{outline:none;border-color:var(--gold);}
+    textarea{width:100%;min-height:100px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
+    textarea:focus{outline:none;border-color:var(--gold);}
+    textarea::placeholder{color:var(--muted);}
+    select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;cursor:pointer;margin-bottom:12px;}
     .btn-go{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:16px;}
     .btn-go:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
     .btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
@@ -57,14 +55,12 @@
     .copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;}
     .results-body{padding:20px;font-size:0.85rem;color:var(--white);line-height:1.8;white-space:pre-wrap;}
     .results-body.empty{color:var(--muted);font-style:italic;}
-    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000;}
     .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
     .loading-bar.active{display:block;}
     @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
     .results-body h1,.results-body h2,.results-body h3{color:var(--gold);font-family:'DM Serif Display',serif;margin:16px 0 8px;font-weight:400;}
     .results-body strong{color:var(--white);font-weight:600;}
     .results-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
-    .chat-wrap{display:flex;flex-direction:column;height:100%;}
     .chat-msgs{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:300px;max-height:450px;overflow-y:auto;margin-bottom:12px;}
     .chat-msg{margin-bottom:16px;}
     .chat-msg.user .bubble{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px 8px 2px 8px;padding:10px 14px;font-size:0.85rem;max-width:80%;margin-left:auto;}
@@ -79,7 +75,7 @@
 
 <nav>
   <div class="nav-left">
-    <a href="/dashboard.html" class="nav-brand">
+    <a href="https://quantusdata.ai" class="nav-brand">
       <svg width="26" height="26" viewBox="0 0 180 180"><circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/><rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/><rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/><rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/><rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/><rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/><line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/></svg>
       <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
     </a>
@@ -87,9 +83,7 @@
     <span class="nav-tool">Monetary Reset Tracker</span>
   </div>
   <div class="nav-right">
-    <span class="nav-plan">The Gateway Plan</span>
-    <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-    <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;">Sign Out</a>
+    <a href="https://quantusdata.ai" class="nav-back">← Home</a>
   </div>
 </nav>
 
@@ -101,12 +95,10 @@
       <div class="tool-tagline">AI-Powered Monetary Intelligence</div>
     </div>
   </div>
-  <div class="tool-desc">CBDC tracking, gold/silver ratio analysis, XRP adoption, Metallicus, FOREX revaluation, biblical financial systems, and global monetary reset scenario modeling.</div>
+  <div class="tool-desc">CBDC tracking, XRP adoption, Metallicus, FOREX revaluation, biblical financial systems, gold/silver analysis, and global monetary reset scenario modeling.</div>
 </div>
 
-<div class="disclaimer">
-  <strong>DISCLAIMER:</strong> This tool is for educational and informational purposes only. Nothing constitutes financial, investment, or legal advice. Always do your own research and consult a licensed financial advisor before making investment decisions. © 2026 Existential Gateway, LLC.
-</div>
+<div class="disclaimer"><strong>DISCLAIMER:</strong> For educational purposes only. Not financial advice. © 2026 Existential Gateway, LLC.</div>
 
 <div class="tabs-wrapper">
   <div class="tabs-nav">
@@ -127,249 +119,118 @@
     <button class="tab-btn" onclick="switchTab(14)">💬 AI Financial Chat</button>
   </div>
 
-  <!-- TAB 0: BLOCKCHAIN BANKING -->
-  <div class="tab-panel active" id="tab-0">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-0" placeholder="e.g. Focus on XRP settlement, GENIUS Act implications, Metallicus TDBN protocol, credit union stablecoin adoption..."></textarea>
-        <button class="btn-go" onclick="run(0,'/analyze_blockchain_banking')" id="btn-0">🏦 Analyze Blockchain Banking</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-0"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(0)">📋 Copy</button></div><div class="results-body empty" id="rb-0">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel active" id="tab-0"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-0" placeholder="e.g. Focus on XRP settlement, GENIUS Act, Metallicus TDBN protocol..."></textarea>
+    <button class="btn-go" onclick="run(0,'/analyze_blockchain_banking')" id="btn-0">🏦 Analyze Blockchain Banking</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-0"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(0)">📋 Copy</button></div><div class="results-body empty" id="rb-0">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 1: CRYPTO & STABLECOINS -->
-  <div class="tab-panel" id="tab-1">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-1" placeholder="e.g. Analyze GENIUS Act, RLUSD stablecoin, XRP post-SEC rally, Bitcoin Strategic Reserve, stablecoin landscape..."></textarea>
-        <button class="btn-go" onclick="run(1,'/analyze_crypto_stablecoin')" id="btn-1">₿ Analyze Crypto & Stablecoins</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-1"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(1)">📋 Copy</button></div><div class="results-body empty" id="rb-1">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-1"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-1" placeholder="e.g. Analyze GENIUS Act, RLUSD stablecoin, XRP post-SEC rally, Bitcoin Strategic Reserve..."></textarea>
+    <button class="btn-go" onclick="run(1,'/analyze_crypto_stablecoin')" id="btn-1">₿ Analyze Crypto & Stablecoins</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-1"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(1)">📋 Copy</button></div><div class="results-body empty" id="rb-1">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 2: CRYPTO REGULATIONS -->
-  <div class="tab-panel" id="tab-2">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-2" placeholder="e.g. Analyze GENIUS Act, Digital Asset Market Clarity Act, Ripple vs SEC resolution, Trump executive orders on crypto..."></textarea>
-        <button class="btn-go" onclick="run(2,'/analyze_crypto_regulations')" id="btn-2">📜 Analyze Crypto Regulations</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-2"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(2)">📋 Copy</button></div><div class="results-body empty" id="rb-2">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-2"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-2" placeholder="e.g. Analyze GENIUS Act, Digital Asset Market Clarity Act, Ripple vs SEC resolution..."></textarea>
+    <button class="btn-go" onclick="run(2,'/analyze_crypto_regulations')" id="btn-2">📜 Analyze Crypto Regulations</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-2"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(2)">📋 Copy</button></div><div class="results-body empty" id="rb-2">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 3: ASSET-BACKED DOLLAR -->
-  <div class="tab-panel" id="tab-3">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-3" placeholder="e.g. Analyze non-CBDC asset-backed Treasury Dollar, gold revaluation scenarios, Mar-a-Lago Accord, Bitcoin Strategic Reserve..."></textarea>
-        <button class="btn-go" onclick="run(3,'/analyze_asset_backed_dollar')" id="btn-3">💵 Analyze Asset-Backed Dollar</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-3"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(3)">📋 Copy</button></div><div class="results-body empty" id="rb-3">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-3"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-3" placeholder="e.g. Analyze non-CBDC asset-backed Treasury Dollar, gold revaluation scenarios, Mar-a-Lago Accord..."></textarea>
+    <button class="btn-go" onclick="run(3,'/analyze_asset_backed_dollar')" id="btn-3">💵 Analyze Asset-Backed Dollar</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-3"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(3)">📋 Copy</button></div><div class="results-body empty" id="rb-3">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 4: XRP & PAYMENTS -->
-  <div class="tab-panel" id="tab-4">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-4" placeholder="e.g. Analyze XRP global adoption, ODL corridors, RLUSD, Citadel investment, Ripple bank charter, SWIFT comparison..."></textarea>
-        <button class="btn-go" onclick="run(4,'/analyze_xrp_payments')" id="btn-4">🌊 Analyze XRP & Payments</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-4"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(4)">📋 Copy</button></div><div class="results-body empty" id="rb-4">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-4"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-4" placeholder="e.g. Analyze XRP global adoption, ODL corridors, RLUSD, Citadel investment, Ripple bank charter..."></textarea>
+    <button class="btn-go" onclick="run(4,'/analyze_xrp_payments')" id="btn-4">🌊 Analyze XRP & Payments</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-4"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(4)">📋 Copy</button></div><div class="results-body empty" id="rb-4">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 5: FOREX & CURRENCIES -->
-  <div class="tab-panel" id="tab-5">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-5" placeholder="e.g. Analyze Iraqi Dinar (IQD), Vietnamese Dong (VND), Zimbabwe ZiG, Indonesian Rupiah BRICS implications, major FOREX pairs..."></textarea>
-        <button class="btn-go" onclick="run(5,'/analyze_forex_currencies')" id="btn-5">💱 Analyze FOREX & Currencies</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-5"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(5)">📋 Copy</button></div><div class="results-body empty" id="rb-5">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-5"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-5" placeholder="e.g. Analyze Iraqi Dinar (IQD), Vietnamese Dong (VND), Zimbabwe ZiG, Indonesian Rupiah..."></textarea>
+    <button class="btn-go" onclick="run(5,'/analyze_forex_currencies')" id="btn-5">💱 Analyze FOREX & Currencies</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-5"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(5)">📋 Copy</button></div><div class="results-body empty" id="rb-5">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 6: CURRENCY REVALUATION -->
-  <div class="tab-panel" id="tab-6">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Currency Focus</label>
-        <select class="sel" id="sel-6">
-          <option>All Revaluation Candidates</option>
-          <option>Iraqi Dinar (IQD)</option>
-          <option>Vietnamese Dong (VND)</option>
-          <option>Venezuelan Bolivar (VES)</option>
-          <option>Zimbabwe Gold (ZiG)</option>
-          <option>Iranian Rial (IRR)</option>
-          <option>Indonesian Rupiah (IDR)</option>
-          <option>BRICS Unit</option>
-          <option>Chinese Yuan (CNY)</option>
-        </select>
-        <label class="field-label">Additional Context (Optional)</label>
-        <textarea class="ctx" id="ctx-6" placeholder="e.g. Analyze Iraq oil reserves backing potential, BRICS gold-backed currency race, Zimbabwe ZiG April 2024 launch..."></textarea>
-        <button class="btn-go" onclick="run(6,'/analyze_currency_revaluation')" id="btn-6">🌍 Analyze Currency Revaluation</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-6"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(6)">📋 Copy</button></div><div class="results-body empty" id="rb-6">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-6"><div class="two-col"><div>
+    <label class="field-label">Currency Focus</label>
+    <select id="sel-6a"><option>All Revaluation Candidates</option><option>Iraqi Dinar (IQD)</option><option>Vietnamese Dong (VND)</option><option>Venezuelan Bolivar (VES)</option><option>Zimbabwe Gold (ZiG)</option><option>Iranian Rial (IRR)</option><option>Indonesian Rupiah (IDR)</option><option>BRICS Unit</option></select>
+    <label class="field-label">Additional Context</label>
+    <textarea id="ctx-6" placeholder="e.g. Analyze BRICS gold-backed currency race, Zimbabwe ZiG launch..."></textarea>
+    <button class="btn-go" onclick="run(6,'/analyze_currency_revaluation')" id="btn-6">🌍 Analyze Currency Revaluation</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-6"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(6)">📋 Copy</button></div><div class="results-body empty" id="rb-6">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 7: CREDIT UNIONS VS BANKS -->
-  <div class="tab-panel" id="tab-7">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-7" placeholder="e.g. Analyze Metallicus InvestiFi alliance, DaLand CUSO, TDBN protocol, Arizona Financial CU stablecoin pilot, JPMorgan vs credit unions..."></textarea>
-        <button class="btn-go" onclick="run(7,'/analyze_credit_unions_vs_banks')" id="btn-7">🏧 Analyze Credit Unions vs Banks</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-7"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(7)">📋 Copy</button></div><div class="results-body empty" id="rb-7">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-7"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-7" placeholder="e.g. Analyze Metallicus InvestiFi alliance, DaLand CUSO, TDBN protocol..."></textarea>
+    <button class="btn-go" onclick="run(7,'/analyze_credit_unions_vs_banks')" id="btn-7">🏧 Analyze Credit Unions vs Banks</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-7"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(7)">📋 Copy</button></div><div class="results-body empty" id="rb-7">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 8: METALLICUS & XPR -->
-  <div class="tab-panel" id="tab-8">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-8" placeholder="e.g. Analyze Metal Blockchain Layer 0, XPR Network, TDBN, Marshall Hayner updates, InvestiFi, DaLand CUSO, Bonifii..."></textarea>
-        <button class="btn-go" onclick="run(8,'/analyze_metallicus_xpr')" id="btn-8">⛓️ Analyze Metallicus & XPR</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-8"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(8)">📋 Copy</button></div><div class="results-body empty" id="rb-8">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-8"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-8" placeholder="e.g. Analyze Metal Blockchain, XPR Network, TDBN, Marshall Hayner, InvestiFi..."></textarea>
+    <button class="btn-go" onclick="run(8,'/analyze_metallicus_xpr')" id="btn-8">⛓️ Analyze Metallicus & XPR</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-8"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(8)">📋 Copy</button></div><div class="results-body empty" id="rb-8">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 9: US TREASURY & FED -->
-  <div class="tab-panel" id="tab-9">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-9" placeholder="e.g. Analyze Scott Bessent Treasury priorities, $36.6T debt management, Fed Chair Powell rate policy, gold revaluation study August 2025..."></textarea>
-        <button class="btn-go" onclick="run(9,'/analyze_treasury_fed_news')" id="btn-9">🏛️ Analyze Treasury & Fed</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-9"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(9)">📋 Copy</button></div><div class="results-body empty" id="rb-9">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-9"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-9" placeholder="e.g. Scott Bessent priorities, Fed rate policy, gold revaluation study August 2025..."></textarea>
+    <button class="btn-go" onclick="run(9,'/analyze_treasury_fed_news')" id="btn-9">🏛️ Analyze Treasury & Fed</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-9"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(9)">📋 Copy</button></div><div class="results-body empty" id="rb-9">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 10: GODS VS BEAST SYSTEM -->
-  <div class="tab-panel" id="tab-10">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-10" placeholder="e.g. Analyze biblical financial systems (Lev 19:35-36), sound money vs CBDC, Trump CBDC ban as financial freedom milestone, Revelation 13..."></textarea>
-        <button class="btn-go" onclick="run(10,'/analyze_gods_vs_beast_system')" id="btn-10">📖 Analyze Gods vs Beast System</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-10"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(10)">📋 Copy</button></div><div class="results-body empty" id="rb-10">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-10"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-10" placeholder="e.g. Analyze biblical financial systems, sound money vs CBDC, Trump CBDC ban, Revelation 13..."></textarea>
+    <button class="btn-go" onclick="run(10,'/analyze_gods_vs_beast_system')" id="btn-10">📖 Analyze Gods vs Beast System</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-10"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(10)">📋 Copy</button></div><div class="results-body empty" id="rb-10">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 11: RESET SCENARIOS -->
-  <div class="tab-panel" id="tab-11">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Scenario Focus</label>
-        <select class="sel" id="sel-11">
-          <option>All Scenarios</option>
-          <option>Gradual Blockchain Integration (40%)</option>
-          <option>Asset-Backed Dollar Reset (20%)</option>
-          <option>CBDC Global Rollout ex-USA (25%)</option>
-          <option>Dollar Crisis / De-dollarization (10%)</option>
-          <option>Biblical Jubilee Reset (5%)</option>
-        </select>
-        <label class="field-label">Time Horizon</label>
-        <select class="sel" id="sel-11b">
-          <option>2026-2027</option>
-          <option>2027-2030</option>
-          <option>2030-2035</option>
-          <option>Long-term (2035+)</option>
-        </select>
-        <label class="field-label">Additional Context (Optional)</label>
-        <textarea class="ctx" id="ctx-11" placeholder="e.g. How does Metallicus perform in each scenario? What assets protect wealth best?"></textarea>
-        <button class="btn-go" onclick="run(11,'/analyze_monetary_scenarios')" id="btn-11">🔮 Analyze Reset Scenarios</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-11"></div><div class="results-head"><span class="results-label">Scenario Analysis</span><button class="copy-btn" onclick="cp(11)">📋 Copy</button></div><div class="results-body empty" id="rb-11">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-11"><div class="two-col"><div>
+    <label class="field-label">Scenario Focus</label>
+    <select id="sel-11a"><option>All Scenarios</option><option>Gradual Blockchain Integration (40%)</option><option>Asset-Backed Dollar Reset (20%)</option><option>CBDC Global Rollout ex-USA (25%)</option><option>Dollar Crisis / De-dollarization (10%)</option><option>Biblical Jubilee Reset (5%)</option></select>
+    <label class="field-label">Time Horizon</label>
+    <select id="sel-11b"><option>2026-2027</option><option>2027-2030</option><option>2030-2035</option><option>Long-term (2035+)</option></select>
+    <label class="field-label">Additional Context</label>
+    <textarea id="ctx-11" placeholder="e.g. How does Metallicus perform in each scenario?"></textarea>
+    <button class="btn-go" onclick="run(11,'/analyze_monetary_scenarios')" id="btn-11">🔮 Analyze Reset Scenarios</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-11"></div><div class="results-head"><span class="results-label">Scenario Analysis</span><button class="copy-btn" onclick="cp(11)">📋 Copy</button></div><div class="results-body empty" id="rb-11">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 12: GLOBAL DASHBOARD -->
-  <div class="tab-panel" id="tab-12">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-12" placeholder="e.g. Generate complete global financial reset dashboard — all key metrics, top 10 developments to watch in 2026, winners and losers..."></textarea>
-        <button class="btn-go" onclick="run(12,'/analyze_global_financial_dashboard')" id="btn-12">📊 Generate Global Dashboard</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-12"></div><div class="results-head"><span class="results-label">Global Dashboard</span><button class="copy-btn" onclick="cp(12)">📋 Copy</button></div><div class="results-body empty" id="rb-12">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-12"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-12" placeholder="e.g. Generate complete global financial reset dashboard with all key metrics..."></textarea>
+    <button class="btn-go" onclick="run(12,'/analyze_global_financial_dashboard')" id="btn-12">📊 Generate Global Dashboard</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-12"></div><div class="results-head"><span class="results-label">Global Dashboard</span><button class="copy-btn" onclick="cp(12)">📋 Copy</button></div><div class="results-body empty" id="rb-12">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 13: REPORTS -->
-  <div class="tab-panel" id="tab-13">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Report Type</label>
-        <select class="sel" id="sel-13">
-          <option>Full Monetary Reset Report</option>
-          <option>Citizen Guide</option>
-          <option>Faith Community Report</option>
-          <option>Credit Union Member Report</option>
-          <option>Investor Briefing</option>
-          <option>Executive Summary</option>
-        </select>
-        <label class="field-label">Focus Area</label>
-        <select class="sel" id="sel-13b">
-          <option>All Topics</option>
-          <option>XRP & Ripple Ecosystem</option>
-          <option>Metallicus & Credit Unions</option>
-          <option>Biblical Financial Systems</option>
-          <option>Currency Revaluation</option>
-          <option>CBDC & Stablecoins</option>
-        </select>
-        <label class="field-label">Target Audience</label>
-        <select class="sel" id="sel-13c">
-          <option>General Public</option>
-          <option>Faith Community</option>
-          <option>Credit Union Members</option>
-          <option>Investors</option>
-          <option>Financial Professionals</option>
-        </select>
-        <label class="field-label">Additional Instructions</label>
-        <textarea class="ctx" id="ctx-13" placeholder="e.g. Focus on actionable steps citizens can take to prepare for the monetary reset..."></textarea>
-        <button class="btn-go" onclick="run(13,'/generate_monetary_report')" id="btn-13">📄 Generate Report</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-13"></div><div class="results-head"><span class="results-label">Generated Report</span><button class="copy-btn" onclick="cp(13)">📋 Copy</button></div><div class="results-body empty" id="rb-13">Report will appear here after generation...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-13"><div class="two-col"><div>
+    <label class="field-label">Report Type</label>
+    <select id="sel-13a"><option>Full Monetary Reset Report</option><option>Citizen Guide</option><option>Faith Community Report</option><option>Credit Union Member Report</option><option>Investor Briefing</option><option>Executive Summary</option></select>
+    <label class="field-label">Focus Area</label>
+    <select id="sel-13b"><option>All Topics</option><option>XRP & Ripple Ecosystem</option><option>Metallicus & Credit Unions</option><option>Biblical Financial Systems</option><option>Currency Revaluation</option><option>CBDC & Stablecoins</option></select>
+    <label class="field-label">Target Audience</label>
+    <select id="sel-13c"><option>General Public</option><option>Faith Community</option><option>Credit Union Members</option><option>Investors</option><option>Financial Professionals</option></select>
+    <label class="field-label">Additional Instructions</label>
+    <textarea id="ctx-13" placeholder="e.g. Focus on actionable steps citizens can take..."></textarea>
+    <button class="btn-go" onclick="run(13,'/generate_monetary_report')" id="btn-13">📄 Generate Report</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-13"></div><div class="results-head"><span class="results-label">Generated Report</span><button class="copy-btn" onclick="cp(13)">📋 Copy</button></div><div class="results-body empty" id="rb-13">Report will appear here...</div></div></div></div></div>
 
-  <!-- TAB 14: AI FINANCIAL CHAT -->
   <div class="tab-panel" id="tab-14">
     <div class="two-col">
       <div>
         <label class="field-label">Example Questions</label>
-        <div style="background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;">
-          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Click any question to ask it:</p>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <button onclick="askChat('What is the GENIUS Act and how does it affect stablecoins?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">What is the GENIUS Act and how does it affect stablecoins?</button>
-            <button onclick="askChat('How is Metallicus changing the credit union banking system?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">How is Metallicus changing the credit union banking system?</button>
-            <button onclick="askChat('What is the current status of XRP adoption by financial institutions?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">What is the current status of XRP adoption by financial institutions?</button>
-            <button onclick="askChat('How does the Trump CBDC ban affect the monetary reset?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">How does the Trump CBDC ban affect the monetary reset?</button>
-            <button onclick="askChat('What is the Iraqi Dinar revaluation situation in 2026?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">What is the Iraqi Dinar revaluation situation in 2026?</button>
-            <button onclick="askChat('Which financial systems align with biblical sound money principles?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Which financial systems align with biblical sound money principles?</button>
-          </div>
+        <div style="background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+          <button onclick="askChat('What is the GENIUS Act and how does it affect stablecoins?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">What is the GENIUS Act and how does it affect stablecoins?</button>
+          <button onclick="askChat('How is Metallicus changing the credit union banking system?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">How is Metallicus changing the credit union banking system?</button>
+          <button onclick="askChat('What is the current status of XRP adoption by financial institutions?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">What is the current status of XRP adoption by financial institutions?</button>
+          <button onclick="askChat('What is the Iraqi Dinar revaluation situation in 2026?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">What is the Iraqi Dinar revaluation situation in 2026?</button>
+          <button onclick="askChat('Which financial systems align with biblical sound money principles?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">Which financial systems align with biblical sound money principles?</button>
         </div>
       </div>
-      <div class="chat-wrap">
-        <label class="field-label">AI Financial Chat</label>
+      <div style="display:flex;flex-direction:column;">
+        <label class="field-label" style="margin-bottom:8px;">AI Financial Chat</label>
         <div class="chat-msgs" id="chat-msgs">
-          <div class="chat-msg bot"><div class="bubble">👋 Hello! I'm your AI Monetary Reset Analyst. Ask me anything about XRP, Metallicus, the GENIUS Act, CBDC ban, currency revaluation, biblical financial systems, or the great financial reset.</div></div>
+          <div class="chat-msg bot"><div class="bubble">👋 Hello! Ask me anything about XRP, Metallicus, the GENIUS Act, CBDC ban, currency revaluation, or the great financial reset.</div></div>
         </div>
         <div class="chat-row">
           <input type="text" class="chat-input" id="chat-in" placeholder="Ask about the monetary reset..." onkeydown="if(event.key==='Enter') sendChat()">
@@ -379,46 +240,25 @@
     </div>
   </div>
 
-</div><!-- end tabs -->
+</div>
 
 <div class="watermark">© 2026 Existential Gateway, LLC · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
 
-<!-- Report an Issue Button -->
-<div id="report-btn" onclick="document.getElementById('report-modal').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;transition:all 0.2s;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">⚠️ Report an Issue</div>
-<div id="report-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
+<!-- Report an Issue -->
+<div onclick="document.getElementById('rm').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">⚠️ Report an Issue</div>
+<div id="rm" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
   <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
-    <button onclick="document.getElementById('report-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
+    <button onclick="document.getElementById('rm').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
     <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:20px;">Report an Issue</h3>
-    <select id="r-type" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;margin-bottom:12px;">
-      <option>Tool not working correctly</option><option>Analysis results seem incorrect</option><option>Login / access issue</option><option>Feature request</option><option>Other</option>
-    </select>
-    <textarea id="r-desc" placeholder="Describe the issue..." style="width:100%;min-height:100px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;margin-bottom:16px;"></textarea>
+    <select id="rt" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-size:0.85rem;padding:10px 14px;margin-bottom:12px;"><option>Tool not working</option><option>Incorrect results</option><option>Feature request</option><option>Other</option></select>
+    <textarea id="rd" placeholder="Describe the issue..." style="width:100%;min-height:100px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-size:0.85rem;padding:12px 14px;resize:vertical;margin-bottom:16px;"></textarea>
     <div style="display:flex;gap:10px;">
       <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-weight:700;cursor:pointer;">Submit</button>
-      <button onclick="document.getElementById('report-modal').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;cursor:pointer;">Cancel</button>
+      <button onclick="document.getElementById('rm').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;cursor:pointer;">Cancel</button>
     </div>
-    <p id="r-ok" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Report submitted!</p>
+    <p id="rok" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Submitted!</p>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script>
-(async function() {
-  const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
-  if (window.location.hash && window.location.hash.includes('access_token')) {
-    await sb.auth.exchangeCodeForSession(window.location.href);
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
-  const plan = data.plan;
-  const PLAN_NAMES = { basic:'Basic Plan — $29/mo', professional:'Professional Plan — $79/mo', business:'Business Plan — $199/mo', owner:'Owner Access', gateway:'The Gateway Plan — $9.99/mo' };
-  const applyPlan = () => { document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); }); };
-  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', applyPlan); } else { applyPlan(); }
-})();
-</script>
 
 <script>
   const G = '/tools/monetaryreset/gradio_api';
@@ -428,112 +268,67 @@
     document.querySelectorAll('.tab-panel').forEach((p,j) => p.classList.toggle('active', i===j));
   }
 
-  function md(text) {
-    return text.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>');
+  function md(t) {
+    return t.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>');
   }
 
-  function cp(i) {
-    const el = document.getElementById('rb-'+i);
-    const clipItem = new ClipboardItem({'text/plain': new Blob([el.innerText], {type:'text/plain'})});
-    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
-  }
+  function cp(i) { navigator.clipboard.writeText(document.getElementById('rb-'+i).innerText).then(() => alert('✅ Copied!')); }
 
   async function run(idx, endpoint) {
     const lb = document.getElementById('lb-'+idx);
     const rb = document.getElementById('rb-'+idx);
     const btn = document.getElementById('btn-'+idx);
-    lb.classList.add('active');
-    if(btn) btn.disabled = true;
+    lb.classList.add('active'); btn.disabled = true;
     rb.className = 'results-body';
-    rb.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
-
+    rb.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... please wait 1-2 minutes</span>';
     try {
       const ctx = document.getElementById('ctx-'+idx)?.value || '';
-      const sel = document.getElementById('sel-'+idx)?.value || '';
-      const selB = document.getElementById('sel-'+idx+'b')?.value || '';
-      const selC = document.getElementById('sel-'+idx+'c')?.value || '';
-
+      const a = document.getElementById('sel-'+idx+'a')?.value || '';
+      const b = document.getElementById('sel-'+idx+'b')?.value || '';
+      const c = document.getElementById('sel-'+idx+'c')?.value || '';
       let data = [];
-      if (endpoint === '/analyze_currency_revaluation') {
-        data = [sel, ctx];
-      } else if (endpoint === '/analyze_monetary_scenarios') {
-        data = [sel, selB, ctx];
-      } else if (endpoint === '/analyze_global_financial_dashboard') {
-        data = [ctx];
-      } else if (endpoint === '/generate_monetary_report') {
-        data = [sel, selB, selC, ctx];
-      } else {
-        data = [ctx];
-      }
-
-      const res = await fetch(G + '/run' + endpoint, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({data})
-      });
-      if (!res.ok) throw new Error('Request failed: ' + await res.text());
+      if (endpoint === '/analyze_currency_revaluation') data = [a, ctx];
+      else if (endpoint === '/analyze_monetary_scenarios') data = [a, b, ctx];
+      else if (endpoint === '/generate_monetary_report') data = [a, b, c, ctx];
+      else data = [ctx];
+      const res = await fetch(G + '/run' + endpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})});
+      if (!res.ok) throw new Error(await res.text());
       const result = await res.json();
-      const text = result.data?.[0] || 'No results returned.';
-      rb.innerHTML = md(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
-    } catch(e) {
-      rb.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-    }
-    lb.classList.remove('active');
-    if(btn) btn.disabled = false;
+      rb.innerHTML = md(result.data?.[0] || 'No results.');
+    } catch(e) { rb.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>'; }
+    lb.classList.remove('active'); btn.disabled = false;
   }
 
   function addMsg(role, text) {
     const msgs = document.getElementById('chat-msgs');
-    const div = document.createElement('div');
-    div.className = 'chat-msg ' + role;
-    div.innerHTML = '<div class="bubble">' + text + '</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
+    const d = document.createElement('div'); d.className = 'chat-msg ' + role;
+    d.innerHTML = '<div class="bubble">' + text + '</div>';
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
   }
 
-  function askChat(q) {
-    document.getElementById('chat-in').value = q;
-    sendChat();
-  }
+  function askChat(q) { document.getElementById('chat-in').value = q; sendChat(); }
 
   async function sendChat() {
     const input = document.getElementById('chat-in');
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-    addMsg('user', msg);
-    const thinking = document.createElement('div');
-    thinking.className = 'chat-msg bot';
-    thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
-    document.getElementById('chat-msgs').appendChild(thinking);
+    const msg = input.value.trim(); if (!msg) return;
+    input.value = ''; addMsg('user', msg);
+    const t = document.createElement('div'); t.className = 'chat-msg bot';
+    t.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
+    document.getElementById('chat-msgs').appendChild(t);
     try {
-      const res = await fetch(G + '/run/financial_chat', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({data: [msg]})
-      });
+      const res = await fetch(G + '/run/financial_chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:[msg]})});
       const result = await res.json();
-      thinking.querySelector('.bubble').innerHTML = md(result.data?.[0] || 'No response.');
-    } catch(e) {
-      thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-    }
+      t.querySelector('.bubble').innerHTML = md(result.data?.[0] || 'No response.');
+    } catch(e) { t.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>'; }
     document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
   }
 
   async function submitReport() {
-    const type = document.getElementById('r-type').value;
-    const desc = document.getElementById('r-desc').value.trim();
-    if (!desc) { alert('Please describe the issue.'); return; }
+    const desc = document.getElementById('rd').value.trim(); if (!desc) { alert('Please describe the issue.'); return; }
     try {
-      const res = await fetch('https://formspree.io/f/xwvwlyke', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'Monetary Reset Tracker',type,description:desc,_subject:'QuantusData Issue: '+type})});
-      if (res.ok) { document.getElementById('r-ok').style.display='block'; document.getElementById('r-desc').value=''; setTimeout(()=>{document.getElementById('report-modal').style.display='none';document.getElementById('r-ok').style.display='none';},2000); }
-    } catch(e) { alert('Failed. Please email existentialgateway@gmail.com'); }
-  }
-
-  async function signOutUser() {
-    const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
-    await sb.auth.signOut();
-    window.location.href = '/dashboard.html';
+      const res = await fetch('https://formspree.io/f/xwvwlyke', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'Monetary Reset Tracker',type:document.getElementById('rt').value,description:desc})});
+      if (res.ok) { document.getElementById('rok').style.display='block'; setTimeout(()=>{document.getElementById('rm').style.display='none';document.getElementById('rok').style.display='none';},2000); }
+    } catch(e) { alert('Failed. Email existentialgateway@gmail.com'); }
   }
 </script>
 </body>

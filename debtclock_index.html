@@ -19,7 +19,6 @@
     .nav-divider{width:1px;height:22px;background:var(--border);}
     .nav-tool{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
     .nav-right{display:flex;align-items:center;gap:14px;}
-    .nav-plan{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
     .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all 0.2s;}
     .nav-back:hover{color:var(--gold);border-color:var(--gold);}
     .tool-header{position:relative;z-index:1;padding:20px 40px;background:rgba(17,34,64,0.6);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
@@ -28,11 +27,12 @@
     .tool-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--white);font-weight:400;}
     .tool-tagline{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
     .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;line-height:1.6;}
-    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .free-badge{background:rgba(45,212,160,0.1);border:1px solid rgba(45,212,160,0.3);color:#2dd4a0;padding:4px 12px;border-radius:20px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;}
+    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);}
     .disclaimer strong{color:var(--gold);}
     .tabs-wrapper{position:relative;margin:24px 40px 0;}
     .tabs-wrapper::after{content:'';position:absolute;right:0;top:0;bottom:3px;width:40px;background:linear-gradient(to right,transparent,var(--navy));pointer-events:none;}
-    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent;align-items:flex-end;}
+    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent;}
     .tabs-nav::-webkit-scrollbar{height:3px;}
     .tabs-nav::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:3px;}
     .tab-btn{padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;flex-shrink:0;}
@@ -41,12 +41,12 @@
     .tab-panel{display:none;padding:28px 40px;}
     .tab-panel.active{display:block;}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;}.tab-panel{padding:20px;}}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;}.tab-panel{padding:20px;}.tabs-wrapper{margin:16px 20px 0;}}
     .field-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
-    textarea.ctx{width:100%;min-height:100px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
-    textarea.ctx:focus{outline:none;border-color:var(--gold);}
-    textarea.ctx::placeholder{color:var(--muted);}
-    select.sel{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;cursor:pointer;margin-bottom:12px;}
+    textarea{width:100%;min-height:100px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
+    textarea:focus{outline:none;border-color:var(--gold);}
+    textarea::placeholder{color:var(--muted);}
+    select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;cursor:pointer;margin-bottom:12px;}
     .btn-go{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:16px;}
     .btn-go:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
     .btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
@@ -56,7 +56,6 @@
     .copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;}
     .results-body{padding:20px;font-size:0.85rem;color:var(--white);line-height:1.8;white-space:pre-wrap;}
     .results-body.empty{color:var(--muted);font-style:italic;}
-    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000;}
     .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
     .loading-bar.active{display:block;}
     @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
@@ -77,7 +76,7 @@
 
 <nav>
   <div class="nav-left">
-    <a href="/dashboard.html" class="nav-brand">
+    <a href="https://quantusdata.ai" class="nav-brand">
       <svg width="26" height="26" viewBox="0 0 180 180"><circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/><rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/><rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/><rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/><rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/><rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/><line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/></svg>
       <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
     </a>
@@ -85,9 +84,8 @@
     <span class="nav-tool">Debt Clock Analyzer</span>
   </div>
   <div class="nav-right">
-    <span class="nav-plan">The Gateway Plan</span>
-    <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-    <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;">Sign Out</a>
+    <span class="free-badge">Free Tool</span>
+    <a href="https://quantusdata.ai" class="nav-back">← Home</a>
   </div>
 </nav>
 
@@ -102,9 +100,7 @@
   <div class="tool-desc">National debt tracking, Federal Reserve monitoring, gold & silver analysis, de-dollarization index, BRICS vs dollar, fiscal health scoring, and economic scenario modeling.</div>
 </div>
 
-<div class="disclaimer">
-  <strong>DISCLAIMER:</strong> This tool is for educational and informational purposes only. Nothing constitutes financial or investment advice. © 2026 Existential Gateway, LLC.
-</div>
+<div class="disclaimer"><strong>DISCLAIMER:</strong> For educational purposes only. Not financial advice. © 2026 Existential Gateway, LLC.</div>
 
 <div class="tabs-wrapper">
   <div class="tabs-nav">
@@ -123,193 +119,103 @@
     <button class="tab-btn" onclick="switchTab(12)">💬 Economic Chat</button>
   </div>
 
-  <!-- TAB 0: US DEBT DASHBOARD -->
-  <div class="tab-panel active" id="tab-0">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-0" placeholder="e.g. Analyze current US national debt trajectory, per-capita debt, debt-to-GDP ratio, deficit projections..."></textarea>
-        <button class="btn-go" onclick="run(0,'/us_debt_dashboard')" id="btn-0">💰 Analyze US Debt Dashboard</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-0"></div><div class="results-head"><span class="results-label">US Debt Analysis</span><button class="copy-btn" onclick="cp(0)">📋 Copy</button></div><div class="results-body empty" id="rb-0">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel active" id="tab-0"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-0" placeholder="e.g. Analyze current US national debt trajectory, per-capita debt, debt-to-GDP ratio..."></textarea>
+    <button class="btn-go" onclick="run(0,'/us_debt_dashboard')" id="btn-0">💰 Analyze US Debt</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-0"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(0)">📋 Copy</button></div><div class="results-body empty" id="rb-0">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 1: FEDERAL RESERVE -->
-  <div class="tab-panel" id="tab-1">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-1" placeholder="e.g. Analyze Federal Reserve monetary policy, interest rate decisions, QT pace, balance sheet, Powell statements..."></textarea>
-        <button class="btn-go" onclick="run(1,'/federal_reserve_monitor')" id="btn-1">🏦 Monitor Federal Reserve</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-1"></div><div class="results-head"><span class="results-label">Federal Reserve</span><button class="copy-btn" onclick="cp(1)">📋 Copy</button></div><div class="results-body empty" id="rb-1">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-1"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-1" placeholder="e.g. Analyze Fed monetary policy, interest rate decisions, QT pace, Powell statements..."></textarea>
+    <button class="btn-go" onclick="run(1,'/federal_reserve_monitor')" id="btn-1">🏦 Monitor Federal Reserve</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-1"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(1)">📋 Copy</button></div><div class="results-body empty" id="rb-1">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 2: FISCAL HEALTH SCORE -->
-  <div class="tab-panel" id="tab-2">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-2" placeholder="e.g. Score the fiscal health of the US economy, debt sustainability, revenue vs spending, fiscal cliff analysis..."></textarea>
-        <button class="btn-go" onclick="run(2,'/fiscal_health_score')" id="btn-2">❤️ Score Fiscal Health</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-2"></div><div class="results-head"><span class="results-label">Fiscal Health Score</span><button class="copy-btn" onclick="cp(2)">📋 Copy</button></div><div class="results-body empty" id="rb-2">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-2"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-2" placeholder="e.g. Score the fiscal health of the US economy, debt sustainability, revenue vs spending..."></textarea>
+    <button class="btn-go" onclick="run(2,'/fiscal_health_score')" id="btn-2">❤️ Score Fiscal Health</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-2"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(2)">📋 Copy</button></div><div class="results-body empty" id="rb-2">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 3: GOLD & SILVER -->
-  <div class="tab-panel" id="tab-3">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-3" placeholder="e.g. Analyze gold as hedge against dollar collapse, gold-to-silver ratio, central bank gold buying, gold price forecast..."></textarea>
-        <button class="btn-go" onclick="run(3,'/gold_silver_tracker')" id="btn-3">🏅 Track Gold & Silver</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-3"></div><div class="results-head"><span class="results-label">Gold & Silver Analysis</span><button class="copy-btn" onclick="cp(3)">📋 Copy</button></div><div class="results-body empty" id="rb-3">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-3"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-3" placeholder="e.g. Analyze gold as hedge, gold-to-silver ratio, central bank buying, price forecast..."></textarea>
+    <button class="btn-go" onclick="run(3,'/gold_silver_tracker')" id="btn-3">🏅 Track Gold & Silver</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-3"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(3)">📋 Copy</button></div><div class="results-body empty" id="rb-3">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 4: COMMODITIES -->
-  <div class="tab-panel" id="tab-4">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-4" placeholder="e.g. Analyze oil, natural gas, copper, agricultural commodities as indicators of economic health and inflation..."></textarea>
-        <button class="btn-go" onclick="run(4,'/commodities_monitor')" id="btn-4">📦 Monitor Commodities</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-4"></div><div class="results-head"><span class="results-label">Commodities Analysis</span><button class="copy-btn" onclick="cp(4)">📋 Copy</button></div><div class="results-body empty" id="rb-4">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-4"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-4" placeholder="e.g. Analyze oil, natural gas, copper, agricultural commodities as inflation indicators..."></textarea>
+    <button class="btn-go" onclick="run(4,'/commodities_monitor')" id="btn-4">📦 Monitor Commodities</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-4"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(4)">📋 Copy</button></div><div class="results-body empty" id="rb-4">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 5: DE-DOLLARIZATION -->
-  <div class="tab-panel" id="tab-5">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-5" placeholder="e.g. Analyze de-dollarization trends, BRICS currency alternatives, US dollar reserve share decline, petrodollar system..."></textarea>
-        <button class="btn-go" onclick="run(5,'/dedollarization_index')" id="btn-5">📉 Analyze De-dollarization</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-5"></div><div class="results-head"><span class="results-label">De-dollarization Index</span><button class="copy-btn" onclick="cp(5)">📋 Copy</button></div><div class="results-body empty" id="rb-5">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-5"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-5" placeholder="e.g. Analyze de-dollarization trends, BRICS alternatives, US dollar reserve share decline..."></textarea>
+    <button class="btn-go" onclick="run(5,'/dedollarization_index')" id="btn-5">📉 Analyze De-dollarization</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-5"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(5)">📋 Copy</button></div><div class="results-body empty" id="rb-5">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 6: DOLLAR GOLD BACKING -->
-  <div class="tab-panel" id="tab-6">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-6" placeholder="e.g. Analyze what gold price would be needed to back the US dollar at various percentages, gold revaluation scenarios..."></textarea>
-        <button class="btn-go" onclick="run(6,'/dollar_gold_backing')" id="btn-6">💵 Analyze Dollar Gold Backing</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-6"></div><div class="results-head"><span class="results-label">Dollar Gold Backing</span><button class="copy-btn" onclick="cp(6)">📋 Copy</button></div><div class="results-body empty" id="rb-6">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-6"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-6" placeholder="e.g. What gold price needed to back dollar at various percentages, gold revaluation scenarios..."></textarea>
+    <button class="btn-go" onclick="run(6,'/dollar_gold_backing')" id="btn-6">💵 Analyze Dollar Gold Backing</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-6"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(6)">📋 Copy</button></div><div class="results-body empty" id="rb-6">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 7: BRICS VS DOLLAR -->
-  <div class="tab-panel" id="tab-7">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-7" placeholder="e.g. Analyze BRICS economic power vs US dollar dominance, BRICS Unit currency, trade settlement alternatives..."></textarea>
-        <button class="btn-go" onclick="run(7,'/brics_vs_dollar')" id="btn-7">🌍 Analyze BRICS vs Dollar</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-7"></div><div class="results-head"><span class="results-label">BRICS vs Dollar</span><button class="copy-btn" onclick="cp(7)">📋 Copy</button></div><div class="results-body empty" id="rb-7">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-7"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-7" placeholder="e.g. Analyze BRICS economic power vs US dollar, BRICS Unit currency, trade settlement alternatives..."></textarea>
+    <button class="btn-go" onclick="run(7,'/brics_vs_dollar')" id="btn-7">🌍 Analyze BRICS vs Dollar</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-7"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(7)">📋 Copy</button></div><div class="results-body empty" id="rb-7">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 8: US VS BRICS GOLD -->
-  <div class="tab-panel" id="tab-8">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-8" placeholder="e.g. Compare US gold reserves vs BRICS combined gold holdings, Fort Knox audit questions, gold repatriation trends..."></textarea>
-        <button class="btn-go" onclick="run(8,'/us_vs_brics_gold')" id="btn-8">⚖️ Compare US vs BRICS Gold</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-8"></div><div class="results-head"><span class="results-label">US vs BRICS Gold</span><button class="copy-btn" onclick="cp(8)">📋 Copy</button></div><div class="results-body empty" id="rb-8">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-8"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-8" placeholder="e.g. Compare US gold reserves vs BRICS combined, Fort Knox audit questions..."></textarea>
+    <button class="btn-go" onclick="run(8,'/us_vs_brics_gold')" id="btn-8">⚖️ Compare US vs BRICS Gold</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-8"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(8)">📋 Copy</button></div><div class="results-body empty" id="rb-8">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 9: DOLLAR GOLD RATIO -->
-  <div class="tab-panel" id="tab-9">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-9" placeholder="e.g. Analyze the dollar-to-gold ratio historically and currently, what it signals for future dollar value..."></textarea>
-        <button class="btn-go" onclick="run(9,'/dollar_gold_ratio')" id="btn-9">📊 Analyze Dollar Gold Ratio</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-9"></div><div class="results-head"><span class="results-label">Dollar Gold Ratio</span><button class="copy-btn" onclick="cp(9)">📋 Copy</button></div><div class="results-body empty" id="rb-9">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-9"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-9" placeholder="e.g. Analyze the dollar-to-gold ratio historically and currently..."></textarea>
+    <button class="btn-go" onclick="run(9,'/dollar_gold_ratio')" id="btn-9">📊 Analyze Dollar Gold Ratio</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-9"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(9)">📋 Copy</button></div><div class="results-body empty" id="rb-9">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 10: SCENARIO ENGINE -->
-  <div class="tab-panel" id="tab-10">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Scenario Focus</label>
-        <select class="sel" id="sel-10">
-          <option>All Economic Scenarios</option>
-          <option>Dollar Collapse Scenario</option>
-          <option>Hyperinflation Scenario</option>
-          <option>Debt Default Scenario</option>
-          <option>Gold Standard Return</option>
-          <option>BRICS Dominance Scenario</option>
-          <option>Soft Landing Scenario</option>
-        </select>
-        <label class="field-label">Time Horizon</label>
-        <select class="sel" id="sel-10b">
-          <option>2026-2027</option>
-          <option>2027-2030</option>
-          <option>2030-2035</option>
-          <option>Long-term (2035+)</option>
-        </select>
-        <label class="field-label">Risk Appetite</label>
-        <select class="sel" id="sel-10c">
-          <option>Conservative</option>
-          <option>Moderate</option>
-          <option>Aggressive</option>
-        </select>
-        <label class="field-label">Additional Context (Optional)</label>
-        <textarea class="ctx" id="ctx-10" placeholder="e.g. What assets best protect wealth in each scenario? Focus on gold, Bitcoin, real estate..."></textarea>
-        <button class="btn-go" onclick="run(10,'/prediction_scenario_engine')" id="btn-10">🔮 Run Scenario Engine</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-10"></div><div class="results-head"><span class="results-label">Scenario Analysis</span><button class="copy-btn" onclick="cp(10)">📋 Copy</button></div><div class="results-body empty" id="rb-10">Scenario results will appear here...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-10"><div class="two-col"><div>
+    <label class="field-label">Scenario Focus</label>
+    <select id="sel-10a">
+      <option>All Economic Scenarios</option><option>Dollar Collapse Scenario</option><option>Hyperinflation Scenario</option>
+      <option>Debt Default Scenario</option><option>Gold Standard Return</option><option>BRICS Dominance Scenario</option><option>Soft Landing Scenario</option>
+    </select>
+    <label class="field-label">Time Horizon</label>
+    <select id="sel-10b"><option>2026-2027</option><option>2027-2030</option><option>2030-2035</option><option>Long-term (2035+)</option></select>
+    <label class="field-label">Risk Appetite</label>
+    <select id="sel-10c"><option>Conservative</option><option>Moderate</option><option>Aggressive</option></select>
+    <label class="field-label">Additional Context</label>
+    <textarea id="ctx-10" placeholder="e.g. What assets best protect wealth in each scenario?"></textarea>
+    <button class="btn-go" onclick="run(10,'/prediction_scenario_engine')" id="btn-10">🔮 Run Scenario Engine</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-10"></div><div class="results-head"><span class="results-label">Scenario Analysis</span><button class="copy-btn" onclick="cp(10)">📋 Copy</button></div><div class="results-body empty" id="rb-10">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 11: GOLDEN AGE TRACKER -->
-  <div class="tab-panel" id="tab-11">
-    <div class="two-col">
-      <div>
-        <label class="field-label">Context / Focus (Optional)</label>
-        <textarea class="ctx" id="ctx-11" placeholder="e.g. Analyze signs of a coming Golden Age economy, American Renaissance indicators, manufacturing revival, energy independence..."></textarea>
-        <button class="btn-go" onclick="run(11,'/golden_age_tracker')" id="btn-11">✨ Track Golden Age Indicators</button>
-      </div>
-      <div><div class="results-box"><div class="loading-bar" id="lb-11"></div><div class="results-head"><span class="results-label">Golden Age Tracker</span><button class="copy-btn" onclick="cp(11)">📋 Copy</button></div><div class="results-body empty" id="rb-11">Results will appear here after analysis...</div></div></div>
-    </div>
-  </div>
+  <div class="tab-panel" id="tab-11"><div class="two-col"><div>
+    <label class="field-label">Context / Focus (Optional)</label>
+    <textarea id="ctx-11" placeholder="e.g. Analyze signs of a coming Golden Age economy, American Renaissance indicators..."></textarea>
+    <button class="btn-go" onclick="run(11,'/golden_age_tracker')" id="btn-11">✨ Track Golden Age</button>
+  </div><div><div class="results-box"><div class="loading-bar" id="lb-11"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(11)">📋 Copy</button></div><div class="results-body empty" id="rb-11">Results will appear here...</div></div></div></div></div>
 
-  <!-- TAB 12: ECONOMIC CHAT -->
   <div class="tab-panel" id="tab-12">
     <div class="two-col">
       <div>
         <label class="field-label">Example Questions</label>
-        <div style="background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;">
-          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Click any question to ask it:</p>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <button onclick="askChat('How much is the current US national debt and what does it mean for citizens?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">How much is the US national debt and what does it mean for citizens?</button>
-            <button onclick="askChat('Is the US dollar going to collapse and when?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">Is the US dollar going to collapse and when?</button>
-            <button onclick="askChat('Should I buy gold and silver to protect my wealth?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">Should I buy gold and silver to protect my wealth?</button>
-            <button onclick="askChat('What is BRICS and how does it threaten the US dollar?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">What is BRICS and how does it threaten the US dollar?</button>
-            <button onclick="askChat('What would happen if the US returned to the gold standard?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='#8892a4'">What would happen if the US returned to the gold standard?</button>
-          </div>
+        <div style="background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+          <button onclick="askChat('How much is the US national debt and what does it mean for citizens?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">How much is the US national debt and what does it mean for citizens?</button>
+          <button onclick="askChat('Is the US dollar going to collapse?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">Is the US dollar going to collapse?</button>
+          <button onclick="askChat('Should I buy gold and silver to protect my wealth?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">Should I buy gold and silver to protect my wealth?</button>
+          <button onclick="askChat('What is BRICS and how does it threaten the US dollar?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">What is BRICS and how does it threaten the US dollar?</button>
+          <button onclick="askChat('What would happen if the US returned to the gold standard?')" style="text-align:left;background:transparent;border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--muted);font-size:0.78rem;cursor:pointer;" onmouseover="this.style.color='#f8f9fc';this.style.borderColor='#c9a84c'" onmouseout="this.style.color='#8892a4';this.style.borderColor='rgba(201,168,76,0.15)'">What would happen if the US returned to the gold standard?</button>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;">
         <label class="field-label" style="margin-bottom:8px;">AI Economic Chat</label>
         <div class="chat-msgs" id="chat-msgs">
-          <div class="chat-msg bot"><div class="bubble">💰 Hello! I'm your AI Economic Analyst. Ask me anything about the national debt, Federal Reserve, gold & silver, BRICS, de-dollarization, or fiscal policy.</div></div>
+          <div class="chat-msg bot"><div class="bubble">💰 Hello! Ask me anything about the national debt, Federal Reserve, gold & silver, BRICS, or de-dollarization.</div></div>
         </div>
         <div class="chat-row">
           <input type="text" class="chat-input" id="chat-in" placeholder="Ask about the debt clock..." onkeydown="if(event.key==='Enter') sendChat()">
@@ -319,44 +225,25 @@
     </div>
   </div>
 
-</div><!-- end tabs -->
-
-<div class="watermark">© 2026 Existential Gateway, LLC · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
-
-<!-- Report an Issue -->
-<div id="report-btn" onclick="document.getElementById('report-modal').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">⚠️ Report an Issue</div>
-<div id="report-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
-    <button onclick="document.getElementById('report-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
-    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:20px;">Report an Issue</h3>
-    <select id="r-type" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;margin-bottom:12px;"><option>Tool not working correctly</option><option>Analysis results seem incorrect</option><option>Login / access issue</option><option>Feature request</option><option>Other</option></select>
-    <textarea id="r-desc" placeholder="Describe the issue..." style="width:100%;min-height:100px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;margin-bottom:16px;"></textarea>
-    <div style="display:flex;gap:10px;">
-      <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-weight:700;cursor:pointer;">Submit</button>
-      <button onclick="document.getElementById('report-modal').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;cursor:pointer;">Cancel</button>
-    </div>
-    <p id="r-ok" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Submitted!</p>
-  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script>
-(async function() {
-  const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
-  if (window.location.hash && window.location.hash.includes('access_token')) {
-    await sb.auth.exchangeCodeForSession(window.location.href);
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
-  const plan = data.plan;
-  const PLAN_NAMES = { basic:'Basic Plan — $29/mo', professional:'Professional Plan — $79/mo', business:'Business Plan — $199/mo', owner:'Owner Access', gateway:'The Gateway Plan — $9.99/mo' };
-  const applyPlan = () => { document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); }); };
-  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', applyPlan); } else { applyPlan(); }
-})();
-</script>
+<div class="watermark">© 2026 Existential Gateway, LLC · Free Tool · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
+
+<!-- Report an Issue -->
+<div onclick="document.getElementById('rm').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">⚠️ Report an Issue</div>
+<div id="rm" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
+    <button onclick="document.getElementById('rm').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:20px;">Report an Issue</h3>
+    <select id="rt" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;margin-bottom:12px;"><option>Tool not working</option><option>Incorrect results</option><option>Feature request</option><option>Other</option></select>
+    <textarea id="rd" placeholder="Describe the issue..." style="width:100%;min-height:100px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;margin-bottom:16px;"></textarea>
+    <div style="display:flex;gap:10px;">
+      <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-weight:700;cursor:pointer;">Submit</button>
+      <button onclick="document.getElementById('rm').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;cursor:pointer;">Cancel</button>
+    </div>
+    <p id="rok" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Submitted!</p>
+  </div>
+</div>
 
 <script>
   const G = '/tools/debtclock/gradio_api';
@@ -366,101 +253,67 @@
     document.querySelectorAll('.tab-panel').forEach((p,j) => p.classList.toggle('active', i===j));
   }
 
-  function md(text) {
-    return text.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>');
+  function md(t) {
+    return t.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^---$/gm,'<hr>');
   }
 
   function cp(i) {
     const el = document.getElementById('rb-'+i);
-    const clipItem = new ClipboardItem({'text/plain': new Blob([el.innerText], {type:'text/plain'})});
-    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
+    navigator.clipboard.writeText(el.innerText).then(() => alert('✅ Copied!'));
   }
 
   async function run(idx, endpoint) {
     const lb = document.getElementById('lb-'+idx);
     const rb = document.getElementById('rb-'+idx);
     const btn = document.getElementById('btn-'+idx);
-    lb.classList.add('active');
-    if(btn) btn.disabled = true;
+    lb.classList.add('active'); btn.disabled = true;
     rb.className = 'results-body';
-    rb.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
+    rb.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... please wait 1-2 minutes</span>';
     try {
       const ctx = document.getElementById('ctx-'+idx)?.value || '';
-      const sel = document.getElementById('sel-'+idx)?.value || '';
-      const selB = document.getElementById('sel-'+idx+'b')?.value || '';
-      const selC = document.getElementById('sel-'+idx+'c')?.value || '';
-      let data = [];
-      if (endpoint === '/prediction_scenario_engine') {
-        data = [sel, selB, selC, ctx];
-      } else {
-        data = [ctx];
-      }
-      const res = await fetch(G + '/run' + endpoint, {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({data})
-      });
-      if (!res.ok) throw new Error('Request failed: ' + await res.text());
+      const a = document.getElementById('sel-'+idx+'a')?.value || '';
+      const b = document.getElementById('sel-'+idx+'b')?.value || '';
+      const c = document.getElementById('sel-'+idx+'c')?.value || '';
+      let data = endpoint === '/prediction_scenario_engine' ? [a, b, c, ctx] : [ctx];
+      const res = await fetch(G + '/run' + endpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})});
+      if (!res.ok) throw new Error(await res.text());
       const result = await res.json();
-      const text = result.data?.[0] || 'No results returned.';
-      rb.innerHTML = md(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
-    } catch(e) {
-      rb.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-    }
-    lb.classList.remove('active');
-    if(btn) btn.disabled = false;
+      rb.innerHTML = md(result.data?.[0] || 'No results.');
+    } catch(e) { rb.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>'; }
+    lb.classList.remove('active'); btn.disabled = false;
   }
 
   function addMsg(role, text) {
     const msgs = document.getElementById('chat-msgs');
-    const div = document.createElement('div');
-    div.className = 'chat-msg ' + role;
-    div.innerHTML = '<div class="bubble">' + text + '</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
+    const d = document.createElement('div');
+    d.className = 'chat-msg ' + role;
+    d.innerHTML = '<div class="bubble">' + text + '</div>';
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
   }
 
-  function askChat(q) {
-    document.getElementById('chat-in').value = q;
-    sendChat();
-  }
+  function askChat(q) { document.getElementById('chat-in').value = q; sendChat(); }
 
   async function sendChat() {
     const input = document.getElementById('chat-in');
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-    addMsg('user', msg);
-    const thinking = document.createElement('div');
-    thinking.className = 'chat-msg bot';
-    thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
-    document.getElementById('chat-msgs').appendChild(thinking);
+    const msg = input.value.trim(); if (!msg) return;
+    input.value = ''; addMsg('user', msg);
+    const t = document.createElement('div'); t.className = 'chat-msg bot';
+    t.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
+    document.getElementById('chat-msgs').appendChild(t);
     try {
-      const res = await fetch(G + '/run/economic_chat', {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({data: [msg]})
-      });
+      const res = await fetch(G + '/run/economic_chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:[msg]})});
       const result = await res.json();
-      thinking.querySelector('.bubble').innerHTML = md(result.data?.[0] || 'No response.');
-    } catch(e) {
-      thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-    }
+      t.querySelector('.bubble').innerHTML = md(result.data?.[0] || 'No response.');
+    } catch(e) { t.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>'; }
     document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
   }
 
   async function submitReport() {
-    const type = document.getElementById('r-type').value;
-    const desc = document.getElementById('r-desc').value.trim();
-    if (!desc) { alert('Please describe the issue.'); return; }
+    const desc = document.getElementById('rd').value.trim(); if (!desc) { alert('Please describe the issue.'); return; }
     try {
-      const res = await fetch('https://formspree.io/f/xwvwlyke', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'Debt Clock Analyzer',type,description:desc,_subject:'QuantusData Issue: '+type})});
-      if (res.ok) { document.getElementById('r-ok').style.display='block'; setTimeout(()=>{document.getElementById('report-modal').style.display='none';document.getElementById('r-ok').style.display='none';},2000); }
-    } catch(e) { alert('Failed. Please email existentialgateway@gmail.com'); }
-  }
-
-  async function signOutUser() {
-    const sb = supabase.createClient('https://jolvnzhwwchbkuzkeqjt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs');
-    await sb.auth.signOut();
-    window.location.href = '/dashboard.html';
+      const res = await fetch('https://formspree.io/f/xwvwlyke', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'Debt Clock',type:document.getElementById('rt').value,description:desc})});
+      if (res.ok) { document.getElementById('rok').style.display='block'; setTimeout(()=>{document.getElementById('rm').style.display='none';document.getElementById('rok').style.display='none';},2000); }
+    } catch(e) { alert('Failed. Email existentialgateway@gmail.com'); }
   }
 </script>
 </body>
