@@ -19,6 +19,7 @@
     .nav-divider{width:1px;height:22px;background:var(--border);}
     .nav-tool{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
     .nav-right{display:flex;align-items:center;gap:14px;}
+    .free-badge{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:4px 12px;border-radius:20px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;}
     .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all 0.2s;}
     .nav-back:hover{color:var(--gold);border-color:var(--gold);}
     .tool-header{position:relative;z-index:1;padding:20px 40px;background:rgba(17,34,64,0.6);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
@@ -73,6 +74,83 @@
 </head>
 <body>
 
+  <!-- Gateway Plan Auth Check -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    #auth-gate{position:fixed;inset:0;background:#0a1628;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+    #auth-gate p{color:#8892a4;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:2px;}
+    #auth-gate .auth-spinner{width:32px;height:32px;border:3px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+  <div id="auth-gate">
+    <div class="auth-spinner"></div>
+    <p>VERIFYING ACCESS...</p>
+  </div>
+  <script>
+  (async function() {
+    const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, storageKey: 'quantusdata-auth' }
+    });
+
+    const GATEWAY_PLANS = ['gateway', 'basic', 'professional', 'business', 'owner'];
+
+    async function checkAccess() {
+      try {
+        // Try getting session - retry once if null (race condition on new tab)
+        let session = null;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const { data } = await sb.auth.getSession();
+          session = data.session;
+          if (session) break;
+          // Wait 500ms before retry
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        if (!session || !session.user) {
+          console.log('No session found after retries - redirecting to dashboard');
+          window.location.href = 'https://quantusdata.ai/dashboard.html';
+          return;
+        }
+
+        console.log('Session found for:', session.user.email);
+
+                // Check subscription plan by email
+        const userEmail = session.user.email;
+        const { data, error } = await sb
+          .from('subscriptions')
+          .select('plan, status')
+          .eq('email', userEmail)
+          .eq('status', 'active')
+          .single();
+
+        console.log('Subscription for', userEmail, ':', data, error);
+
+        if (error || !data || !GATEWAY_PLANS.includes(data.plan)) {
+          console.log('No gateway plan - redirecting');
+          window.location.href = 'https://quantusdata.ai/dashboard.html?upgrade=gateway';
+          return;
+        }
+
+        console.log('Access granted - plan:', data.plan);
+        const gate = document.getElementById('auth-gate');
+        if (gate) gate.remove();
+        if (window._authChecked) return;
+        window._authChecked = true;
+
+      } catch(e) {
+        console.error('Auth check failed:', e);
+        window.location.href = 'https://quantusdata.ai/dashboard.html';
+      }
+    }
+
+    // Only call once - onAuthStateChange can cause double execution
+    checkAccess();
+  })();
+  </script>
+
+
 <nav>
   <div class="nav-left">
     <a href="https://quantusdata.ai" class="nav-brand">
@@ -83,7 +161,8 @@
     <span class="nav-tool">End Times Prophecy Analyzer</span>
   </div>
   <div class="nav-right">
-    <a href="https://quantusdata.ai" class="nav-back">← Home</a>
+    <span class="free-badge">Gateway Plan</span>
+    <a href="https://quantusdata.ai/dashboard.html" class="nav-back">← Dashboard</a>
   </div>
 </nav>
 
