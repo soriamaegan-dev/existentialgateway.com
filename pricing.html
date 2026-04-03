@@ -204,10 +204,11 @@
       <p>Simple, transparent pricing. Cancel anytime. No contracts.</p>
     </div>
 
-    <div class="pricing-grid" style="max-width:500px;margin:0 auto;">
+    <!-- Side by side: Gateway Plan + QuantusData -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;">
 
-      <!-- GATEWAY PLAN — only plan -->
-      <div class="plan-card featured" style="width:100%;">
+      <!-- GATEWAY PLAN -->
+      <div class="plan-card featured" style="margin:0;">
         <span class="featured-badge">The Gateway Plan™</span>
         <span class="plan-icon">✦</span>
         <p class="plan-name">The Gateway Plan™</p>
@@ -231,17 +232,40 @@
         <a href="https://buy.stripe.com/3cI9AUb5q1im37l0K763K03" class="btn-primary plan-btn" target="_blank">Subscribe Now — $9.99/mo →</a>
       </div>
 
-    </div>
-
-    <!-- QuantusData Banner -->
-    <div style="margin-top:48px;background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.2);border-radius:8px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
-      <div>
-        <p style="font-family:Space Mono,monospace;font-size:0.62rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Professional & Business Analytics</p>
-        <p style="color:var(--white);font-weight:600;font-size:1rem;margin-bottom:6px;">Need professional industry tools?</p>
-        <p style="color:var(--muted);font-size:0.88rem;">Insurance, Healthcare, Legal, Financial, Real Estate, Retail, Education, Crime & more — available on <strong style="color:var(--white);">QuantusData.ai</strong> starting at $29/month.</p>
+      <!-- QUANTUSDATA PROFESSIONAL -->
+      <div class="plan-card" style="margin:0;border-color:rgba(74,158,255,0.3);display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <span class="plan-icon">🏢</span>
+          <p class="plan-name" style="color:var(--accent);">Professional Tools</p>
+          <p class="plan-tagline">via QuantusData.ai</p>
+          <p class="plan-price" style="color:var(--accent);"><sup>$</sup>29<span style="font-size:1.4rem">+</span></p>
+          <span class="plan-period">Per Month</span>
+          <div class="plan-divider"></div>
+          <div class="plan-tools">
+            <span class="plan-tools-label">Professional & Business Tools</span>
+            <div class="plan-tool-item">🛡️ Insurance Analyzer</div>
+            <div class="plan-tool-item">🏥 Healthcare Analyzer</div>
+            <div class="plan-tool-item">⚖️ Legal Analyzer</div>
+            <div class="plan-tool-item">💹 Financial Analyzer</div>
+            <div class="plan-tool-item">📊 Insurance Economics</div>
+            <div class="plan-tool-item">📈 Marketing Analytics Suite</div>
+            <div class="plan-tool-item">+ More on QuantusData.ai</div>
+          </div>
+          <ul class="plan-features">
+            <li>Industry-specific AI analysis</li>
+            <li>File upload (PDF/CSV/Excel)</li>
+            <li>PDF & PowerPoint exports</li>
+          </ul>
+        </div>
+        <a href="https://quantusdata.ai" target="_blank" class="btn-primary plan-btn" style="background:linear-gradient(135deg,rgba(74,158,255,0.3),rgba(74,158,255,0.1));border:1px solid rgba(74,158,255,0.4);">Visit QuantusData.ai →</a>
       </div>
-      <a href="https://quantusdata.ai" target="_blank" style="background:linear-gradient(135deg,rgba(74,158,255,0.15),rgba(74,158,255,0.05));color:var(--accent);padding:14px 28px;border:1px solid rgba(74,158,255,0.4);border-radius:4px;font-family:Rajdhani,sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:all 0.2s;">Visit QuantusData.ai →</a>
+
     </div>
+    <style>
+      @media(max-width:768px){
+        .pricing-side-by-side{grid-template-columns:1fr !important;}
+      }
+    </style>
 
     <!-- Content Creator Collaboration -->
     <div class="section-border" style="padding-top:60px;">
