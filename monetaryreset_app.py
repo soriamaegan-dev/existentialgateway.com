@@ -278,6 +278,7 @@ def query_llm_with_file(prompt, file_context):
         ext = os.path.splitext(filepath)[1].lower()
         if ext in ['.png', '.jpg', '.jpeg', '.webp']:
             vision_prompt = (
+                "IMPORTANT: The user has uploaded an image. First analyze the image in detail, then run your FULL analysis for this specific topic as you normally would - include ALL sections, data, and insights you would normally provide. Do not skip any part of your standard analysis just because an image was uploaded. The image should ADD to your analysis, not replace it. Image instructions: " +
                 prompt +
                 " The user has uploaded an image related to this analysis topic. "
                 "1) Describe exactly what you see - numbers, charts, text, logos, data. "
