@@ -297,7 +297,14 @@ def query_llm_with_file(prompt, file_context):
         ext = os.path.splitext(filepath)[1].lower()
         # If it is an image, use vision API to actually SEE it
         if ext in [".png", ".jpg", ".jpeg", ".webp"]:
-            vision_prompt = prompt + " The user has uploaded an image. Analyze the visual content of this image and incorporate what you see into your analysis. Describe any charts, data, text, screenshots, or relevant visual information."
+            vision_prompt = (
+                prompt +
+                " The user has uploaded an image related to this analysis topic. "
+                "1) Describe exactly what you see - numbers, charts, text, logos, data. "
+                "2) Explain how this image relates to the current tab topic - US debt, Fed policy, gold/silver, de-dollarization, BRICS, dollar gold backing, or scenarios. "
+                "3) Connect what you see to the shift from fiat to asset-backed financial system - XRP, gold, silver, BRICS, financial sovereignty implications. "
+                "4) Be specific - reference the actual image content, not generic analysis."
+            )
             return query_vision(vision_prompt, filepath)
         else:
             file_context = process_uploaded_file(file_context)

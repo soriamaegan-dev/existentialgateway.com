@@ -277,7 +277,14 @@ def query_llm_with_file(prompt, file_context):
         filepath = file_context.name if hasattr(file_context, 'name') else str(file_context)
         ext = os.path.splitext(filepath)[1].lower()
         if ext in ['.png', '.jpg', '.jpeg', '.webp']:
-            vision_prompt = prompt + ' The user has uploaded an image. Analyze the visual content and incorporate what you see into your analysis.'
+            vision_prompt = (
+                prompt +
+                " The user has uploaded an image related to this analysis topic. "
+                "1) Describe exactly what you see - numbers, charts, text, logos, data. "
+                "2) Explain how this image relates to the current tab topic - XRP, blockchain, FOREX, currency revaluation, Metallicus, Treasury/Fed, Gods vs Beast system, or monetary reset scenarios. "
+                "3) Connect what you see to the monetary reset - XRP adoption, BRICS currency, gold/silver revaluation, GENIUS Act, transition from fiat Beast system to Gods financial system. "
+                "4) Be specific - reference the actual image content, not generic analysis."
+            )
             return query_vision(vision_prompt, filepath)
         else:
             file_context = process_uploaded_file(file_context)
