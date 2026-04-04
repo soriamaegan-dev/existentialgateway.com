@@ -420,3 +420,16 @@
     </div>
     <div style="text-align:center; margin-top:40px;">
       <a href="/cdn-cgi/l/email-protection#c2b1adb0aba3ecafa3a7a5a3ac82a5afa3abaeeca1adaffdb1b7a0a8a7a1b6ff81b7b
+<script>
+function egToggleNav() {
+  var nav = document.querySelector('.nav-links');
+  var btn = document.getElementById('hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('open');
+}
+</script>
+</body>
+</html>
