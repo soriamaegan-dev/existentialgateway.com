@@ -3,56 +3,45 @@
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-(function() {
-  const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, storageKey: 'quantusdata-auth' } });
-
-  let authDone = false;
-  let authTimeout = null;
-
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (authDone) return;
-    if (session?.user) {
-      authDone = true;
-      if (authTimeout) clearTimeout(authTimeout);
-    const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-    if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+(async function() {
+  const sb = supabase.createClient("https://jolvnzhwwchbkuzkeqjt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs", { auth: { persistSession: true, storageKey: "quantusdata-auth" } });
+  if (window.location.hash && window.location.hash.includes("access_token")) {
+    await sb.auth.exchangeCodeForSession(window.location.href);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) { window.location.href = "/dashboard.html"; return; }
+  const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
+  if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
   const plan = data.plan;
-  const PREMIUM_PLANS = ['professional', 'business', 'owner'];
+  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  if (!BASIC_PLANS.includes(plan)) {
+    window.location.href = "/dashboard.html?error=upgrade_required";
+    return;
+  }
+  const PREMIUM_PLANS = ["professional", "business", "owner"];
   const isPremium = PREMIUM_PLANS.includes(plan);
-  const PLAN_NAMES = { 'basic': 'Basic Plan — $29/mo', 'professional': 'Professional Plan — $79/mo', 'business': 'Business Plan — $199/mo', 'owner': 'Owner Access' };
+  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
   const applyPlan = () => {
-    document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
     if (!isPremium) {
-      const PREMIUM_KEYWORDS = ['Cleaning', 'Dataset', 'Chat', 'Visual', 'Reports'];
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
+      const PREMIUM_KEYWORDS = ["Cleaning", "Dataset", "Chat", "Visual", "Reports"];
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
         const label = btn.textContent.trim();
         const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
         if (isLocked) {
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'not-allowed';
-          btn.title = 'Upgrade to Professional to unlock';
-          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert('This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade.'); };
-          btn.innerHTML = '🔒 ' + btn.innerHTML;
+          btn.style.opacity = "0.4"; btn.style.cursor = "not-allowed";
+          btn.title = "Upgrade to Professional to unlock";
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert("This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade."); };
+          btn.innerHTML = "\ud83d\udd12 " + btn.innerHTML;
         }
       });
     }
   };
-  // DOM is likely already loaded by the time async resolves
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyPlan);
-  } else {
-    applyPlan();
-  }
-  });
-
-  // Only redirect if no session after 5 seconds
-  authTimeout = setTimeout(() => {
-    if (!authDone) window.location.href = '/dashboard.html';
-  }, 5000);
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", applyPlan); } else { applyPlan(); }
 })();
 </script>
+
 
 
 
@@ -338,9 +327,9 @@
       font-family: 'DM Mono', monospace; font-size: 0.62rem;
       color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
     }
-    .results-body {
+    .results-body{
       padding: 20px;
-      font-size: 0.85rem; color: var(--white); line-height: 1.8;
+      font-size:1.05rem;font-family:Arial,sans-serif; color: var(--white); line-height: 1.8;
       white-space: pre-wrap;
     }
     .results-body.empty { color: var(--muted); font-style: italic; }
@@ -455,8 +444,17 @@
     .results-body li { margin-bottom: 4px; }
     .results-body hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
     .results-body::selection, .results-body *::selection { background: #c9a84c; color: #000000; }
-</style>
+
+    .cleaning-controls{margin-top:16px;}
+    .cleaning-section{margin-bottom:14px;}
+    .cleaning-section h4{color:var(--gold, #c9a84c);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'DM Mono',monospace;}
+    .cleaning-option{display:flex;align-items:center;gap:8px;padding:6px 0;}
+    .cleaning-option input[type="checkbox"]{accent-color:var(--gold, #c9a84c);width:16px;height:16px;cursor:pointer;}
+    .cleaning-option label{font-size:0.82rem;color:var(--text, #f8f9fc);cursor:pointer;}
+
+    </style>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -480,7 +478,7 @@
   <div class="nav-right">
     <span class="nav-plan">QuantusData Professional</span>
     <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-      <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6b6b'" onmouseout="this.style.borderColor='rgba(255,107,107,0.3)'">Sign Out</a>
+      
   </div>
 </nav>
 
@@ -516,6 +514,7 @@
     <button class="tab-btn" onclick="switchTab(7)">🧹 Data Cleaning</button>
     <button class="tab-btn" onclick="switchTab(8)">🔗 Multi-Dataset</button>
     <button class="tab-btn" onclick="switchTab(9)">💬 AI Chat</button>
+<!-- Tab order: 0=Overview, 1=Claims, 2=Loss Ratio, 3=Fraud, 4=Underwriting, 5=Viz, 6=Reports, 7=Data Cleaning, 8=Multi-Dataset, 9=AI Chat -->
   </div>
 
   <!-- TAB 0: DATA OVERVIEW -->
@@ -549,6 +548,7 @@
           </div>
           <div class="results-body empty" id="results-0">Results will appear here after analysis...</div>
         </div>
+        <div class="chart-area" id="chart-0"></div>
       </div>
     </div>
   </div>
@@ -578,7 +578,7 @@
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-1"></div>
-          <div class="results-header"><span class="results-label">Claims Analysis</span></div>
+          <div class="results-header"><span class="results-label">Claims Analysis</span><button onclick="copyResults(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button></div>
           <div class="results-body empty" id="results-1">Results will appear here after analysis...</div>
         </div>
         <div class="chart-area" id="chart-1"></div>
@@ -611,7 +611,7 @@
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-2"></div>
-          <div class="results-header"><span class="results-label">Loss Ratio Analysis</span></div>
+          <div class="results-header"><span class="results-label">Loss Ratio Analysis</span><button onclick="copyResults(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button></div>
           <div class="results-body empty" id="results-2">Results will appear here after analysis...</div>
         </div>
         <div class="chart-area" id="chart-2"></div>
@@ -644,7 +644,7 @@
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-3"></div>
-          <div class="results-header"><span class="results-label">Fraud Detection Results</span></div>
+          <div class="results-header"><span class="results-label">Fraud Detection Results</span><button onclick="copyResults(3)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button></div>
           <div class="results-body empty" id="results-3">Results will appear here after analysis...</div>
         </div>
         <div class="chart-area" id="chart-3"></div>
@@ -677,7 +677,7 @@
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-4"></div>
-          <div class="results-header"><span class="results-label">Underwriting Analysis</span></div>
+          <div class="results-header"><span class="results-label">Underwriting Analysis</span><button onclick="copyResults(4)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button></div>
           <div class="results-body empty" id="results-4">Results will appear here after analysis...</div>
         </div>
         <div class="chart-area" id="chart-4"></div>
@@ -700,20 +700,32 @@
         <div style="margin-top:16px;">
           <label class="context-label">Chart Type</label>
           <select class="styled-select" id="chart-type-5">
-            <option value="bar">Bar Chart</option>
-            <option value="line">Line Chart</option>
-            <option value="pie">Pie Chart</option>
-            <option value="scatter">Scatter Plot</option>
-            <option value="heatmap">Heatmap</option>
-            <option value="histogram">Histogram</option>
+            <option value="Bar Chart">Bar Chart</option>
+            <option value="Line Chart">Line Chart</option>
+            <option value="Pie Chart">Pie Chart</option>
+            <option value="Scatter Plot">Scatter Plot</option>
+            <option value="Heatmap">Heatmap</option>
+            <option value="Histogram">Histogram</option>
           </select>
         </div>
         <div style="margin-top:16px;">
-          <label class="context-label">What to Visualize</label>
-          <textarea class="context-input" id="context-5" placeholder="e.g. Show claim frequency by month and region..."></textarea>
+          <label class="context-label">X Axis (Column)</label>
+          <select class="styled-select" id="xcol-5"><option value="">-- Upload data first --</option></select>
         </div>
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(5, 'generate_viz')" id="btn-5">
+          <label class="context-label">Y Axis (Column)</label>
+          <select class="styled-select" id="ycol-5"><option value="">-- Upload data first --</option></select>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Group By / Color (Optional)</label>
+          <select class="styled-select" id="groupby-5"><option value="">None</option></select>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Additional Instructions (Optional)</label>
+          <textarea class="context-input" id="context-5" placeholder="e.g. Show only claims over $10,000, use monthly grouping..."></textarea>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runViz()" id="btn-5">
             📊 Generate Chart
           </button>
         </div>
@@ -721,7 +733,7 @@
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-5"></div>
-          <div class="results-header"><span class="results-label">Visualization</span></div>
+          <div class="results-header"><span class="results-label">Visualization</span><button onclick="copyResults(5)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button></div>
           <div class="results-body empty" id="results-5">Chart will appear here...</div>
         </div>
         <div class="chart-area" id="chart-5"></div>
@@ -753,6 +765,13 @@
           </select>
         </div>
         <div style="margin-top:16px;">
+          <label class="context-label">Download Format</label>
+          <select class="styled-select" id="format-6">
+            <option value="PDF Report">PDF Report</option>
+            <option value="PowerPoint Presentation">PowerPoint Presentation</option>
+          </select>
+        </div>
+        <div style="margin-top:16px;">
           <label class="context-label">Additional Instructions</label>
           <textarea class="context-input" id="context-6" placeholder="e.g. Include executive summary and key recommendations..."></textarea>
         </div>
@@ -765,7 +784,7 @@
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-6"></div>
-          <div class="results-header"><span class="results-label">Generated Report</span></div>
+          <div class="results-header"><span class="results-label">Generated Report</span><button onclick="copyResults(6)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button></div>
           <div class="results-body empty" id="results-6">Report will appear here after generation...</div>
         </div>
         <div class="download-area" id="download-6">
@@ -775,84 +794,76 @@
     </div>
   </div>
 
-  <!-- TAB 7: AI CHAT -->
-  <div class="tab-panel" id="tab-8">
-    <div class="two-col">
-      <div>
-        <label class="context-label">Upload Data for Context (Optional)</label>
-        <div class="upload-zone" id="upload-7" onclick="triggerUpload(7, event)" style="padding:20px;">
-          <input type="file" id="file-7" accept=".csv,.xlsx,.xls" onchange="handleFile(7)" onclick="event.stopPropagation()">
-          <span class="upload-icon" style="font-size:1.5rem;">📤</span>
-          <div class="upload-title" style="font-size:0.82rem;">Upload data to reference in chat</div>
-          <div class="upload-sub">CSV or Excel</div>
-          <div class="upload-filename" id="filename-7"></div>
-        </div>
-        <div style="margin-top:12px;">
-          <button class="btn-secondary" onclick="loadChatData()" id="btn-load-7">📤 Load Data</button>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;">
-        <label class="context-label">AI Insurance Analyst Chat</label>
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-msg assistant">
-            <div class="bubble">👋 Hello! I'm your AI Insurance Analyst. Upload your data above and ask me anything about your claims, loss ratios, fraud patterns, or underwriting performance.</div>
-          </div>
-        </div>
-        <div class="chat-input-row">
-          <input type="text" class="chat-input" id="chat-input" placeholder="Ask about your insurance data..." onkeydown="if(event.key==='Enter') sendChat()">
-          <button class="btn-analyze" onclick="sendChat()" style="padding:10px 18px;">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- TAB 8: DATA CLEANING -->
+    <!-- TAB 7: DATA CLEANING -->
   <div class="tab-panel" id="tab-7">
     <div class="two-col">
-      <div>
-        <label class="context-label">Upload Dataset to Clean</label>
-        <div class="upload-zone" id="upload-8" onclick="triggerUpload(8, event)">
-          <input type="file" id="file-8" accept=".csv,.xlsx,.xls" onchange="handleFile(8)" onclick="event.stopPropagation()">
-          <span class="upload-icon">🧹</span>
-          <div class="upload-title">Drop file here or click to upload</div>
-          <div class="upload-sub">CSV or Excel files supported</div>
-          <div class="upload-filename" id="filename-8"></div>
+      <div class="col">
+        <h3>Data Cleaning Options</h3>
+        <div class="upload-zone" onclick="triggerUpload(7, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(7, event)">
+          <input type="file" id="file-7" accept=".csv,.xlsx,.xls" onchange="handleFile(7)" onclick="event.stopPropagation()" style="display:none">
+          <div class="upload-icon">&#x1f4c1;</div>
+          <p>Click or drag file here</p>
+          <span class="file-name" id="filename-7"></span>
         </div>
-        <div style="margin-top:16px;">
-          <label class="context-label">Cleaning Instructions (Optional)</label>
-          <textarea class="context-input" id="context-8" placeholder="e.g. Remove duplicates, fill missing values with median, standardize date formats, remove rows where claim amount is 0..."></textarea>
-        </div>
-        <div style="margin-top:16px;">
-          <label class="context-label">Cleaning Options</label>
-          <select class="styled-select" id="extra-8">
-            <option value="full">Full Clean — Remove duplicates, fix nulls, standardize formats</option>
-            <option value="nulls">Fix Missing Values Only</option>
-            <option value="duplicates">Remove Duplicates Only</option>
-            <option value="formats">Standardize Formats Only</option>
-            <option value="outliers">Detect & Flag Outliers</option>
-            <option value="report">Data Quality Report Only</option>
-          </select>
-        </div>
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runCleaning()" id="btn-7">🧹 Clean Dataset</button>
-        </div>
-      </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-7"></div>
-          <div class="results-header">
-            <span class="results-label">Data Cleaning Report</span>
-            <button onclick="copyResults(8)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+        <div class="cleaning-controls">
+          <div class="cleaning-section">
+            <h4>Data Quality</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-empty" checked>
+              <label for="clean-empty">Remove empty rows</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-dupes" checked>
+              <label for="clean-dupes">Remove duplicates</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-nulls" checked>
+              <label for="clean-nulls">Fill null values (median for numbers, 'Unknown' for text)</label>
+            </div>
           </div>
-          <div class="results-body empty" id="results-7">Upload a dataset and click Clean to get a data quality report and cleaning recommendations...</div>
+          <div class="cleaning-section">
+            <h4>Standardization</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-case" checked>
+              <label for="clean-case">Standardize text casing (Title Case)</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-phone" checked>
+              <label for="clean-phone">Standardize phone formats</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-date" checked>
+              <label for="clean-date">Standardize dates to YYYY-MM-DD</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-bool" checked>
+              <label for="clean-bool">Standardize booleans (true/false)</label>
+            </div>
+          </div>
+          <div class="cleaning-section">
+            <h4>Analysis</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-outliers" checked>
+              <label for="clean-outliers">Flag outliers via IQR method</label>
+            </div>
+          </div>
+        </div>
+        <button class="gold-btn btn-analyze" onclick="runCleaning()">&#x2728; Clean Data</button>
+      </div>
+      <div class="col">
+        <div class="loading-bar" id="loading-7"><div class="loading-fill"></div></div>
+        <div class="results" id="results-7">
+          <div class="results-header"><span>Cleaning Results</span><button class="copy-btn" onclick="copyResults(7)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">&#x1f4cb; Copy</button></div>
+          <div class="results-body empty" id="results-body-7">
+            <div class="cleaning-preview" id="cleaning-preview"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TAB 9: MULTI-DATASET ANALYSIS -->
-  <div class="tab-panel" id="tab-9">
+  <!-- TAB 8: MULTI-DATASET ANALYSIS -->
+  <div class="tab-panel" id="tab-8">
     <div style="margin-bottom:20px;padding:16px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:6px;">
       <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--gold);">ℹ️ MULTI-DATASET ANALYSIS</span>
       <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.6;">Upload up to 3 related datasets and the AI will cross-reference, compare, and find patterns across all of them simultaneously. Perfect for comparing claims vs policy data, year-over-year analysis, or multi-region comparisons.</p>
@@ -898,27 +909,58 @@
         <div style="margin-top:16px;">
           <label class="context-label">Analysis Type</label>
           <select class="styled-select" id="extra-multi">
-            <option value="compare">Cross-Dataset Comparison</option>
-            <option value="correlate">Correlation Analysis</option>
-            <option value="trends">Year-over-Year Trends</option>
-            <option value="merge">Merge & Unified Analysis</option>
-            <option value="anomalies">Anomaly Detection Across Datasets</option>
-            <option value="full">Full Multi-Dataset Report</option>
+            <option value="Cross-Dataset Comparison">Cross-Dataset Comparison</option>
+            <option value="Correlation Analysis">Correlation Analysis</option>
+            <option value="Year-over-Year Trends">Year-over-Year Trends</option>
+            <option value="Merge & Unified Analysis">Merge & Unified Analysis</option>
+            <option value="Anomaly Detection Across Datasets">Anomaly Detection Across Datasets</option>
+            <option value="Full Multi-Dataset Report">Full Multi-Dataset Report</option>
           </select>
         </div>
 
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runMultiDataset()" id="btn-9">🔗 Analyze All Datasets</button>
+          <button class="btn-analyze" onclick="runMultiDataset()" id="btn-8">🔗 Analyze All Datasets</button>
         </div>
       </div>
       <div>
         <div class="results-area">
-          <div class="loading-bar" id="loading-9"></div>
+          <div class="loading-bar" id="loading-8"></div>
           <div class="results-header">
             <span class="results-label">Multi-Dataset Analysis</span>
-            <button onclick="copyResults(9)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+            <button onclick="copyResults(8)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
           </div>
-          <div class="results-body empty" id="results-9">Upload 2-3 related datasets and click Analyze to get AI-powered cross-dataset insights...</div>
+          <div class="results-body empty" id="results-8">Upload 2-3 related datasets and click Analyze to get AI-powered cross-dataset insights...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 9: AI CHAT -->
+  <div class="tab-panel" id="tab-9">
+    <div class="two-col">
+      <div>
+        <label class="context-label">Upload Data for Context (Optional)</label>
+        <div class="upload-zone" id="upload-9" onclick="triggerUpload(9, event)" style="padding:20px;">
+          <input type="file" id="file-9" accept=".csv,.xlsx,.xls" onchange="handleFile(9)" onclick="event.stopPropagation()">
+          <span class="upload-icon" style="font-size:1.5rem;">📤</span>
+          <div class="upload-title" style="font-size:0.82rem;">Upload data to reference in chat</div>
+          <div class="upload-sub">CSV or Excel</div>
+          <div class="upload-filename" id="filename-9"></div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn-secondary" onclick="loadChatData()" id="btn-load-9">📤 Load Data</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <label class="context-label">AI Insurance Analyst Chat</label>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg assistant">
+            <div class="bubble">👋 Hello! I'm your AI Insurance Analyst. Upload your data above and ask me anything about your claims, loss ratios, fraud patterns, or underwriting performance.</div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Ask about your insurance data..." onkeydown="if(event.key==='Enter') sendChat()">
+          <button class="btn-analyze" onclick="sendChat()" style="padding:10px 18px;">Send</button>
         </div>
       </div>
     </div>
@@ -975,6 +1017,54 @@
     const fn = document.getElementById('filename-' + idx);
     fn.textContent = '📎 ' + file.name;
     fn.style.display = 'block';
+
+    // If Visualizations tab (5), populate column dropdowns
+    if (idx === 5) {
+      const isExcel = file.name.match(/\.xlsx?$/i);
+      if (isExcel && typeof XLSX !== 'undefined') {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            if (json.length > 0) {
+              const headers = json[0].map(h => String(h).trim()).filter(h => h);
+              populateVizDropdowns(headers);
+            }
+          } catch(err) { console.warn('Excel parse error:', err); }
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        // CSV fallback
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const firstLine = e.target.result.split(/\r?\n/)[0];
+          if (firstLine) {
+            const headers = firstLine.split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+            populateVizDropdowns(headers);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+
+  function populateVizDropdowns(headers) {
+    const xSel = document.getElementById('xcol-5');
+    const ySel = document.getElementById('ycol-5');
+    const gSel = document.getElementById('groupby-5');
+    xSel.innerHTML = '<option value="">-- Select X Axis --</option>';
+    ySel.innerHTML = '<option value="">-- Select Y Axis --</option>';
+    gSel.innerHTML = '<option value="">None</option>';
+    headers.forEach(h => {
+      if (h) {
+        xSel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+        ySel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+        gSel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+      }
+    });
   }
 
   async function callGradioApi(endpoint, fileIdx, extraArgs) {
@@ -1010,13 +1100,27 @@
   }
 
   function renderMarkdown(text) {
-    return text
+    // First, extract code blocks and replace with placeholders
+    const codeBlocks = [];
+    text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
+      codeBlocks.push('<pre style="background:rgba(10,22,40,0.8);border:1px solid var(--border);border-radius:6px;padding:14px 18px;overflow-x:auto;margin:12px 0;"><code style="font-family:\'DM Mono\',monospace;font-size:0.82rem;color:var(--gold-light);line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>');
+      return '%%CODEBLOCK_' + (codeBlocks.length - 1) + '%%';
+    });
+    // Also handle inline code
+    text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(10,22,40,0.6);padding:2px 6px;border-radius:3px;font-family:\'DM Mono\',monospace;font-size:0.85em;color:var(--gold-light);">$1</code>');
+    // Now apply markdown formatting (safe — no code blocks left)
+    text = text
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
       .replace(/^## (.+)$/gm, '<h2>$1</h2>')
       .replace(/^# (.+)$/gm, '<h1>$1</h1>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/^---$/gm, '<hr>')
+      .replace(/^- (.+)$/gm, '<div style="padding-left:16px;">• $1</div>')
+      .replace(/^\d+\. (.+)$/gm, function(m, p1) { return '<div style="padding-left:16px;">' + m.match(/^\d+/)[0] + '. ' + p1 + '</div>'; })
       .replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid var(--gold);padding-left:12px;color:var(--muted);">$1</blockquote>');
+    // Restore code blocks
+    text = text.replace(/%%CODEBLOCK_(\d+)%%/g, function(m, idx) { return codeBlocks[parseInt(idx)]; });
+    return text;
   }
 
   // Named endpoint map
@@ -1045,7 +1149,13 @@
       const ctx = document.getElementById('context-' + tabIdx);
       if (ctx) extraArgs.push(ctx.value || '');
       if (tabIdx === 5) extraArgs.push(document.getElementById('chart-type-5').value);
-      if (tabIdx === 6) extraArgs.push(document.getElementById('report-type-6').value);
+      if (tabIdx === 6) {
+        // Backend expects: file, report_type, output_format
+        // Replace context with report_type, then add format
+        extraArgs.length = 0;  // clear context — backend doesn't take it
+        extraArgs.push(document.getElementById('report-type-6').value);
+        extraArgs.push(document.getElementById('format-6').value);
+      }
 
       const result = await callGradioApi(FN_MAP[fnName], tabIdx, extraArgs);
 
@@ -1056,21 +1166,73 @@
         const text = data[0] || '';
         resultsEl.innerHTML = renderMarkdown(text);
 
-        // Handle chart output
+        // Handle chart output — supports Plotly JSON, Plotly object, image path, or image URL
         if (data[1]) {
           const chartEl = document.getElementById('chart-' + tabIdx);
           if (chartEl) {
-            chartEl.innerHTML = '<img src="' + (typeof data[1] === 'string' ? data[1] : data[1].url || '') + '" alt="Chart">';
-            chartEl.classList.add('active');
+            const chartData = data[1];
+            try {
+              // Case 1: Plotly JSON object with type:'plotly'
+              if (chartData && typeof chartData === 'object' && chartData.type === 'plotly' && chartData.plot) {
+                const plotData = JSON.parse(chartData.plot);
+                plotData.layout = plotData.layout || {};
+                plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+                plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+                plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+                plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+                chartEl.style.minHeight = '350px';
+                chartEl.classList.add('active');
+                Plotly.newPlot(chartEl, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+              }
+              // Case 2: Direct Plotly data object (has 'data' array)
+              else if (chartData && typeof chartData === 'object' && chartData.data && Array.isArray(chartData.data)) {
+                chartData.layout = chartData.layout || {};
+                chartData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+                chartData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+                chartData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+                chartData.layout.margin = chartData.layout.margin || { t:40, r:20, b:40, l:60 };
+                chartEl.style.minHeight = '350px';
+                chartEl.classList.add('active');
+                Plotly.newPlot(chartEl, chartData.data, chartData.layout, { responsive: true, displayModeBar: true });
+              }
+              // Case 3: Gradio file path — build URL from GRADIO_URL
+              else if (typeof chartData === 'string' && chartData.startsWith('/')) {
+                chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+                chartEl.classList.add('active');
+              }
+              // Case 4: Object with path (Gradio FileData)
+              else if (chartData && typeof chartData === 'object' && chartData.path) {
+                chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData.path + '" alt="Chart" style="width:100%;border-radius:6px;">';
+                chartEl.classList.add('active');
+              }
+              // Case 5: Full URL string
+              else if (typeof chartData === 'string' && (chartData.startsWith('http') || chartData.startsWith('data:'))) {
+                chartEl.innerHTML = '<img src="' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+                chartEl.classList.add('active');
+              }
+            } catch(e) { console.warn('Chart rendering error on tab ' + tabIdx + ':', e); }
           }
         }
 
-        // Handle download
+        // Handle download for Reports tab
         if (tabIdx === 6 && data[1]) {
           const dlArea = document.getElementById('download-6');
           const dlLink = document.getElementById('dl-link-6');
-          dlLink.href = GRADIO_URL + '/file=' + data[1];
-          dlArea.classList.add('active');
+          const fileData = data[1];
+          let fileUrl = '';
+          if (typeof fileData === 'string') {
+            fileUrl = GRADIO_URL + '/file=' + fileData;
+          } else if (fileData && fileData.path) {
+            fileUrl = GRADIO_URL + '/file=' + fileData.path;
+          } else if (fileData && fileData.url) {
+            fileUrl = fileData.url;
+          }
+          if (fileUrl) {
+            dlLink.href = fileUrl;
+            dlLink.target = '_blank';
+            dlLink.download = '';
+            dlArea.classList.add('active');
+          }
         }
       }
     } catch(e) {
@@ -1080,19 +1242,105 @@
     setLoading(tabIdx, false);
   }
 
+  async function runViz() {
+    if (!uploadedFiles[5]) { alert('Please upload a data file first.'); return; }
+    const chartType = document.getElementById('chart-type-5').value;
+    const xCol = document.getElementById('xcol-5').value;
+    const yCol = document.getElementById('ycol-5').value;
+    const groupBy = document.getElementById('groupby-5').value;
+    const extra = document.getElementById('context-5').value.trim();
+
+    if (!xCol) { alert('Please select an X Axis column.'); return; }
+
+    setLoading(5, true);
+    const resultsEl = document.getElementById('results-5');
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Generating visualization... this may take 1-2 minutes</span>';
+
+    try {
+      // Backend expects: file, chart_type, x_col, y_col, color_col
+      const result = await callGradioApi(FN_MAP['generate_viz'], 5, [chartType, xCol || '', yCol || '', groupBy || '']);
+
+      if (result.error) {
+        resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + result.error + '</span>';
+      } else {
+        const data = result.data;
+        // generate_viz returns [plot, status_text] — plot is first, text is second
+        const chartOutput = data[0];
+        const statusText = data[1] || '';
+        resultsEl.innerHTML = renderMarkdown(typeof statusText === 'string' ? statusText : (typeof chartOutput === 'string' ? chartOutput : 'Chart generated.'));
+
+        // Handle chart output
+        const chartEl = document.getElementById('chart-5');
+        const chartData = chartOutput && typeof chartOutput === 'object' ? chartOutput : (typeof data[1] === 'object' ? data[1] : null);
+        if (chartEl && chartData) {
+          try {
+            if (chartData && typeof chartData === 'object' && chartData.type === 'plotly' && chartData.plot) {
+              const plotData = JSON.parse(chartData.plot);
+              plotData.layout = plotData.layout || {};
+              plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+              plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+              plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+              plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+              chartEl.style.minHeight = '350px';
+              chartEl.classList.add('active');
+              Plotly.newPlot(chartEl, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+            } else if (chartData && typeof chartData === 'object' && chartData.data && Array.isArray(chartData.data)) {
+              chartData.layout = chartData.layout || {};
+              chartData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+              chartData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+              chartData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+              chartEl.style.minHeight = '350px';
+              chartEl.classList.add('active');
+              Plotly.newPlot(chartEl, chartData.data, chartData.layout, { responsive: true, displayModeBar: true });
+            } else if (typeof chartData === 'string' && chartData.startsWith('/')) {
+              chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+              chartEl.classList.add('active');
+            } else if (chartData && typeof chartData === 'object' && chartData.path) {
+              chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData.path + '" alt="Chart" style="width:100%;border-radius:6px;">';
+              chartEl.classList.add('active');
+            } else if (typeof chartData === 'string' && (chartData.startsWith('http') || chartData.startsWith('data:'))) {
+              chartEl.innerHTML = '<img src="' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+              chartEl.classList.add('active');
+            }
+          } catch(e) { console.warn('Chart rendering error:', e); }
+        }
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
+    }
+    setLoading(5, false);
+  }
+
   async function loadChatData() {
-    const file = uploadedFiles[7];
+    const file = uploadedFiles[9];
     if (!file) { alert('Please upload a file first.'); return; }
-    document.getElementById('btn-load-7').textContent = '⟳ Loading...';
-    // Read file as text for context
-    const reader = new FileReader();
-    reader.onload = e => {
-      chatDataLoaded.content = e.target.result.slice(0, 3000);
+    document.getElementById('btn-load-9').textContent = '⟳ Loading...';
+    try {
+      // Upload file to Gradio server
+      const formData = new FormData();
+      formData.append('files', file);
+      const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+      const uploadData = await uploadRes.json();
+      const fileData = { path: uploadData[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+
+      // Call upload_chat_data to load data into server memory
+      const res = await fetch(GRADIO_URL + '/run/upload_chat_data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [fileData] })
+      });
+      const result = await res.json();
+      const status = result.data?.[0] || '';
+
+      chatDataLoaded.content = status;
       chatDataLoaded.loaded = true;
-      document.getElementById('btn-load-7').textContent = '✅ Data Loaded';
-      addChatMsg('assistant', '✅ Data loaded! I can now answer questions about your ' + file.name + ' dataset.');
-    };
-    reader.readAsText(file);
+      document.getElementById('btn-load-9').textContent = '✅ Data Loaded';
+      addChatMsg('assistant', '✅ ' + (status || 'Data loaded! I can now answer questions about your ' + file.name + ' dataset.'));
+    } catch(e) {
+      document.getElementById('btn-load-9').textContent = '📤 Load Data';
+      addChatMsg('assistant', '⚠️ Error loading data: ' + e.message);
+    }
   }
 
   function addChatMsg(role, text) {
@@ -1117,28 +1365,25 @@
     document.getElementById('chat-messages').appendChild(thinking);
 
     try {
-      const file = uploadedFiles[7];
-      const formData = new FormData();
-      if (file) formData.append('files', file);
+      const file = uploadedFiles[9];
+      let fileData = null;
 
-      let filePath = null;
       if (file) {
+        const formData = new FormData();
+        formData.append('files', file);
         const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
         const uploadData = await uploadRes.json();
-        filePath = uploadData[0];
+        fileData = { path: uploadData[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
       }
 
-      const body = {
-        fn_index: 8,
-        data: [msg, filePath ? { path: filePath, orig_name: file.name } : null, chatDataLoaded.content]
-      };
-      const res = await fetch(GRADIO_URL + '/run/predict', {
+      const res = await fetch(GRADIO_URL + '/run/simple_chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ data: [msg, fileData, chatDataLoaded.content || ''] })
       });
       const result = await res.json();
-      thinking.querySelector('.bubble').innerHTML = renderMarkdown(result.data?.[0] || 'No response received.');
+      const reply = result.data?.[0] || 'No response received.';
+      thinking.querySelector('.bubble').innerHTML = renderMarkdown(typeof reply === 'string' ? reply : JSON.stringify(reply));
     } catch(e) {
       thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }
@@ -1178,69 +1423,192 @@
     fn.style.display = 'block';
   }
 
+
+  // ─── Data Cleaning (Client-side with SheetJS) ─────────────────────────
   async function runCleaning() {
-    if (!uploadedFiles[8]) { alert('Please upload a dataset first.'); return; }
-    setLoading(8, true);
-    const resultsEl = document.getElementById('results-8');
-    resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing data quality... this may take 1-2 minutes</span>';
+    var file = uploadedFiles[7];
+    if (!file) { alert('Please upload a file first.'); return; }
+    setLoading(7, true);
+    var resultsEl = document.getElementById('results-body-7');
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">\u27f3 Cleaning data...</span>';
+
     try {
-      // Read file content
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const csvContent = e.target.result.slice(0, 8000);
-        const cleaningType = document.getElementById('extra-8').value;
-        const instructions = document.getElementById('context-8').value;
+      var ab = await file.arrayBuffer();
+      var wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      var headers = raw[0] ? raw[0].map(function(h) { return String(h).trim(); }) : [];
+      var rows = raw.slice(1).map(function(r) {
+        var obj = {};
+        headers.forEach(function(h, i) { obj[h] = (r[i] !== undefined && r[i] !== null) ? r[i] : ''; });
+        return obj;
+      });
 
-        const prompt = `You are a professional data analyst. Analyze this dataset and provide a ${cleaningType} report.
+      var origCount = rows.length;
+      var report = [];
 
-Dataset sample (first 8000 chars):
-${csvContent}
-
-${instructions ? 'Additional instructions: ' + instructions : ''}
-
-Please provide:
-1. **Data Quality Summary** — rows, columns, completeness score
-2. **Issues Found** — missing values, duplicates, format inconsistencies, outliers
-3. **Cleaning Recommendations** — specific steps to clean this data
-4. **Column Analysis** — data types, value ranges, anomalies per column
-5. **Cleaned Data Preview** — show what the first 5 rows would look like after cleaning
-6. **Overall Data Health Score** — rate 1-10 with explanation
-
-Format your response with clear headers and be specific about column names and row counts.`;
-
-        const API_KEY = '';  // Uses server-side proxy
-        const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: [{ path: await uploadFileGetPath(uploadedFiles[8]), orig_name: uploadedFiles[8].name, size: uploadedFiles[8].size, mime_type: uploadedFiles[8].type, meta: { "_type": "gradio.FileData" } }, prompt] })
-        });
-        const result = await res.json();
-        resultsEl.className = 'results-body';
-        resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
-      const chartData = result.data?.[1];
-      if (chartData && chartData.type === 'plotly' && chartData.plot) {
-        const chartDiv = document.createElement('div');
-        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
-        resultsEl.appendChild(chartDiv);
-        try {
-          const plotData = JSON.parse(chartData.plot);
-          plotData.layout = plotData.layout || {};
-          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
-          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
-          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
-          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
-          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
-        } catch(e) { console.warn('Chart error:', e); }
-      }
-        setLoading(8, false);
+      var opts = {
+        empty: document.getElementById('clean-empty').checked,
+        dupes: document.getElementById('clean-dupes').checked,
+        nulls: document.getElementById('clean-nulls').checked,
+        stdCase: document.getElementById('clean-case').checked,
+        phone: document.getElementById('clean-phone').checked,
+        date: document.getElementById('clean-date').checked,
+        booleans: document.getElementById('clean-bool').checked,
+        outliers: document.getElementById('clean-outliers').checked,
       };
-      reader.readAsText(uploadedFiles[8]);
+
+      // Remove empty rows
+      if (opts.empty) {
+        var before = rows.length;
+        rows = rows.filter(function(r) { return Object.values(r).some(function(v) { return v !== '' && v !== null && v !== undefined; }); });
+        report.push('Removed ' + (before - rows.length) + ' empty rows');
+      }
+
+      // Remove duplicates
+      if (opts.dupes) {
+        var before = rows.length;
+        var seen = new Set();
+        rows = rows.filter(function(r) { var key = JSON.stringify(r); if (seen.has(key)) return false; seen.add(key); return true; });
+        report.push('Removed ' + (before - rows.length) + ' duplicate rows');
+      }
+
+      // Fill nulls
+      var nullsFilled = 0;
+      if (opts.nulls) {
+        var medians = {};
+        headers.forEach(function(col) {
+          var nums = rows.map(function(r) { return parseFloat(r[col]); }).filter(function(v) { return !isNaN(v); });
+          if (nums.length > 0) { nums.sort(function(a,b){return a-b;}); medians[col] = nums[Math.floor(nums.length / 2)]; }
+        });
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (r[col] === '' || r[col] === null || r[col] === undefined) {
+              r[col] = medians[col] !== undefined ? medians[col] : 'Unknown';
+              nullsFilled++;
+            }
+          });
+        });
+        report.push('Filled ' + nullsFilled + ' null/blank values');
+      }
+
+      // Standardize text casing
+      var caseFixed = 0;
+      if (opts.stdCase) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string' && r[col].length > 0) {
+              var orig = r[col];
+              r[col] = r[col].trim().split(/\s+/).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
+              if (r[col] !== orig) caseFixed++;
+            }
+          });
+        });
+        report.push('Standardized casing on ' + caseFixed + ' values');
+      }
+
+      // Standardize phones
+      var phonesFixed = 0;
+      if (opts.phone) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string') {
+              var digits = r[col].replace(/\D/g, '');
+              if (digits.length === 10) { r[col] = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6); phonesFixed++; }
+              else if (digits.length === 11 && digits[0] === '1') { digits = digits.slice(1); r[col] = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6); phonesFixed++; }
+            }
+          });
+        });
+        report.push('Standardized ' + phonesFixed + ' phone numbers');
+      }
+
+      // Standardize dates
+      var datesFixed = 0;
+      if (opts.date) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string' && r[col].match(/\d{1,4}[\/\-]\d{1,2}[\/\-]\d{1,4}/)) {
+              var d = new Date(r[col]);
+              if (!isNaN(d.getTime()) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+                r[col] = d.toISOString().split('T')[0];
+                datesFixed++;
+              }
+            }
+          });
+        });
+        report.push('Standardized ' + datesFixed + ' dates to YYYY-MM-DD');
+      }
+
+      // Standardize booleans
+      var boolFixed = 0;
+      if (opts.booleans) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            var v = String(r[col]).toLowerCase().trim();
+            if (['yes','y','true','1'].indexOf(v) >= 0) { r[col] = 'Yes'; boolFixed++; }
+            else if (['no','n','false','0'].indexOf(v) >= 0) { r[col] = 'No'; boolFixed++; }
+          });
+        });
+        report.push('Standardized ' + boolFixed + ' boolean values');
+      }
+
+      // Flag outliers
+      var outlierCount = 0;
+      if (opts.outliers) {
+        headers.forEach(function(col) {
+          var nums = rows.map(function(r) { return parseFloat(r[col]); }).filter(function(v) { return !isNaN(v); });
+          if (nums.length > 3) {
+            nums.sort(function(a,b){return a-b;});
+            var q1 = nums[Math.floor(nums.length / 4)];
+            var q3 = nums[Math.floor(nums.length * 3 / 4)];
+            var iqr = q3 - q1;
+            var lo = q1 - 1.5 * iqr;
+            var hi = q3 + 1.5 * iqr;
+            rows.forEach(function(r) {
+              var v = parseFloat(r[col]);
+              if (!isNaN(v) && (v < lo || v > hi)) {
+                if (!r['Outlier_Flag']) r['Outlier_Flag'] = '';
+                r['Outlier_Flag'] += (r['Outlier_Flag'] ? '; ' : '') + col + '=' + v;
+                outlierCount++;
+              }
+            });
+          }
+        });
+        report.push('Flagged ' + outlierCount + ' outlier values (Outlier_Flag column added)');
+      }
+
+      // Generate report HTML
+      var html = '<h3>Data Cleaning Report</h3>';
+      html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;">';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Original Rows</div><div style="font-size:1.4rem;color:var(--gold);font-weight:700;">' + origCount + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Cleaned Rows</div><div style="font-size:1.4rem;color:var(--success, #22c55e);font-weight:700;">' + rows.length + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Rows Removed</div><div style="font-size:1.4rem;color:var(--error, #ef4444);font-weight:700;">' + (origCount - rows.length) + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Outliers Flagged</div><div style="font-size:1.4rem;color:var(--gold-light, #e8d48b);font-weight:700;">' + outlierCount + '</div></div>';
+      html += '</div>';
+      html += '<h4>Actions Taken</h4>';
+      report.forEach(function(r) { html += '<div style="padding:4px 0;padding-left:16px;">\u2022 ' + r + '</div>'; });
+      html += '<div style="margin-top:16px;"><button class="gold-btn btn-analyze" onclick="downloadCleanedData()" style="font-size:0.85rem;">\ud83d\udce5 Download Cleaned Dataset</button></div>';
+
+      resultsEl.innerHTML = html;
+
+      // Store cleaned data for download
+      window._cleanedData = rows;
+      window._cleanedHeaders = headers.concat(opts.outliers ? ['Outlier_Flag'] : []);
     } catch(e) {
-      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-      setLoading(8, false);
+      resultsEl.innerHTML = '<span style="color:var(--error);">\u26a0\ufe0f Error: ' + e.message + '</span>';
     }
+    setLoading(7, false);
   }
+
+  function downloadCleanedData() {
+    if (!window._cleanedData) return;
+    var ws = XLSX.utils.json_to_sheet(window._cleanedData, { header: window._cleanedHeaders });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Cleaned Data');
+    var origName = uploadedFiles[7] ? uploadedFiles[7].name.replace(/\.[^.]+$/, '') : 'data';
+    XLSX.writeFile(wb, origName + '_cleaned.xlsx');
+  }
+
 
   async function uploadFileGetPath(file) {
     const formData = new FormData();
@@ -1253,75 +1621,74 @@ Format your response with clear headers and be specific about column names and r
   async function runMultiDataset() {
     if (!multiFiles[1]) { alert('Please upload at least Dataset 1.'); return; }
     if (!multiFiles[2]) { alert('Please upload at least Dataset 2.'); return; }
-    setLoading(9, true);
-    const resultsEl = document.getElementById('results-9');
+    setLoading(8, true);
+    const resultsEl = document.getElementById('results-8');
     resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Reading and cross-referencing datasets... this may take 2-3 minutes</span>';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Uploading and analyzing all datasets... this may take 2-3 minutes</span>';
 
     try {
-      const readFile = (file) => new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result.slice(0, 5000));
-        reader.readAsText(file);
-      });
-
-      const dataset1 = await readFile(multiFiles[1]);
-      const dataset2 = await readFile(multiFiles[2]);
-      const dataset3 = multiFiles[3] ? await readFile(multiFiles[3]) : null;
       const analysisType = document.getElementById('extra-multi').value;
-      const instructions = document.getElementById('context-multi').value;
+      const instructions = document.getElementById('context-multi').value || '';
 
-      const prompt = `You are a senior data analyst. Perform a ${analysisType} across these ${dataset3 ? '3' : '2'} related datasets.
+      // Upload each file to Gradio and get file paths
+      async function uploadFile(file) {
+        const formData = new FormData();
+        formData.append('files', file);
+        const res = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+        if (!res.ok) throw new Error('File upload failed for ' + file.name);
+        const data = await res.json();
+        return { path: data[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+      }
 
-**Dataset 1** (${multiFiles[1].name}):
-${dataset1}
+      const file1Data = await uploadFile(multiFiles[1]);
+      const file2Data = await uploadFile(multiFiles[2]);
+      const file3Data = multiFiles[3] ? await uploadFile(multiFiles[3]) : null;
 
-**Dataset 2** (${multiFiles[2].name}):
-${dataset2}
-
-${dataset3 ? `**Dataset 3** (${multiFiles[3].name}):
-${dataset3}` : ''}
-
-${instructions ? 'Analysis instructions: ' + instructions : ''}
-
-Please provide:
-1. **Dataset Overview** — summarize each dataset (rows, columns, key fields)
-2. **Cross-Dataset Findings** — patterns, correlations, and relationships between datasets
-3. **Key Insights** — top 5 actionable insights from comparing the datasets
-4. **Anomalies & Discrepancies** — anything unusual when comparing across datasets
-5. **Recommendations** — what actions should be taken based on this analysis
-6. **Summary Table** — create a comparison table of key metrics across datasets
-
-Be specific, use numbers from the actual data, and reference column names.`;
-
-      // Use the chat endpoint which accepts text input
-      const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
+      // Backend expects: file1, file2, file3, analysis_type, instructions
+      const res = await fetch(GRADIO_URL + '/run/analyze_multi_dataset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: [{ path: await uploadFileGetPath(multiFiles[1]), orig_name: multiFiles[1].name, size: multiFiles[1].size, mime_type: multiFiles[1].type, meta: { "_type": "gradio.FileData" } }, prompt] })
+        body: JSON.stringify({ data: [file1Data, file2Data, file3Data, analysisType, instructions] })
       });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error('Analysis request failed: ' + errText);
+      }
+
       const result = await res.json();
-      resultsEl.className = 'results-body';
-      resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
-      const chartData = result.data?.[1];
-      if (chartData && chartData.type === 'plotly' && chartData.plot) {
+      const data = result.data;
+      const reportText = data[0] || 'No results returned.';
+      resultsEl.innerHTML = renderMarkdown(typeof reportText === 'string' ? reportText : JSON.stringify(reportText));
+
+      // Handle chart output
+      const chartData = data[1];
+      if (chartData) {
         const chartDiv = document.createElement('div');
-        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
+        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:400px;';
         resultsEl.appendChild(chartDiv);
         try {
-          const plotData = JSON.parse(chartData.plot);
-          plotData.layout = plotData.layout || {};
-          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
-          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
-          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
-          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
-          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+          if (chartData.type === 'plotly' && chartData.plot) {
+            const plotData = JSON.parse(chartData.plot);
+            plotData.layout = plotData.layout || {};
+            plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+            plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+            plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+            plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+            Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+          } else if (chartData.data && Array.isArray(chartData.data)) {
+            chartData.layout = chartData.layout || {};
+            chartData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+            chartData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+            chartData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+            Plotly.newPlot(chartDiv, chartData.data, chartData.layout, { responsive: true, displayModeBar: true });
+          }
         } catch(e) { console.warn('Chart error:', e); }
       }
     } catch(e) {
       resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }
-    setLoading(9, false);
+    setLoading(8, false);
   }
 
 </script>

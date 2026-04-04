@@ -1,50 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js">
+</script>
 <script>
 (async function() {
-  const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, storageKey: 'quantusdata-auth' } });
-  // Handle magic link token in URL hash
-  if (window.location.hash && window.location.hash.includes('access_token')) {
+  const sb = supabase.createClient("https://jolvnzhwwchbkuzkeqjt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs", { auth: { persistSession: true, storageKey: "quantusdata-auth" } });
+  if (window.location.hash && window.location.hash.includes("access_token")) {
     await sb.auth.exchangeCodeForSession(window.location.href);
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+  if (!session?.user) { window.location.href = "/dashboard.html"; return; }
+  const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
+  if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
   const plan = data.plan;
-  const PREMIUM_PLANS = ['professional', 'business', 'owner'];
+  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  if (!BASIC_PLANS.includes(plan)) {
+    window.location.href = "/dashboard.html?error=upgrade_required";
+    return;
+  }
+  const PREMIUM_PLANS = ["professional", "business", "owner"];
   const isPremium = PREMIUM_PLANS.includes(plan);
-  const PLAN_NAMES = { 'basic': 'Basic Plan — $29/mo', 'professional': 'Professional Plan — $79/mo', 'business': 'Business Plan — $199/mo', 'owner': 'Owner Access' };
+  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
   const applyPlan = () => {
-    document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
     if (!isPremium) {
-      const PREMIUM_KEYWORDS = ['Cleaning', 'Dataset', 'Chat', 'Visual', 'Reports'];
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
+      const PREMIUM_KEYWORDS = ["Cleaning", "Dataset", "Chat", "Visual", "Reports"];
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
         const label = btn.textContent.trim();
         const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
         if (isLocked) {
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'not-allowed';
-          btn.title = 'Upgrade to Professional to unlock';
-          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert('This feature requires a Professional or Business plan.
-Visit quantusdata.ai to upgrade.'); };
-          btn.innerHTML = '🔒 ' + btn.innerHTML;
+          btn.style.opacity = "0.4"; btn.style.cursor = "not-allowed";
+          btn.title = "Upgrade to Professional to unlock";
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert("This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade."); };
+          btn.innerHTML = "\ud83d\udd12 " + btn.innerHTML;
         }
       });
     }
   };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyPlan);
-  } else {
-    applyPlan();
-  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", applyPlan); } else { applyPlan(); }
 })();
+
 </script>
+
 
 
 
@@ -111,7 +110,7 @@ Visit quantusdata.ai to upgrade.'); };
     .results-area{margin-top:24px;background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:120px;overflow:hidden;}
     .results-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .results-label{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
-    .results-body{padding:20px;font-size:0.85rem;color:var(--white);line-height:1.8;white-space:pre-wrap;}
+    .results-body{padding:20px;font-size:1.05rem;font-family:Arial,sans-serif;color:var(--white);line-height:1.8;white-space:pre-wrap;}
     .results-body.empty{color:var(--muted);font-style:italic;}
     .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000000;}
     .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
@@ -133,8 +132,19 @@ Visit quantusdata.ai to upgrade.'); };
     .chat-input-row{display:flex;gap:10px;}
     .chat-input{flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;}
     .chat-input:focus{outline:none;border-color:var(--gold);}
-  </style>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  
+    .cleaning-controls{margin-top:16px;}
+    .cleaning-section{margin-bottom:14px;}
+    .cleaning-section h4{color:var(--gold, #c9a84c);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'DM Mono',monospace;}
+    .cleaning-option{display:flex;align-items:center;gap:8px;padding:6px 0;}
+    .cleaning-option input[type="checkbox"]{accent-color:var(--gold, #c9a84c);width:16px;height:16px;cursor:pointer;}
+    .cleaning-option label{font-size:0.82rem;color:var(--text, #f8f9fc);cursor:pointer;}
+
+    </style>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js">
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+</script>
 </head>
 <body>
 <nav>
@@ -157,7 +167,7 @@ Visit quantusdata.ai to upgrade.'); };
   <div class="nav-right">
     <span class="nav-plan">QuantusData Professional</span>
     <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-      <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6b6b'" onmouseout="this.style.borderColor='rgba(255,107,107,0.3)'">Sign Out</a>
+      
   </div>
 </nav>
 
@@ -447,7 +457,12 @@ Visit quantusdata.ai to upgrade.'); };
           </select>
         </div>
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(7, '/generate_report', true)" id="btn-7">📄 Generate Report</button>
+          <label class="context-label" style="margin-top:16px;">Download Format</label>
+          <select class="styled-select" id="format-7">
+            <option value="pdf">PDF Report</option>
+            <option value="pptx">PowerPoint Presentation</option>
+          </select>
+          <button class="btn-analyze" onclick="runReport()" id="btn-7" style="margin-top:16px;">📄 Generate Report</button>
         </div>
       </div>
       <div>
@@ -462,48 +477,73 @@ Visit quantusdata.ai to upgrade.'); };
       </div>
     </div>
   </div>
-  <!-- TAB 8: DATA CLEANING -->
+    <!-- TAB 8: DATA CLEANING -->
   <div class="tab-panel" id="tab-8">
     <div class="two-col">
-      <div>
-        <label class="context-label">Upload Dataset to Clean</label>
-        <div class="upload-zone" id="upload-8" onclick="triggerUpload(8, event)">
-          <input type="file" id="file-8" accept=".csv,.xlsx,.xls" onchange="handleFile(8)" onclick="event.stopPropagation()">
-          <span class="upload-icon">🧹</span>
-          <div class="upload-title">Drop file here or click to upload</div>
-          <div class="upload-sub">CSV or Excel files supported</div>
-          <div class="upload-filename" id="filename-8"></div>
+      <div class="col">
+        <h3>Data Cleaning Options</h3>
+        <div class="upload-zone" onclick="triggerUpload(8, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(8, event)">
+          <input type="file" id="file-8" accept=".csv,.xlsx,.xls" onchange="handleFile(8)" onclick="event.stopPropagation()" style="display:none">
+          <div class="upload-icon">&#x1f4c1;</div>
+          <p>Click or drag file here</p>
+          <span class="file-name" id="filename-8"></span>
         </div>
-        <div style="margin-top:16px;">
-          <label class="context-label">Cleaning Instructions (Optional)</label>
-          <textarea class="context-input" id="context-8" placeholder="e.g. Remove duplicates, fill missing values with median, standardize date formats, remove rows where claim amount is 0..."></textarea>
-        </div>
-        <div style="margin-top:16px;">
-          <label class="context-label">Cleaning Options</label>
-          <select class="styled-select" id="extra-8">
-            <option value="full">Full Clean — Remove duplicates, fix nulls, standardize formats</option>
-            <option value="nulls">Fix Missing Values Only</option>
-            <option value="duplicates">Remove Duplicates Only</option>
-            <option value="formats">Standardize Formats Only</option>
-            <option value="outliers">Detect & Flag Outliers</option>
-            <option value="report">Data Quality Report Only</option>
-          </select>
-        </div>
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runCleaning()" id="btn-8">🧹 Clean Dataset</button>
-        </div>
-      </div>
-      <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-8"></div>
-          <div class="results-header">
-            <span class="results-label">Data Cleaning Report</span>
-            <button onclick="copyResults(8)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
+        <div class="cleaning-controls">
+          <div class="cleaning-section">
+            <h4>Data Quality</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-empty" checked>
+              <label for="clean-empty">Remove empty rows</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-dupes" checked>
+              <label for="clean-dupes">Remove duplicates</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-nulls" checked>
+              <label for="clean-nulls">Fill null values (median for numbers, 'Unknown' for text)</label>
+            </div>
           </div>
-          <div class="results-body empty" id="results-8">Upload a dataset and click Clean to get a data quality report and cleaning recommendations...</div>
+          <div class="cleaning-section">
+            <h4>Standardization</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-case" checked>
+              <label for="clean-case">Standardize text casing (Title Case)</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-phone" checked>
+              <label for="clean-phone">Standardize phone formats</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-date" checked>
+              <label for="clean-date">Standardize dates to YYYY-MM-DD</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-bool" checked>
+              <label for="clean-bool">Standardize booleans (true/false)</label>
+            </div>
+          </div>
+          <div class="cleaning-section">
+            <h4>Analysis</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-outliers" checked>
+              <label for="clean-outliers">Flag outliers via IQR method</label>
+            </div>
+          </div>
+        </div>
+        <button class="gold-btn btn-analyze" onclick="runCleaning()">&#x2728; Clean Data</button>
+      </div>
+      <div class="col">
+        <div class="loading-bar" id="loading-8"><div class="loading-fill"></div></div>
+        <div class="results" id="results-8">
+          <div class="results-header"><span>Cleaning Results</span><button class="copy-btn" onclick="copyResults(8)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">&#x1f4cb; Copy</button></div>
+          <div class="results-body empty" id="results-body-8">
+            <div class="cleaning-preview" id="cleaning-preview"></div>
+          </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- TAB 9: MULTI-DATASET ANALYSIS -->
@@ -751,69 +791,192 @@ Visit quantusdata.ai to upgrade.'); };
     fn.style.display = 'block';
   }
 
+
+  // ─── Data Cleaning (Client-side with SheetJS) ─────────────────────────
   async function runCleaning() {
-    if (!uploadedFiles[8]) { alert('Please upload a dataset first.'); return; }
+    var file = uploadedFiles[8];
+    if (!file) { alert('Please upload a file first.'); return; }
     setLoading(8, true);
-    const resultsEl = document.getElementById('results-8');
-    resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing data quality... this may take 1-2 minutes</span>';
+    var resultsEl = document.getElementById('results-body-8');
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">\u27f3 Cleaning data...</span>';
+
     try {
-      // Read file content
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const csvContent = e.target.result.slice(0, 8000);
-        const cleaningType = document.getElementById('extra-8').value;
-        const instructions = document.getElementById('context-8').value;
+      var ab = await file.arrayBuffer();
+      var wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      var headers = raw[0] ? raw[0].map(function(h) { return String(h).trim(); }) : [];
+      var rows = raw.slice(1).map(function(r) {
+        var obj = {};
+        headers.forEach(function(h, i) { obj[h] = (r[i] !== undefined && r[i] !== null) ? r[i] : ''; });
+        return obj;
+      });
 
-        const prompt = `You are a professional data analyst. Analyze this dataset and provide a ${cleaningType} report.
+      var origCount = rows.length;
+      var report = [];
 
-Dataset sample (first 8000 chars):
-${csvContent}
-
-${instructions ? 'Additional instructions: ' + instructions : ''}
-
-Please provide:
-1. **Data Quality Summary** — rows, columns, completeness score
-2. **Issues Found** — missing values, duplicates, format inconsistencies, outliers
-3. **Cleaning Recommendations** — specific steps to clean this data
-4. **Column Analysis** — data types, value ranges, anomalies per column
-5. **Cleaned Data Preview** — show what the first 5 rows would look like after cleaning
-6. **Overall Data Health Score** — rate 1-10 with explanation
-
-Format your response with clear headers and be specific about column names and row counts.`;
-
-        const API_KEY = '';  // Uses server-side proxy
-        const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: [{ path: await uploadFileGetPath(uploadedFiles[8]), orig_name: uploadedFiles[8].name, size: uploadedFiles[8].size, mime_type: uploadedFiles[8].type, meta: { "_type": "gradio.FileData" } }, prompt] })
-        });
-        const result = await res.json();
-        resultsEl.className = 'results-body';
-        resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
-      const chartData = result.data?.[1];
-      if (chartData && chartData.type === 'plotly' && chartData.plot) {
-        const chartDiv = document.createElement('div');
-        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
-        resultsEl.appendChild(chartDiv);
-        try {
-          const plotData = JSON.parse(chartData.plot);
-          plotData.layout = plotData.layout || {};
-          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
-          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
-          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
-          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
-          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
-        } catch(e) { console.warn('Chart error:', e); }
-      }
-        setLoading(8, false);
+      var opts = {
+        empty: document.getElementById('clean-empty').checked,
+        dupes: document.getElementById('clean-dupes').checked,
+        nulls: document.getElementById('clean-nulls').checked,
+        stdCase: document.getElementById('clean-case').checked,
+        phone: document.getElementById('clean-phone').checked,
+        date: document.getElementById('clean-date').checked,
+        booleans: document.getElementById('clean-bool').checked,
+        outliers: document.getElementById('clean-outliers').checked,
       };
-      reader.readAsText(uploadedFiles[8]);
+
+      // Remove empty rows
+      if (opts.empty) {
+        var before = rows.length;
+        rows = rows.filter(function(r) { return Object.values(r).some(function(v) { return v !== '' && v !== null && v !== undefined; }); });
+        report.push('Removed ' + (before - rows.length) + ' empty rows');
+      }
+
+      // Remove duplicates
+      if (opts.dupes) {
+        var before = rows.length;
+        var seen = new Set();
+        rows = rows.filter(function(r) { var key = JSON.stringify(r); if (seen.has(key)) return false; seen.add(key); return true; });
+        report.push('Removed ' + (before - rows.length) + ' duplicate rows');
+      }
+
+      // Fill nulls
+      var nullsFilled = 0;
+      if (opts.nulls) {
+        var medians = {};
+        headers.forEach(function(col) {
+          var nums = rows.map(function(r) { return parseFloat(r[col]); }).filter(function(v) { return !isNaN(v); });
+          if (nums.length > 0) { nums.sort(function(a,b){return a-b;}); medians[col] = nums[Math.floor(nums.length / 2)]; }
+        });
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (r[col] === '' || r[col] === null || r[col] === undefined) {
+              r[col] = medians[col] !== undefined ? medians[col] : 'Unknown';
+              nullsFilled++;
+            }
+          });
+        });
+        report.push('Filled ' + nullsFilled + ' null/blank values');
+      }
+
+      // Standardize text casing
+      var caseFixed = 0;
+      if (opts.stdCase) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string' && r[col].length > 0) {
+              var orig = r[col];
+              r[col] = r[col].trim().split(/\s+/).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
+              if (r[col] !== orig) caseFixed++;
+            }
+          });
+        });
+        report.push('Standardized casing on ' + caseFixed + ' values');
+      }
+
+      // Standardize phones
+      var phonesFixed = 0;
+      if (opts.phone) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string') {
+              var digits = r[col].replace(/\D/g, '');
+              if (digits.length === 10) { r[col] = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6); phonesFixed++; }
+              else if (digits.length === 11 && digits[0] === '1') { digits = digits.slice(1); r[col] = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6); phonesFixed++; }
+            }
+          });
+        });
+        report.push('Standardized ' + phonesFixed + ' phone numbers');
+      }
+
+      // Standardize dates
+      var datesFixed = 0;
+      if (opts.date) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string' && r[col].match(/\d{1,4}[\/\-]\d{1,2}[\/\-]\d{1,4}/)) {
+              var d = new Date(r[col]);
+              if (!isNaN(d.getTime()) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+                r[col] = d.toISOString().split('T')[0];
+                datesFixed++;
+              }
+            }
+          });
+        });
+        report.push('Standardized ' + datesFixed + ' dates to YYYY-MM-DD');
+      }
+
+      // Standardize booleans
+      var boolFixed = 0;
+      if (opts.booleans) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            var v = String(r[col]).toLowerCase().trim();
+            if (['yes','y','true','1'].indexOf(v) >= 0) { r[col] = 'Yes'; boolFixed++; }
+            else if (['no','n','false','0'].indexOf(v) >= 0) { r[col] = 'No'; boolFixed++; }
+          });
+        });
+        report.push('Standardized ' + boolFixed + ' boolean values');
+      }
+
+      // Flag outliers
+      var outlierCount = 0;
+      if (opts.outliers) {
+        headers.forEach(function(col) {
+          var nums = rows.map(function(r) { return parseFloat(r[col]); }).filter(function(v) { return !isNaN(v); });
+          if (nums.length > 3) {
+            nums.sort(function(a,b){return a-b;});
+            var q1 = nums[Math.floor(nums.length / 4)];
+            var q3 = nums[Math.floor(nums.length * 3 / 4)];
+            var iqr = q3 - q1;
+            var lo = q1 - 1.5 * iqr;
+            var hi = q3 + 1.5 * iqr;
+            rows.forEach(function(r) {
+              var v = parseFloat(r[col]);
+              if (!isNaN(v) && (v < lo || v > hi)) {
+                if (!r['Outlier_Flag']) r['Outlier_Flag'] = '';
+                r['Outlier_Flag'] += (r['Outlier_Flag'] ? '; ' : '') + col + '=' + v;
+                outlierCount++;
+              }
+            });
+          }
+        });
+        report.push('Flagged ' + outlierCount + ' outlier values (Outlier_Flag column added)');
+      }
+
+      // Generate report HTML
+      var html = '<h3>Data Cleaning Report</h3>';
+      html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;">';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Original Rows</div><div style="font-size:1.4rem;color:var(--gold);font-weight:700;">' + origCount + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Cleaned Rows</div><div style="font-size:1.4rem;color:var(--success, #22c55e);font-weight:700;">' + rows.length + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Rows Removed</div><div style="font-size:1.4rem;color:var(--error, #ef4444);font-weight:700;">' + (origCount - rows.length) + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Outliers Flagged</div><div style="font-size:1.4rem;color:var(--gold-light, #e8d48b);font-weight:700;">' + outlierCount + '</div></div>';
+      html += '</div>';
+      html += '<h4>Actions Taken</h4>';
+      report.forEach(function(r) { html += '<div style="padding:4px 0;padding-left:16px;">\u2022 ' + r + '</div>'; });
+      html += '<div style="margin-top:16px;"><button class="gold-btn btn-analyze" onclick="downloadCleanedData()" style="font-size:0.85rem;">\ud83d\udce5 Download Cleaned Dataset</button></div>';
+
+      resultsEl.innerHTML = html;
+
+      // Store cleaned data for download
+      window._cleanedData = rows;
+      window._cleanedHeaders = headers.concat(opts.outliers ? ['Outlier_Flag'] : []);
     } catch(e) {
-      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-      setLoading(8, false);
+      resultsEl.innerHTML = '<span style="color:var(--error);">\u26a0\ufe0f Error: ' + e.message + '</span>';
     }
+    setLoading(8, false);
   }
+
+  function downloadCleanedData() {
+    if (!window._cleanedData) return;
+    var ws = XLSX.utils.json_to_sheet(window._cleanedData, { header: window._cleanedHeaders });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Cleaned Data');
+    var origName = uploadedFiles[8] ? uploadedFiles[8].name.replace(/\.[^.]+$/, '') : 'data';
+    XLSX.writeFile(wb, origName + '_cleaned.xlsx');
+  }
+
 
   async function uploadFileGetPath(file) {
     const formData = new FormData();
@@ -898,6 +1061,7 @@ Be specific, use numbers from the actual data, and reference column names.`;
   }
 
 
+
 </script>
 
 <!-- Report an Issue Button -->
@@ -973,6 +1137,61 @@ async function submitReport() {
     document.getElementById('report-error').style.display = 'block';
   }
 }
+
+
+  // ─── Report Generation with Format Selection ─────────────────────────
+  async function runReport() {
+    if (!uploadedFiles[7]) { alert('Please upload a file first.'); return; }
+    setLoading(7, true);
+    var resultsEl = document.getElementById('results-7');
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">\u27f3 Generating report... this may take 1-2 minutes</span>';
+    var dlArea = document.getElementById('download-7');
+    if (dlArea) { dlArea.style.display = 'none'; dlArea.innerHTML = ''; }
+
+    try {
+      var formData = new FormData();
+      formData.append('files', uploadedFiles[7]);
+      var uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+      if (!uploadRes.ok) throw new Error('File upload failed');
+      var uploadData = await uploadRes.json();
+      var fileData = { path: uploadData[0], orig_name: uploadedFiles[7].name, size: uploadedFiles[7].size, mime_type: uploadedFiles[7].type, meta: { "_type": "gradio.FileData" } };
+
+      var reportType = document.getElementById('extra-7') ? document.getElementById('extra-7').value : 'Executive Summary';
+      var format = document.getElementById('format-7') ? document.getElementById('format-7').value : 'pdf';
+      var context = document.getElementById('context-7') ? document.getElementById('context-7').value : '';
+
+      var res = await fetch(GRADIO_URL + '/run/generate_report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [fileData, reportType + ' [FORMAT:' + format + ']', context] })
+      });
+      if (!res.ok) throw new Error('Report generation failed: ' + res.status);
+      var result = await res.json();
+
+      if (result.data) {
+        var text = result.data[0] || '';
+        resultsEl.innerHTML = renderMarkdown(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
+
+        // Handle file download (data[1] may be a file path)
+        var fileResult = result.data[1];
+        if (fileResult && dlArea) {
+          var fileUrl = '';
+          if (typeof fileResult === 'string' && fileResult.length > 0) fileUrl = GRADIO_URL + '/file=' + fileResult;
+          else if (fileResult && fileResult.path) fileUrl = GRADIO_URL + '/file=' + fileResult.path;
+          if (fileUrl) {
+            var label = format === 'pptx' ? '\ud83d\udce5 Download PowerPoint' : '\ud83d\udce5 Download PDF';
+            dlArea.innerHTML = '<a href="' + fileUrl + '" target="_blank" class="btn-analyze gold-btn" style="display:inline-flex;text-decoration:none;margin-top:8px;" download>' + label + '</a>';
+            dlArea.style.display = 'block';
+          }
+        }
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">\u26a0\ufe0f ' + e.message + '</span>';
+    }
+    setLoading(7, false);
+  }
+
 </script>
 
 </body>

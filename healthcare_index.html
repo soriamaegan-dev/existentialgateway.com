@@ -4,47 +4,44 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (async function() {
-  const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, storageKey: 'quantusdata-auth' } });
-  // Handle magic link token in URL hash
-  if (window.location.hash && window.location.hash.includes('access_token')) {
+  const sb = supabase.createClient("https://jolvnzhwwchbkuzkeqjt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs", { auth: { persistSession: true, storageKey: "quantusdata-auth" } });
+  if (window.location.hash && window.location.hash.includes("access_token")) {
     await sb.auth.exchangeCodeForSession(window.location.href);
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+  if (!session?.user) { window.location.href = "/dashboard.html"; return; }
+  const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
+  if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
   const plan = data.plan;
-  const PREMIUM_PLANS = ['professional', 'business', 'owner'];
+  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  if (!BASIC_PLANS.includes(plan)) {
+    window.location.href = "/dashboard.html?error=upgrade_required";
+    return;
+  }
+  const PREMIUM_PLANS = ["professional", "business", "owner"];
   const isPremium = PREMIUM_PLANS.includes(plan);
-  const PLAN_NAMES = { 'basic': 'Basic Plan — $29/mo', 'professional': 'Professional Plan — $79/mo', 'business': 'Business Plan — $199/mo', 'owner': 'Owner Access' };
+  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
   const applyPlan = () => {
-    document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
     if (!isPremium) {
-      const PREMIUM_KEYWORDS = ['Cleaning', 'Dataset', 'Chat', 'Visual', 'Reports'];
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
+      const PREMIUM_KEYWORDS = ["Cleaning", "Dataset", "Chat", "Visual", "Reports"];
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
         const label = btn.textContent.trim();
         const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
         if (isLocked) {
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'not-allowed';
-          btn.title = 'Upgrade to Professional to unlock';
-          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert('This feature requires a Professional or Business plan.
-Visit quantusdata.ai to upgrade.'); };
-          btn.innerHTML = '🔒 ' + btn.innerHTML;
+          btn.style.opacity = "0.4"; btn.style.cursor = "not-allowed";
+          btn.title = "Upgrade to Professional to unlock";
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert("This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade."); };
+          btn.innerHTML = "\ud83d\udd12 " + btn.innerHTML;
         }
       });
     }
   };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyPlan);
-  } else {
-    applyPlan();
-  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", applyPlan); } else { applyPlan(); }
 })();
 </script>
+
 
 
 
@@ -111,7 +108,7 @@ Visit quantusdata.ai to upgrade.'); };
     .results-area{margin-top:24px;background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:120px;overflow:hidden;}
     .results-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .results-label{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
-    .results-body{padding:20px;font-size:0.85rem;color:var(--white);line-height:1.8;white-space:pre-wrap;}
+    .results-body{padding:20px;font-size:1.05rem;font-family:Arial,sans-serif;color:var(--white);line-height:1.8;white-space:pre-wrap;}
     .results-body.empty{color:var(--muted);font-style:italic;}
     .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000000;}
     .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
@@ -126,6 +123,13 @@ Visit quantusdata.ai to upgrade.'); };
     .results-body h3{font-size:0.95rem;}
     .results-body strong{color:var(--white);font-weight:600;}
     .results-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+    .chart-area{display:none;margin-top:16px;background:rgba(17,34,64,0.3);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:350px;}
+    .chart-area.active{display:block;}
+    .download-area{display:none;margin-top:12px;text-align:center;}
+    .download-area.active{display:block;}
+    .btn-download{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+    .btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .btn-secondary:hover{background:rgba(201,168,76,0.1);}
     .chat-messages{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:16px;}
     .chat-msg{margin-bottom:16px;}
     .chat-msg.user .bubble{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px 8px 2px 8px;padding:10px 14px;font-size:0.85rem;max-width:80%;margin-left:auto;}
@@ -135,6 +139,7 @@ Visit quantusdata.ai to upgrade.'); };
     .chat-input:focus{outline:none;border-color:var(--gold);}
   </style>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <nav>
@@ -157,7 +162,7 @@ Visit quantusdata.ai to upgrade.'); };
   <div class="nav-right">
     <span class="nav-plan">QuantusData Professional</span>
     <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-      <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6b6b'" onmouseout="this.style.borderColor='rgba(255,107,107,0.3)'">Sign Out</a>
+      
   </div>
 </nav>
 
@@ -211,7 +216,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(0, '/analyze_overview', true)" id="btn-0">🔍 Analyze Dataset</button>
+          <button class="btn-analyze" onclick="runAnalysis(0, 'analyze_overview')" id="btn-0">🔍 Analyze Dataset</button>
         </div>
       </div>
       <div>
@@ -223,6 +228,7 @@ Visit quantusdata.ai to upgrade.'); };
           </div>
           <div class="results-body empty" id="results-0">Results will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-0"></div>
       </div>
     </div>
   </div>
@@ -243,7 +249,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(1, '/analyze_outcomes', true)" id="btn-1">🔍 Analyze Outcomes</button>
+          <button class="btn-analyze" onclick="runAnalysis(1, 'analyze_outcomes')" id="btn-1">🔍 Analyze Outcomes</button>
         </div>
       </div>
       <div>
@@ -255,6 +261,7 @@ Visit quantusdata.ai to upgrade.'); };
           </div>
           <div class="results-body empty" id="results-1">Results will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-1"></div>
       </div>
     </div>
   </div>
@@ -275,7 +282,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(2, '/analyze_disease_patterns', true)" id="btn-2">🔍 Analyze Patterns</button>
+          <button class="btn-analyze" onclick="runAnalysis(2, 'analyze_disease_patterns')" id="btn-2">🔍 Analyze Patterns</button>
         </div>
       </div>
       <div>
@@ -287,6 +294,7 @@ Visit quantusdata.ai to upgrade.'); };
           </div>
           <div class="results-body empty" id="results-2">Results will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-2"></div>
       </div>
     </div>
   </div>
@@ -307,7 +315,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(3, '/analyze_resources', true)" id="btn-3">🔍 Analyze Resources</button>
+          <button class="btn-analyze" onclick="runAnalysis(3, 'analyze_resources')" id="btn-3">🔍 Analyze Resources</button>
         </div>
       </div>
       <div>
@@ -319,6 +327,7 @@ Visit quantusdata.ai to upgrade.'); };
           </div>
           <div class="results-body empty" id="results-3">Results will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-3"></div>
       </div>
     </div>
   </div>
@@ -339,7 +348,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(4, '/analyze_billing', true)" id="btn-4">🔍 Audit Billing</button>
+          <button class="btn-analyze" onclick="runAnalysis(4, 'analyze_billing')" id="btn-4">🔍 Audit Billing</button>
         </div>
       </div>
       <div>
@@ -351,6 +360,7 @@ Visit quantusdata.ai to upgrade.'); };
           </div>
           <div class="results-body empty" id="results-4">Results will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-4"></div>
       </div>
     </div>
   </div>
@@ -371,7 +381,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(5, '/analyze_trials', true)" id="btn-5">🔍 Analyze Trials</button>
+          <button class="btn-analyze" onclick="runAnalysis(5, 'analyze_trials')" id="btn-5">🔍 Analyze Trials</button>
         </div>
       </div>
       <div>
@@ -383,51 +393,65 @@ Visit quantusdata.ai to upgrade.'); };
           </div>
           <div class="results-body empty" id="results-5">Results will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-5"></div>
       </div>
     </div>
   </div>
   <div class="tab-panel " id="tab-6">
     <div class="two-col">
       <div>
-                <label class="context-label">Upload Data File</label>
+        <label class="context-label">Upload Data File</label>
         <div class="upload-zone" id="upload-6" onclick="triggerUpload(6, event)">
-          <input type="file" id="file-6" accept=".csv,.xlsx,.xls,.pdf,.json" onchange="handleFile(6)" onclick="event.stopPropagation()">
+          <input type="file" id="file-6" accept=".csv,.xlsx,.xls" onchange="handleFile(6)" onclick="event.stopPropagation()">
           <span class="upload-icon">📂</span>
           <div class="upload-title">Drop file here or click to upload</div>
-          <div class="upload-sub">CSV, Excel, PDF, JSON supported</div>
+          <div class="upload-sub">CSV or Excel supported</div>
           <div class="upload-filename" id="filename-6"></div>
         </div>
         <div style="margin-top:16px;">
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-6" placeholder="Add additional context or instructions..."></textarea>
-        </div>
-                <div style="margin-top:16px;">
           <label class="context-label">Chart Type</label>
-          <select class="styled-select" id="extra-6">
+          <select class="styled-select" id="chart-type-6">
             <option>Bar Chart</option><option>Line Chart</option><option>Pie Chart</option>
             <option>Scatter Plot</option><option>Heatmap</option><option>Histogram</option>
           </select>
         </div>
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(6, '/generate_viz', true)" id="btn-6">📊 Generate Chart</button>
+          <label class="context-label">X Axis Column</label>
+          <select class="styled-select" id="xcol-6"><option value="">-- Upload file to populate --</option></select>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Y Axis Column</label>
+          <select class="styled-select" id="ycol-6"><option value="">-- Upload file to populate --</option></select>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Group By (Color)</label>
+          <select class="styled-select" id="groupby-6"><option value="">None</option></select>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="context-label">Additional Instructions (Optional)</label>
+          <textarea class="context-input" id="context-6" placeholder="e.g. Show only patients over age 60, use monthly grouping..."></textarea>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runViz()" id="btn-6">📊 Generate Chart</button>
         </div>
       </div>
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-6"></div>
           <div class="results-header">
-            <span class="results-label">Results</span>
+            <span class="results-label">Visualization</span>
             <button onclick="copyResults(6)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
           </div>
-          <div class="results-body empty" id="results-6">Results will appear here...</div>
+          <div class="results-body empty" id="results-6">Chart will appear here...</div>
         </div>
+        <div class="chart-area" id="chart-6"></div>
       </div>
     </div>
   </div>
   <div class="tab-panel " id="tab-7">
     <div class="two-col">
       <div>
-                <label class="context-label">Upload Data File</label>
+        <label class="context-label">Upload Data File</label>
         <div class="upload-zone" id="upload-7" onclick="triggerUpload(7, event)">
           <input type="file" id="file-7" accept=".csv,.xlsx,.xls,.pdf,.json" onchange="handleFile(7)" onclick="event.stopPropagation()">
           <span class="upload-icon">📂</span>
@@ -436,34 +460,39 @@ Visit quantusdata.ai to upgrade.'); };
           <div class="upload-filename" id="filename-7"></div>
         </div>
         <div style="margin-top:16px;">
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-7" placeholder="Add additional context or instructions..."></textarea>
-        </div>
-                <div style="margin-top:16px;">
           <label class="context-label">Report Type</label>
-          <select class="styled-select" id="extra-7">
-            <option>Executive Summary</option><option>Full Analysis Report</option>
-            <option>Data Quality Report</option><option>Risk Report</option>
+          <select class="styled-select" id="report-type-7">
+            <option value="Executive Summary">Executive Summary (PDF)</option>
+            <option value="PDF Report">Full PDF Report</option>
+            <option value="Quality Improvement Report">Quality Improvement Report (PDF)</option>
+            <option value="PowerPoint Presentation">PowerPoint Presentation</option>
           </select>
         </div>
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(7, '/generate_report', true)" id="btn-7">📄 Generate Report</button>
+          <label class="context-label">Additional Instructions (Optional)</label>
+          <textarea class="context-input" id="context-7" placeholder="e.g. Focus on readmission rates, include key recommendations..."></textarea>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn-analyze" onclick="runAnalysis(7, 'generate_report')" id="btn-7">📄 Generate Report</button>
         </div>
       </div>
       <div>
         <div class="results-area">
           <div class="loading-bar" id="loading-7"></div>
           <div class="results-header">
-            <span class="results-label">Results</span>
+            <span class="results-label">Generated Report</span>
             <button onclick="copyResults(7)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
           </div>
-          <div class="results-body empty" id="results-7">Results will appear here...</div>
+          <div class="results-body empty" id="results-7">Report will appear here after generation...</div>
+        </div>
+        <div class="download-area" id="download-7">
+          <a href="#" class="btn-download" id="dl-link-7">⬇️ Download Report</a>
         </div>
       </div>
     </div>
   </div>
   <!-- TAB 8: DATA CLEANING -->
-  <div class="tab-panel" id="tab-7">
+  <div class="tab-panel" id="tab-8">
     <div class="two-col">
       <div>
         <label class="context-label">Upload Dataset to Clean</label>
@@ -476,7 +505,7 @@ Visit quantusdata.ai to upgrade.'); };
         </div>
         <div style="margin-top:16px;">
           <label class="context-label">Cleaning Instructions (Optional)</label>
-          <textarea class="context-input" id="context-8" placeholder="e.g. Remove duplicates, fill missing values with median, standardize date formats, remove rows where claim amount is 0..."></textarea>
+          <textarea class="context-input" id="context-8" placeholder="e.g. Remove duplicates, fill missing values with median, standardize date formats..."></textarea>
         </div>
         <div style="margin-top:16px;">
           <label class="context-label">Cleaning Options</label>
@@ -490,17 +519,20 @@ Visit quantusdata.ai to upgrade.'); };
           </select>
         </div>
         <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runCleaning()" id="btn-7">🧹 Clean Dataset</button>
+          <button class="btn-analyze" onclick="runCleaning()" id="btn-8">🧹 Clean Dataset</button>
         </div>
       </div>
       <div>
         <div class="results-area">
-          <div class="loading-bar" id="loading-7"></div>
+          <div class="loading-bar" id="loading-8"></div>
           <div class="results-header">
             <span class="results-label">Data Cleaning Report</span>
             <button onclick="copyResults(8)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
           </div>
-          <div class="results-body empty" id="results-7">Upload a dataset and click Clean to get a data quality report and cleaning recommendations...</div>
+          <div class="results-body empty" id="results-8">Upload a dataset and click Clean to get a data quality report and cleaning recommendations...</div>
+        </div>
+        <div class="download-area" id="download-8">
+          <a href="#" class="btn-download" id="dl-link-8">⬇️ Download Cleaned Dataset</a>
         </div>
       </div>
     </div>
@@ -580,12 +612,32 @@ Visit quantusdata.ai to upgrade.'); };
   </div>
 
   <div class="tab-panel " id="tab-10">
-    <div class="chat-messages" id="chat-messages">
-      <div class="chat-msg assistant"><div class="bubble">👋 Hello! I'm your AI analyst. Ask me anything about your data.</div></div>
-    </div>
-    <div class="chat-input-row">
-      <input type="text" class="chat-input" id="chat-input-10" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendChat(10, '/chat_with_data')">
-      <button class="btn-analyze" onclick="sendChat(10, '/chat_with_data')" style="padding:10px 18px;">Send</button>
+    <div class="two-col">
+      <div>
+        <label class="context-label">Upload Data for Context (Optional)</label>
+        <div class="upload-zone" id="upload-10" onclick="triggerUpload(10, event)" style="padding:20px;">
+          <input type="file" id="file-10" accept=".csv,.xlsx,.xls" onchange="handleFile(10)" onclick="event.stopPropagation()">
+          <span class="upload-icon" style="font-size:1.5rem;">📤</span>
+          <div class="upload-title" style="font-size:0.82rem;">Upload data to reference in chat</div>
+          <div class="upload-sub">CSV or Excel</div>
+          <div class="upload-filename" id="filename-10"></div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn-secondary" onclick="loadChatData()" id="btn-load-10">📤 Load Data</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <label class="context-label">AI Healthcare Analyst Chat</label>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg assistant">
+            <div class="bubble">👋 Hello! I'm your AI Healthcare Analyst. Upload your data above and ask me anything about patient outcomes, disease patterns, billing, or clinical trials.</div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Ask about your healthcare data..." onkeydown="if(event.key==='Enter') sendChat()">
+          <button class="btn-analyze" onclick="sendChat()" style="padding:10px 18px;">Send</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -595,6 +647,7 @@ Visit quantusdata.ai to upgrade.'); };
 <script>
   const GRADIO_URL = '/tools/healthcare/gradio_api';
   const uploadedFiles = {};
+  const chatDataLoaded = { loaded: false, content: '' };
 
   function switchTab(idx) {
     document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
@@ -614,69 +667,268 @@ Visit quantusdata.ai to upgrade.'); };
     const fn = document.getElementById('filename-' + idx);
     fn.textContent = '📎 ' + file.name;
     fn.style.display = 'block';
+
+    // If Visualizations tab (6), populate column dropdowns
+    if (idx === 6) {
+      const isExcel = file.name.match(/\.xlsx?$/i);
+      if (isExcel && typeof XLSX !== 'undefined') {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            if (json.length > 0) {
+              const headers = json[0].map(h => String(h).trim()).filter(h => h);
+              populateVizDropdowns(headers);
+            }
+          } catch(err) { console.warn('Excel parse error:', err); }
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        // CSV fallback
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const firstLine = e.target.result.split(/\r?\n/)[0];
+          if (firstLine) {
+            const headers = firstLine.split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+            populateVizDropdowns(headers);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+
+  function populateVizDropdowns(headers) {
+    const xSel = document.getElementById('xcol-6');
+    const ySel = document.getElementById('ycol-6');
+    const gSel = document.getElementById('groupby-6');
+    xSel.innerHTML = '<option value="">-- Select X Axis --</option>';
+    ySel.innerHTML = '<option value="">-- Select Y Axis --</option>';
+    gSel.innerHTML = '<option value="">None</option>';
+    headers.forEach(h => {
+      if (h) {
+        xSel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+        ySel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+        gSel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+      }
+    });
   }
 
   function setLoading(idx, on) {
-    document.getElementById('loading-' + idx).classList.toggle('active', on);
+    const loadEl = document.getElementById('loading-' + idx);
+    if (loadEl) loadEl.classList.toggle('active', on);
     const btn = document.getElementById('btn-' + idx);
     if (btn) btn.disabled = on;
   }
 
   function renderMarkdown(text) {
-    return text
+    // First, extract code blocks and replace with placeholders
+    const codeBlocks = [];
+    text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
+      codeBlocks.push('<pre style="background:rgba(10,22,40,0.8);border:1px solid var(--border);border-radius:6px;padding:14px 18px;overflow-x:auto;margin:12px 0;"><code style="font-family:\'DM Mono\',monospace;font-size:0.82rem;color:var(--gold-light);line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>');
+      return '%%CODEBLOCK_' + (codeBlocks.length - 1) + '%%';
+    });
+    // Handle inline code
+    text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(10,22,40,0.6);padding:2px 6px;border-radius:3px;font-family:\'DM Mono\',monospace;font-size:0.85em;color:var(--gold-light);">$1</code>');
+    // Now apply markdown formatting (safe — no code blocks left)
+    text = text
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
       .replace(/^## (.+)$/gm, '<h2>$1</h2>')
       .replace(/^# (.+)$/gm, '<h1>$1</h1>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^---$/gm, '<hr>');
+      .replace(/^---$/gm, '<hr>')
+      .replace(/^- (.+)$/gm, '<div style="padding-left:16px;">• $1</div>')
+      .replace(/^\d+\. (.+)$/gm, function(m, p1) { return '<div style="padding-left:16px;">' + m.match(/^\d+/)[0] + '. ' + p1 + '</div>'; })
+      .replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid var(--gold);padding-left:12px;color:var(--muted);">$1</blockquote>');
+    // Restore code blocks
+    text = text.replace(/%%CODEBLOCK_(\d+)%%/g, function(m, idx) { return codeBlocks[parseInt(idx)]; });
+    return text;
   }
 
-  async function runAnalysis(tabIdx, endpoint, hasFile) {
-    const ctx = document.getElementById('context-' + tabIdx);
-    const context = ctx ? ctx.value.trim() : '';
+  async function callGradioApi(endpoint, fileIdx, extraArgs) {
+    const file = uploadedFiles[fileIdx];
+    if (!file) return { error: 'Please upload a file first.' };
 
-    if (hasFile && !uploadedFiles[tabIdx] && !context) {
-      alert('Please upload a file or enter context first.');
+    const formData = new FormData();
+    formData.append('files', file);
+    const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+    if (!uploadRes.ok) return { error: 'File upload failed. Status: ' + uploadRes.status };
+    const uploadData = await uploadRes.json();
+    const filePath = uploadData[0];
+
+    const body = { data: [{ path: filePath, orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } }, ...(extraArgs || [])] };
+    const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      return { error: 'Analysis request failed: ' + txt };
+    }
+    return await res.json();
+  }
+
+  function renderPlotlyChart(chartEl, chartData) {
+    if (!chartEl || !chartData) return;
+    try {
+      // Case 1: Plotly JSON object with type:'plotly'
+      if (chartData && typeof chartData === 'object' && chartData.type === 'plotly' && chartData.plot) {
+        const plotData = JSON.parse(chartData.plot);
+        plotData.layout = plotData.layout || {};
+        plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+        plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+        plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+        plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+        chartEl.style.minHeight = '350px';
+        chartEl.classList.add('active');
+        Plotly.newPlot(chartEl, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+      }
+      // Case 2: Direct Plotly data object
+      else if (chartData && typeof chartData === 'object' && chartData.data && Array.isArray(chartData.data)) {
+        chartData.layout = chartData.layout || {};
+        chartData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+        chartData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+        chartData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+        chartData.layout.margin = chartData.layout.margin || { t:40, r:20, b:40, l:60 };
+        chartEl.style.minHeight = '350px';
+        chartEl.classList.add('active');
+        Plotly.newPlot(chartEl, chartData.data, chartData.layout, { responsive: true, displayModeBar: true });
+      }
+      // Case 3: Gradio file path
+      else if (typeof chartData === 'string' && chartData.startsWith('/')) {
+        chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+        chartEl.classList.add('active');
+      }
+      // Case 4: Object with path (Gradio FileData)
+      else if (chartData && typeof chartData === 'object' && chartData.path) {
+        chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData.path + '" alt="Chart" style="width:100%;border-radius:6px;">';
+        chartEl.classList.add('active');
+      }
+      // Case 5: Full URL string
+      else if (typeof chartData === 'string' && (chartData.startsWith('http') || chartData.startsWith('data:'))) {
+        chartEl.innerHTML = '<img src="' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+        chartEl.classList.add('active');
+      }
+    } catch(e) { console.warn('Chart rendering error:', e); }
+  }
+
+  // Named endpoint map
+  const FN_MAP = {
+    'analyze_overview': '/analyze_overview',
+    'analyze_outcomes': '/analyze_outcomes',
+    'analyze_disease_patterns': '/analyze_disease_patterns',
+    'analyze_resources': '/analyze_resources',
+    'analyze_billing': '/analyze_billing',
+    'analyze_trials': '/analyze_trials',
+    'generate_viz': '/generate_viz',
+    'generate_report': '/generate_report',
+  };
+
+  async function runAnalysis(tabIdx, fnName) {
+    if (!uploadedFiles[tabIdx]) {
+      alert('Please upload a file first.');
       return;
     }
-
     setLoading(tabIdx, true);
     const resultsEl = document.getElementById('results-' + tabIdx);
     resultsEl.className = 'results-body';
     resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
 
     try {
-      let data = [];
+      const extraArgs = [];
+      const ctx = document.getElementById('context-' + tabIdx);
+      if (ctx) extraArgs.push(ctx.value || '');
 
-      if (hasFile && uploadedFiles[tabIdx]) {
-        const formData = new FormData();
-        formData.append('files', uploadedFiles[tabIdx]);
-        const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
-        if (!uploadRes.ok) throw new Error('File upload failed. Status: ' + uploadRes.status);
-        const uploadData = await uploadRes.json();
-        data.push({ path: uploadData[0], orig_name: uploadedFiles[tabIdx].name, size: uploadedFiles[tabIdx].size, mime_type: uploadedFiles[tabIdx].type, meta: { "_type": "gradio.FileData" } });
+      // Reports tab: send report_type only (backend uses single dropdown)
+      if (tabIdx === 7) {
+        extraArgs.length = 0;
+        extraArgs.push(document.getElementById('report-type-7').value);
       }
 
-      // Only send context if file was also uploaded
-      if (hasFile && uploadedFiles[tabIdx] && context) data.push(context);
-      if (!hasFile && context) data.push(context);
+      const result = await callGradioApi(FN_MAP[fnName], tabIdx, extraArgs);
 
-      const extraEl = document.getElementById('extra-' + tabIdx);
-      if (extraEl) data.push(extraEl.value);
+      if (result.error) {
+        resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + result.error + '</span>';
+      } else {
+        const data = result.data;
+        const text = data[0] || '';
+        resultsEl.innerHTML = renderMarkdown(text);
 
-      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data })
-      });
-      if (!res.ok) throw new Error('Request failed: ' + await res.text());
-      const result = await res.json();
-      const text = result.data?.[0] || 'No results returned.';
-      resultsEl.innerHTML = renderMarkdown(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
+        // Handle chart output (skip chart for Reports tab 7)
+        if (data[1]) {
+          if (tabIdx !== 7) {
+            const chartEl = document.getElementById('chart-' + tabIdx);
+            renderPlotlyChart(chartEl, data[1]);
+          }
+
+          // Handle download for Reports tab
+          if (tabIdx === 7) {
+            const dlArea = document.getElementById('download-7');
+            const dlLink = document.getElementById('dl-link-7');
+            const fileData = data[1];
+            let fileUrl = '';
+            if (typeof fileData === 'string') {
+              fileUrl = GRADIO_URL + '/file=' + fileData;
+            } else if (fileData && fileData.path) {
+              fileUrl = GRADIO_URL + '/file=' + fileData.path;
+            } else if (fileData && fileData.url) {
+              fileUrl = fileData.url;
+            }
+            if (fileUrl) {
+              dlLink.href = fileUrl;
+              dlLink.target = '_blank';
+              dlLink.download = '';
+              dlArea.classList.add('active');
+            }
+          }
+        }
+      }
     } catch(e) {
-      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
     }
     setLoading(tabIdx, false);
+  }
+
+  async function runViz() {
+    if (!uploadedFiles[6]) { alert('Please upload a data file first.'); return; }
+    const chartType = document.getElementById('chart-type-6').value;
+    const xCol = document.getElementById('xcol-6').value;
+    const yCol = document.getElementById('ycol-6').value;
+    const groupBy = document.getElementById('groupby-6').value;
+
+    if (!xCol) { alert('Please select an X Axis column.'); return; }
+
+    setLoading(6, true);
+    const resultsEl = document.getElementById('results-6');
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Generating visualization... this may take 1-2 minutes</span>';
+
+    try {
+      // Backend expects: file, chart_type, x_col, y_col, color_col
+      const result = await callGradioApi(FN_MAP['generate_viz'], 6, [chartType, xCol || '', yCol || '', groupBy || '']);
+
+      if (result.error) {
+        resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + result.error + '</span>';
+      } else {
+        const data = result.data;
+        // generate_viz returns [plot, status_text] — plot is first, text is second
+        const chartOutput = data[0];
+        const statusText = data[1] || '';
+        resultsEl.innerHTML = renderMarkdown(typeof statusText === 'string' ? statusText : (typeof chartOutput === 'string' ? chartOutput : 'Chart generated.'));
+
+        // Handle chart output
+        const chartEl = document.getElementById('chart-6');
+        const chartData = chartOutput && typeof chartOutput === 'object' ? chartOutput : (typeof data[1] === 'object' ? data[1] : null);
+        renderPlotlyChart(chartEl, chartData);
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
+    }
+    setLoading(6, false);
   }
 
   function copyResults(idx) {
@@ -695,30 +947,168 @@ Visit quantusdata.ai to upgrade.'); };
     msgs.scrollTop = msgs.scrollHeight;
   }
 
-  async function sendChat(tabIdx, endpoint) {
-    const input = document.getElementById('chat-input-' + tabIdx);
+  // Store parsed dataset for AI Chat
+  let chatDataContext = '';
+  let chatDataSummary = '';
+
+  async function loadChatData() {
+    const file = uploadedFiles[10];
+    if (!file) { alert('Please upload a file first.'); return; }
+    document.getElementById('btn-load-10').textContent = '⟳ Loading...';
+    try {
+      // Read file client-side with SheetJS for reliable data context
+      const ab = await file.arrayBuffer();
+      const wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      const headers = raw[0] ? raw[0].map(h => String(h).trim()) : [];
+      const rows = raw.slice(1);
+
+      // Build comprehensive data context
+      let ctx = 'Dataset: ' + file.name + ' (' + rows.length + ' rows x ' + headers.length + ' columns)\n';
+      ctx += 'Columns: ' + headers.join(', ') + '\n\n';
+
+      // Numeric stats
+      ctx += 'NUMERIC COLUMN STATISTICS:\n';
+      headers.forEach((h, ci) => {
+        const vals = rows.map(r => r[ci]).filter(v => v !== '' && v !== null && v !== undefined);
+        const nums = vals.map(Number).filter(n => !isNaN(n));
+        if (nums.length > vals.length * 0.5 && nums.length > 0) {
+          nums.sort((a, b) => a - b);
+          const sum = nums.reduce((a, b) => a + b, 0);
+          const mean = sum / nums.length;
+          const median = nums.length % 2 === 0 ? (nums[nums.length/2-1] + nums[nums.length/2]) / 2 : nums[Math.floor(nums.length/2)];
+          // Mode
+          const freq = {};
+          nums.forEach(n => { freq[n] = (freq[n] || 0) + 1; });
+          const maxFreq = Math.max(...Object.values(freq));
+          const modes = Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number);
+          const modeStr = modes.length <= 3 ? modes.join(', ') : modes.slice(0, 3).join(', ') + '...';
+          // Std dev
+          const variance = nums.reduce((s, n) => s + Math.pow(n - mean, 2), 0) / nums.length;
+          const std = Math.sqrt(variance);
+          ctx += '  ' + h + ': count=' + nums.length + ', mean=' + (Math.round(mean * 100) / 100) + ', median=' + (Math.round(median * 100) / 100) + ', mode=' + modeStr + ', std=' + (Math.round(std * 100) / 100) + ', min=' + nums[0] + ', max=' + nums[nums.length-1] + ', sum=' + (Math.round(sum * 100) / 100) + '\n';
+        }
+      });
+
+      // Categorical stats
+      ctx += '\nCATEGORICAL COLUMN DISTRIBUTIONS:\n';
+      headers.forEach((h, ci) => {
+        const vals = rows.map(r => r[ci]).filter(v => v !== '' && v !== null && v !== undefined && typeof v === 'string');
+        if (vals.length < rows.length * 0.3) return;
+        const freq = {};
+        vals.forEach(v => { freq[String(v).trim()] = (freq[String(v).trim()] || 0) + 1; });
+        const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+        const mode = sorted[0] ? sorted[0][0] : 'N/A';
+        ctx += '  ' + h + ' (' + Object.keys(freq).length + ' unique, mode="' + mode + '"): ' + sorted.slice(0, 8).map(([k, v]) => k + '(' + v + ')').join(', ') + '\n';
+      });
+
+      // Sample rows
+      ctx += '\nFIRST 10 ROWS:\n';
+      rows.slice(0, 10).forEach((r, ri) => {
+        ctx += '  Row ' + (ri + 1) + ': ' + headers.map((h, ci) => h + '=' + (r[ci] === '' ? 'NULL' : r[ci])).join(' | ') + '\n';
+      });
+
+      chatDataContext = ctx;
+      chatDataSummary = rows.length + ' rows x ' + headers.length + ' columns';
+
+      // Also try server-side upload for backup
+      try {
+        const formData = new FormData();
+        formData.append('files', file);
+        const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+        const uploadData = await uploadRes.json();
+        const fileData = { path: uploadData[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+        await fetch(GRADIO_URL + '/run/upload_chat_data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: [fileData] })
+        });
+      } catch(e) { /* server upload optional */ }
+
+      document.getElementById('btn-load-10').textContent = '✅ Data Loaded';
+      addChatMsg('assistant', '✅ Data loaded: ' + file.name + ' (' + chatDataSummary + '). Ask me anything about your data!');
+    } catch(e) {
+      document.getElementById('btn-load-10').textContent = '📤 Load Data';
+      addChatMsg('assistant', '⚠️ Error loading data: ' + e.message);
+    }
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chat-input');
     const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
     addChatMsg('user', msg);
+
     const thinking = document.createElement('div');
     thinking.className = 'chat-msg assistant';
     thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
     document.getElementById('chat-messages').appendChild(thinking);
+
     try {
-      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: [msg, null] })
-      });
-      const result = await res.json();
-      thinking.querySelector('.bubble').innerHTML = renderMarkdown(result.data?.[0] || 'No response.');
+      if (!chatDataContext) {
+        thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">Please load a dataset first using the Load Data button above.</span>';
+        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        return;
+      }
+
+      // Build message with data EMBEDDED directly — the LLM sees actual numbers
+      const userMsg = 'You are a senior healthcare data analyst answering a question from your team. ' +
+        'Here is the dataset you analyzed:\n\n' +
+        chatDataContext + '\n\n' +
+        'Answer the following question as the professional analyst who did this work. ' +
+        'Deliver the answer immediately with specific numbers. Do NOT explain how to calculate. ' +
+        'Do NOT describe what columns contain. Do NOT say "the data appears to show." ' +
+        'State findings directly like: "Net profit averaged $67,688 (median: $50,575), ranging from $3,841 to $312,807." ' +
+        'Be concise, confident, and precise. Include comparisons, rankings, or trends when relevant.\n\n' +
+        'QUESTION: ' + msg;
+
+      let reply = '';
+
+      // Try chat_with_data with data-enriched message
+      try {
+        const res = await fetch(GRADIO_URL + '/run/chat_with_data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: [userMsg, []] })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          reply = result.data?.[0] || '';
+        }
+      } catch(e) { /* fallback below */ }
+
+      // If chat_with_data failed or gave no reply, try analyze_overview
+      if (!reply) {
+        const file = uploadedFiles[10];
+        if (file) {
+          const formData = new FormData();
+          formData.append('files', file);
+          const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+          const uploadData = await uploadRes.json();
+          const fileData = { path: uploadData[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+          const res2 = await fetch(GRADIO_URL + '/run/analyze_overview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: [fileData] })
+          });
+          if (res2.ok) {
+            const result2 = await res2.json();
+            reply = result2.data?.[0] || 'No response received.';
+          }
+        }
+      }
+
+      if (!reply) reply = 'No response received. Please try again.';
+      thinking.querySelector('.bubble').innerHTML = renderMarkdown(reply);
     } catch(e) {
       thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }
     document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
   }
 
+  // Drag and drop
   document.querySelectorAll('.upload-zone').forEach(zone => {
     zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
@@ -751,70 +1141,6 @@ Visit quantusdata.ai to upgrade.'); };
     fn.style.display = 'block';
   }
 
-  async function runCleaning() {
-    if (!uploadedFiles[8]) { alert('Please upload a dataset first.'); return; }
-    setLoading(8, true);
-    const resultsEl = document.getElementById('results-8');
-    resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing data quality... this may take 1-2 minutes</span>';
-    try {
-      // Read file content
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const csvContent = e.target.result.slice(0, 8000);
-        const cleaningType = document.getElementById('extra-8').value;
-        const instructions = document.getElementById('context-8').value;
-
-        const prompt = `You are a professional data analyst. Analyze this dataset and provide a ${cleaningType} report.
-
-Dataset sample (first 8000 chars):
-${csvContent}
-
-${instructions ? 'Additional instructions: ' + instructions : ''}
-
-Please provide:
-1. **Data Quality Summary** — rows, columns, completeness score
-2. **Issues Found** — missing values, duplicates, format inconsistencies, outliers
-3. **Cleaning Recommendations** — specific steps to clean this data
-4. **Column Analysis** — data types, value ranges, anomalies per column
-5. **Cleaned Data Preview** — show what the first 5 rows would look like after cleaning
-6. **Overall Data Health Score** — rate 1-10 with explanation
-
-Format your response with clear headers and be specific about column names and row counts.`;
-
-        const API_KEY = '';  // Uses server-side proxy
-        const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: [{ path: await uploadFileGetPath(uploadedFiles[8]), orig_name: uploadedFiles[8].name, size: uploadedFiles[8].size, mime_type: uploadedFiles[8].type, meta: { "_type": "gradio.FileData" } }, prompt] })
-        });
-        const result = await res.json();
-        resultsEl.className = 'results-body';
-        resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
-      const chartData = result.data?.[1];
-      if (chartData && chartData.type === 'plotly' && chartData.plot) {
-        const chartDiv = document.createElement('div');
-        chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
-        resultsEl.appendChild(chartDiv);
-        try {
-          const plotData = JSON.parse(chartData.plot);
-          plotData.layout = plotData.layout || {};
-          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
-          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
-          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
-          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
-          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
-        } catch(e) { console.warn('Chart error:', e); }
-      }
-        setLoading(8, false);
-      };
-      reader.readAsText(uploadedFiles[8]);
-    } catch(e) {
-      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-      setLoading(8, false);
-    }
-  }
-
   async function uploadFileGetPath(file) {
     const formData = new FormData();
     formData.append('files', file);
@@ -823,80 +1149,390 @@ Format your response with clear headers and be specific about column names and r
     return data[0];
   }
 
+  async function runCleaning() {
+    if (!uploadedFiles[8]) { alert('Please upload a dataset first.'); return; }
+    setLoading(8, true);
+    const resultsEl = document.getElementById('results-8');
+    resultsEl.className = 'results-body';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Cleaning dataset...</span>';
+    const dlArea = document.getElementById('download-8');
+    dlArea.classList.remove('active');
+
+    try {
+      const cleaningType = document.getElementById('extra-8').value;
+      const file = uploadedFiles[8];
+
+      // Read file client-side with SheetJS
+      const ab = await file.arrayBuffer();
+      const wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rawData = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      if (rawData.length < 2) throw new Error('File has no data rows.');
+
+      const headers = rawData[0].map(h => String(h).trim());
+      const rows = rawData.slice(1);
+      const origRowCount = rows.length;
+      const origColCount = headers.length;
+      const report = [];
+      let totalFixes = 0;
+
+      // --- Cleaning functions ---
+      function isEmptyRow(row) { return row.every(c => c === '' || c === null || c === undefined); }
+      function isDuplicate(row, seen) {
+        const key = JSON.stringify(row);
+        if (seen.has(key)) return true;
+        seen.add(key); return false;
+      }
+
+      // 1. Remove completely empty rows
+      let cleaned = rows.filter(r => !isEmptyRow(r));
+      const emptyRemoved = origRowCount - cleaned.length;
+      if (emptyRemoved > 0) { report.push('**Empty Rows Removed:** ' + emptyRemoved + ' completely blank rows removed'); totalFixes += emptyRemoved; }
+
+      // 2. Remove duplicate rows
+      if (cleaningType === 'full' || cleaningType === 'duplicates') {
+        const seen = new Set();
+        const before = cleaned.length;
+        cleaned = cleaned.filter(r => !isDuplicate(r, seen));
+        const dupsRemoved = before - cleaned.length;
+        if (dupsRemoved > 0) { report.push('**Duplicates Removed:** ' + dupsRemoved + ' exact duplicate rows removed'); totalFixes += dupsRemoved; }
+        else { report.push('**Duplicates:** No exact duplicate rows found'); }
+      }
+
+      // 3. Analyze & fix missing values
+      if (cleaningType === 'full' || cleaningType === 'nulls') {
+        const nullCounts = {};
+        headers.forEach((h, ci) => {
+          let nulls = 0;
+          cleaned.forEach(r => { if (r[ci] === '' || r[ci] === null || r[ci] === undefined || String(r[ci]).trim() === '') nulls++; });
+          if (nulls > 0) nullCounts[h] = nulls;
+        });
+        if (Object.keys(nullCounts).length > 0) {
+          let nullReport = '**Missing Values Found & Fixed:**\n';
+          headers.forEach((h, ci) => {
+            if (!nullCounts[h]) return;
+            // Determine if column is numeric
+            const vals = cleaned.map(r => r[ci]).filter(v => v !== '' && v !== null && v !== undefined && String(v).trim() !== '');
+            const numVals = vals.map(Number).filter(n => !isNaN(n));
+            if (numVals.length > vals.length * 0.5) {
+              // Numeric — fill with median
+              numVals.sort((a,b) => a - b);
+              const median = numVals.length % 2 === 0 ? (numVals[numVals.length/2-1] + numVals[numVals.length/2]) / 2 : numVals[Math.floor(numVals.length/2)];
+              const roundedMedian = Math.round(median * 100) / 100;
+              cleaned.forEach(r => { if (r[ci] === '' || r[ci] === null || r[ci] === undefined || String(r[ci]).trim() === '') { r[ci] = roundedMedian; } });
+              nullReport += '- ' + h + ': ' + nullCounts[h] + ' nulls filled with median (' + roundedMedian + ')\n';
+            } else {
+              // Text — fill with "Unknown"
+              cleaned.forEach(r => { if (r[ci] === '' || r[ci] === null || r[ci] === undefined || String(r[ci]).trim() === '') { r[ci] = 'Unknown'; } });
+              nullReport += '- ' + h + ': ' + nullCounts[h] + ' nulls filled with "Unknown"\n';
+            }
+            totalFixes += nullCounts[h];
+          });
+          report.push(nullReport);
+        } else { report.push('**Missing Values:** No missing values detected'); }
+      }
+
+      // 4. Standardize text casing
+      if (cleaningType === 'full' || cleaningType === 'formats') {
+        let casingFixes = 0;
+        headers.forEach((h, ci) => {
+          const vals = cleaned.map(r => r[ci]).filter(v => typeof v === 'string' && v.trim() !== '' && v !== 'Unknown');
+          if (vals.length === 0) return;
+          // Check if column has inconsistent casing (e.g. "male", "Male", "MALE")
+          const lower = new Set(vals.map(v => v.toLowerCase()));
+          const original = new Set(vals);
+          if (original.size > lower.size) {
+            // Inconsistent casing — title case all
+            cleaned.forEach(r => {
+              if (typeof r[ci] === 'string' && r[ci].trim() !== '' && r[ci] !== 'Unknown') {
+                const titleCase = r[ci].toLowerCase().replace(/(?:^|\s|-)\S/g, c => c.toUpperCase());
+                if (titleCase !== r[ci]) { casingFixes++; r[ci] = titleCase; }
+              }
+            });
+          }
+        });
+        if (casingFixes > 0) { report.push('**Text Standardized:** ' + casingFixes + ' values fixed to consistent Title Case'); totalFixes += casingFixes; }
+        else { report.push('**Text Casing:** All text values already consistent'); }
+
+        // Standardize phone formats (strip non-digits, format as (XXX) XXX-XXXX)
+        let phoneFixes = 0;
+        headers.forEach((h, ci) => {
+          if (!/phone|tel|mobile|cell|fax/i.test(h)) return;
+          cleaned.forEach(r => {
+            if (typeof r[ci] === 'string' || typeof r[ci] === 'number') {
+              const digits = String(r[ci]).replace(/\D/g, '');
+              if (digits.length === 10) {
+                const formatted = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+                if (formatted !== String(r[ci])) { r[ci] = formatted; phoneFixes++; }
+              } else if (digits.length === 11 && digits[0] === '1') {
+                const formatted = '(' + digits.slice(1,4) + ') ' + digits.slice(4,7) + '-' + digits.slice(7);
+                if (formatted !== String(r[ci])) { r[ci] = formatted; phoneFixes++; }
+              }
+            }
+          });
+        });
+        if (phoneFixes > 0) { report.push('**Phone Numbers Standardized:** ' + phoneFixes + ' phone values formatted to (XXX) XXX-XXXX'); totalFixes += phoneFixes; }
+
+        // Standardize date formats
+        let dateFixes = 0;
+        headers.forEach((h, ci) => {
+          if (!/date|dob|birth|admit|discharge|created|updated/i.test(h)) return;
+          cleaned.forEach(r => {
+            const val = r[ci];
+            if (val instanceof Date && !isNaN(val)) {
+              const iso = val.toISOString().slice(0,10);
+              if (iso !== String(r[ci])) { r[ci] = iso; dateFixes++; }
+            } else if (typeof val === 'string' && val.trim() !== '' && val !== 'Unknown') {
+              const d = new Date(val);
+              if (!isNaN(d) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+                const iso = d.toISOString().slice(0,10);
+                if (iso !== val) { r[ci] = iso; dateFixes++; }
+              }
+            }
+          });
+        });
+        if (dateFixes > 0) { report.push('**Dates Standardized:** ' + dateFixes + ' date values formatted to YYYY-MM-DD'); totalFixes += dateFixes; }
+
+        // Standardize boolean values
+        let boolFixes = 0;
+        headers.forEach((h, ci) => {
+          const vals = cleaned.map(r => String(r[ci]).toLowerCase().trim()).filter(v => v !== '' && v !== 'unknown');
+          const boolVals = vals.filter(v => ['yes','no','y','n','true','false','1','0','t','f'].includes(v));
+          if (boolVals.length > vals.length * 0.7) {
+            cleaned.forEach(r => {
+              const v = String(r[ci]).toLowerCase().trim();
+              if (['yes','y','true','1','t'].includes(v)) { if (r[ci] !== 'Yes') { r[ci] = 'Yes'; boolFixes++; } }
+              else if (['no','n','false','0','f'].includes(v)) { if (r[ci] !== 'No') { r[ci] = 'No'; boolFixes++; } }
+            });
+          }
+        });
+        if (boolFixes > 0) { report.push('**Boolean Values Standardized:** ' + boolFixes + ' values normalized to Yes/No'); totalFixes += boolFixes; }
+      }
+
+      // 5. Detect & flag outliers using IQR method
+      if (cleaningType === 'full' || cleaningType === 'outliers') {
+        let outlierCount = 0;
+        const outlierDetails = [];
+        // Add Outlier_Flag column
+        const hasOutlierCol = headers.includes('Outlier_Flag');
+        if (!hasOutlierCol) headers.push('Outlier_Flag');
+        cleaned.forEach(r => { if (!hasOutlierCol) r.push(''); });
+        const flagIdx = headers.indexOf('Outlier_Flag');
+
+        headers.forEach((h, ci) => {
+          if (ci === flagIdx) return;
+          const numVals = cleaned.map(r => Number(r[ci])).filter(n => !isNaN(n));
+          if (numVals.length < cleaned.length * 0.5) return; // skip non-numeric columns
+          numVals.sort((a,b) => a - b);
+          const q1 = numVals[Math.floor(numVals.length * 0.25)];
+          const q3 = numVals[Math.floor(numVals.length * 0.75)];
+          const iqr = q3 - q1;
+          if (iqr === 0) return;
+          const lower = q1 - 1.5 * iqr;
+          const upper = q3 + 1.5 * iqr;
+          let colOutliers = 0;
+          cleaned.forEach(r => {
+            const v = Number(r[ci]);
+            if (!isNaN(v) && (v < lower || v > upper)) {
+              r[flagIdx] = (r[flagIdx] ? r[flagIdx] + '; ' : '') + h + '=' + v;
+              colOutliers++;
+            }
+          });
+          if (colOutliers > 0) { outlierDetails.push(h + ': ' + colOutliers + ' outliers (range: ' + Math.round(lower*100)/100 + ' – ' + Math.round(upper*100)/100 + ')'); outlierCount += colOutliers; }
+        });
+        if (outlierCount > 0) {
+          report.push('**Outliers Detected & Flagged:** ' + outlierCount + ' total outlier values flagged in Outlier_Flag column\n' + outlierDetails.map(d => '- ' + d).join('\n'));
+          totalFixes += outlierCount;
+        } else { report.push('**Outliers:** No statistical outliers detected'); }
+      }
+
+      // 6. Data quality report mode
+      if (cleaningType === 'report') {
+        const qualityIssues = [];
+        headers.forEach((h, ci) => {
+          let nulls = 0, types = new Set();
+          cleaned.forEach(r => {
+            const v = r[ci];
+            if (v === '' || v === null || v === undefined) { nulls++; return; }
+            if (!isNaN(Number(v))) types.add('number');
+            else if (v instanceof Date) types.add('date');
+            else types.add('text');
+          });
+          const issues = [];
+          if (nulls > 0) issues.push(nulls + ' nulls (' + Math.round(nulls/cleaned.length*100) + '%)');
+          if (types.size > 1) issues.push('mixed types: ' + Array.from(types).join(', '));
+          if (issues.length > 0) qualityIssues.push('- **' + h + '**: ' + issues.join('; '));
+        });
+        if (qualityIssues.length > 0) { report.push('**Data Quality Issues Found:**\n' + qualityIssues.join('\n')); }
+        else { report.push('**Data Quality:** No issues detected — dataset looks clean!'); }
+      }
+
+      // Build summary
+      const summary = '## Data Cleaning Report\n\n' +
+        '**Original Dataset:** ' + origRowCount + ' rows × ' + origColCount + ' columns\n' +
+        '**Cleaned Dataset:** ' + cleaned.length + ' rows × ' + headers.length + ' columns\n' +
+        '**Total Fixes Applied:** ' + totalFixes + '\n' +
+        '**Cleaning Mode:** ' + document.getElementById('extra-8').options[document.getElementById('extra-8').selectedIndex].text + '\n\n' +
+        '---\n\n### Issues Found & Fixed\n\n' + (report.length > 0 ? report.join('\n\n') : 'No issues found — dataset is already clean!');
+
+      resultsEl.className = 'results-body';
+      resultsEl.innerHTML = renderMarkdown(summary);
+
+      // Generate cleaned Excel file for download
+      if (cleaningType !== 'report') {
+        const cleanedData = [headers, ...cleaned];
+        const newWs = XLSX.utils.aoa_to_sheet(cleanedData);
+        // Auto-size columns
+        const colWidths = headers.map((h, ci) => {
+          let max = h.length;
+          cleaned.slice(0, 50).forEach(r => { if (r[ci]) max = Math.max(max, String(r[ci]).length); });
+          return { wch: Math.min(max + 2, 40) };
+        });
+        newWs['!cols'] = colWidths;
+        const newWb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(newWb, newWs, 'Cleaned Data');
+        const wbout = XLSX.write(newWb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const dlLink = document.getElementById('dl-link-8');
+        const origName = file.name.replace(/\.[^.]+$/, '');
+        dlLink.href = url;
+        dlLink.download = origName + '_cleaned.xlsx';
+        dlArea.classList.add('active');
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+    }
+    setLoading(8, false);
+  }
+
   async function runMultiDataset() {
     if (!multiFiles[1]) { alert('Please upload at least Dataset 1.'); return; }
     if (!multiFiles[2]) { alert('Please upload at least Dataset 2.'); return; }
     setLoading(9, true);
     const resultsEl = document.getElementById('results-9');
     resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Reading and cross-referencing datasets... this may take 2-3 minutes</span>';
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Merging and analyzing all datasets... this may take 2-3 minutes</span>';
 
     try {
-      const readFile = (file) => new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result.slice(0, 5000));
-        reader.readAsText(file);
-      });
-
-      const dataset1 = await readFile(multiFiles[1]);
-      const dataset2 = await readFile(multiFiles[2]);
-      const dataset3 = multiFiles[3] ? await readFile(multiFiles[3]) : null;
       const analysisType = document.getElementById('extra-multi').value;
-      const instructions = document.getElementById('context-multi').value;
+      const instructions = document.getElementById('context-multi').value || '';
 
-      const prompt = `You are a senior data analyst. Perform a ${analysisType} across these ${dataset3 ? '3' : '2'} related datasets.
+      // Read each dataset with SheetJS
+      async function readSheet(file) {
+        const ab = await file.arrayBuffer();
+        const wb = XLSX.read(ab, { type: 'array', cellDates: true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        return { headers: raw[0] ? raw[0].map(h => String(h).trim()) : [], rows: raw.slice(1) };
+      }
 
-**Dataset 1** (${multiFiles[1].name}):
-${dataset1}
+      const d1 = await readSheet(multiFiles[1]);
+      const d2 = await readSheet(multiFiles[2]);
+      const d3 = multiFiles[3] ? await readSheet(multiFiles[3]) : null;
+      const numDS = d3 ? 3 : 2;
 
-**Dataset 2** (${multiFiles[2].name}):
-${dataset2}
+      // Build unified header set: Source_Dataset + union of all columns
+      const headerSet = new Set();
+      d1.headers.forEach(h => headerSet.add(h));
+      d2.headers.forEach(h => headerSet.add(h));
+      if (d3) d3.headers.forEach(h => headerSet.add(h));
+      const allHeaders = ['Source_Dataset', ...Array.from(headerSet)];
 
-${dataset3 ? `**Dataset 3** (${multiFiles[3].name}):
-${dataset3}` : ''}
+      // Map rows with source label
+      function mapRows(ds, label) {
+        return ds.rows.map(row => {
+          const mapped = new Array(allHeaders.length).fill('');
+          mapped[0] = label;
+          ds.headers.forEach((h, ci) => {
+            const idx = allHeaders.indexOf(h);
+            if (idx >= 0) mapped[idx] = row[ci] !== undefined ? row[ci] : '';
+          });
+          return mapped;
+        });
+      }
 
-${instructions ? 'Analysis instructions: ' + instructions : ''}
+      const label1 = multiFiles[1].name.replace(/\.[^.]+$/, '');
+      const label2 = multiFiles[2].name.replace(/\.[^.]+$/, '');
+      const label3 = d3 ? multiFiles[3].name.replace(/\.[^.]+$/, '') : null;
 
-Please provide:
-1. **Dataset Overview** — summarize each dataset (rows, columns, key fields)
-2. **Cross-Dataset Findings** — patterns, correlations, and relationships between datasets
-3. **Key Insights** — top 5 actionable insights from comparing the datasets
-4. **Anomalies & Discrepancies** — anything unusual when comparing across datasets
-5. **Recommendations** — what actions should be taken based on this analysis
-6. **Summary Table** — create a comparison table of key metrics across datasets
+      const rows1 = mapRows(d1, label1);
+      const rows2 = mapRows(d2, label2);
+      const rows3 = d3 ? mapRows(d3, label3) : [];
 
-Be specific, use numbers from the actual data, and reference column names.`;
+      // INTERLEAVE rows so head() and describe() see all datasets
+      const allSources = [rows1, rows2];
+      if (rows3.length > 0) allSources.push(rows3);
+      const maxLen = Math.max(...allSources.map(s => s.length));
+      const interleaved = [];
+      for (let i = 0; i < maxLen; i++) {
+        for (let s = 0; s < allSources.length; s++) {
+          if (i < allSources[s].length) interleaved.push(allSources[s][i]);
+        }
+      }
 
-      // Use the chat endpoint which accepts text input
+      // Create combined workbook
+      const combinedData = [allHeaders, ...interleaved];
+      const ws = XLSX.utils.aoa_to_sheet(combinedData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Combined');
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const combinedFile = new File([blob], 'combined_datasets.xlsx', { type: blob.type });
+
+      // Upload combined file to Gradio
+      const formData = new FormData();
+      formData.append('files', combinedFile);
+      const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+      if (!uploadRes.ok) throw new Error('Upload failed');
+      const uploadData = await uploadRes.json();
+      const fileData = { path: uploadData[0], orig_name: 'combined_datasets.xlsx', size: combinedFile.size, mime_type: combinedFile.type, meta: { "_type": "gradio.FileData" } };
+
+      // Build prompt — the backend reads the file so it will see the interleaved data
+      const prompt = 'This file contains ' + numDS + ' SEPARATE datasets merged together with INTERLEAVED rows. ' +
+        'The "Source_Dataset" column identifies which dataset each row belongs to:\n' +
+        '- "' + label1 + '" (' + d1.rows.length + ' rows)\n' +
+        '- "' + label2 + '" (' + d2.rows.length + ' rows)\n' +
+        (d3 ? '- "' + label3 + '" (' + d3.rows.length + ' rows)\n' : '') +
+        '\nPerform a ' + analysisType + ' by grouping/filtering on Source_Dataset.\n' +
+        (instructions ? 'Instructions: ' + instructions + '\n' : '') +
+        '\nYou MUST provide:\n' +
+        '## Individual Dataset Summaries\nFor EACH Source_Dataset value, provide: row count, key columns, averages/medians for numeric fields, top categories.\n\n' +
+        '## Cross-Dataset Comparison\nDirectly compare metrics between "' + label1 + '" and "' + label2 + '"' + (d3 ? ' and "' + label3 + '"' : '') + '. Show differences with specific numbers.\n\n' +
+        '## Trends & Changes\nWhat improved or declined between datasets.\n\n' +
+        '## Top 5 Key Insights\nMost important findings from COMPARING across datasets. Each must reference numbers from multiple datasets.\n\n' +
+        '## Anomalies & Discrepancies\nInconsistencies between datasets.\n\n' +
+        '## Recommendations\nData-driven recommendations.\n\n' +
+        '## Summary Comparison Table\nSide-by-side table of key metrics from each dataset.\n\n' +
+        'CRITICAL: Every section must cite specific numbers from EACH dataset by name. Group by Source_Dataset column.';
+
       const res = await fetch(GRADIO_URL + '/run/analyze_overview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: [{ path: await uploadFileGetPath(multiFiles[1]), orig_name: multiFiles[1].name, size: multiFiles[1].size, mime_type: multiFiles[1].type, meta: { "_type": "gradio.FileData" } }, prompt] })
+        body: JSON.stringify({ data: [fileData, prompt] })
       });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error('Analysis request failed: ' + errText);
+      }
+
       const result = await res.json();
       resultsEl.className = 'results-body';
       resultsEl.innerHTML = renderMarkdown(result.data?.[0] || 'No results returned.');
-      const chartData = result.data?.[1];
-      if (chartData && chartData.type === 'plotly' && chartData.plot) {
+
+      // Render chart if available
+      if (result.data?.[1]) {
         const chartDiv = document.createElement('div');
         chartDiv.style.cssText = 'margin-top:20px;border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;min-height:350px;';
         resultsEl.appendChild(chartDiv);
-        try {
-          const plotData = JSON.parse(chartData.plot);
-          plotData.layout = plotData.layout || {};
-          plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
-          plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
-          plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
-          plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
-          Plotly.newPlot(chartDiv, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
-        } catch(e) { console.warn('Chart error:', e); }
+        renderPlotlyChart(chartDiv, result.data[1]);
       }
     } catch(e) {
       resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
     }
     setLoading(9, false);
   }
-
 
 </script>
 

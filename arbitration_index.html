@@ -4,47 +4,44 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (async function() {
-  const SUPABASE_URL = 'https://jolvnzhwwchbkuzkeqjt.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  // Handle magic link token in URL hash
-  if (window.location.hash && window.location.hash.includes('access_token')) {
+  const sb = supabase.createClient("https://jolvnzhwwchbkuzkeqjt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs", { auth: { persistSession: true, storageKey: "quantusdata-auth" } });
+  if (window.location.hash && window.location.hash.includes("access_token")) {
     await sb.auth.exchangeCodeForSession(window.location.href);
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) { window.location.href = '/dashboard.html'; return; }
-  const { data, error } = await sb.from('subscriptions').select('*').eq('email', session.user.email).eq('status', 'active').single();
-  if (error || !data) { window.location.href = '/dashboard.html?error=no_subscription'; return; }
+  if (!session?.user) { window.location.href = "/dashboard.html"; return; }
+  const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
+  if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
   const plan = data.plan;
-  const PREMIUM_PLANS = ['professional', 'business', 'owner'];
+  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  if (!BASIC_PLANS.includes(plan)) {
+    window.location.href = "/dashboard.html?error=upgrade_required";
+    return;
+  }
+  const PREMIUM_PLANS = ["professional", "business", "owner"];
   const isPremium = PREMIUM_PLANS.includes(plan);
-  const PLAN_NAMES = { 'basic': 'Basic Plan — $29/mo', 'professional': 'Professional Plan — $79/mo', 'business': 'Business Plan — $199/mo', 'owner': 'Owner Access' };
+  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
   const applyPlan = () => {
-    document.querySelectorAll('.nav-plan').forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
     if (!isPremium) {
-      const PREMIUM_KEYWORDS = ['Cleaning', 'Dataset', 'Chat', 'Visual', 'Reports'];
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
+      const PREMIUM_KEYWORDS = ["Cleaning", "Dataset", "Chat", "Visual", "Reports"];
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
         const label = btn.textContent.trim();
         const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
         if (isLocked) {
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'not-allowed';
-          btn.title = 'Upgrade to Professional to unlock';
-          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert('This feature requires a Professional or Business plan.
-Visit quantusdata.ai to upgrade.'); };
-          btn.innerHTML = '🔒 ' + btn.innerHTML;
+          btn.style.opacity = "0.4"; btn.style.cursor = "not-allowed";
+          btn.title = "Upgrade to Professional to unlock";
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert("This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade."); };
+          btn.innerHTML = "\ud83d\udd12 " + btn.innerHTML;
         }
       });
     }
   };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyPlan);
-  } else {
-    applyPlan();
-  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", applyPlan); } else { applyPlan(); }
 })();
 </script>
+
 
 
 
@@ -125,7 +122,7 @@ Visit quantusdata.ai to upgrade.'); };
     .results-area { background:rgba(17,34,64,0.5); border:1px solid var(--border); border-radius:8px; min-height:200px; overflow:hidden; }
     .results-header { padding:12px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .results-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:2px; text-transform:uppercase; }
-    .results-body { padding:20px; font-size:0.85rem; color:var(--white); line-height:1.8; white-space:pre-wrap; }
+    .results-body{ padding:20px; font-size:1.05rem;font-family:Arial,sans-serif; color:var(--white); line-height:1.8; white-space:pre-wrap; }
     .results-body.empty { color:var(--muted); font-style:italic; }
     .results-body::selection,.results-body *::selection { background:#c9a84c; color:#000000; }
     .loading-bar { height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); background-size:200% 100%; animation:shimmer 1.5s infinite; display:none; }
@@ -144,6 +141,7 @@ Visit quantusdata.ai to upgrade.'); };
     .results-body strong { color:var(--white); font-weight:600; }
     .results-body hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
   </style>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 </head>
 <body>
 
@@ -167,7 +165,7 @@ Visit quantusdata.ai to upgrade.'); };
   <div class="nav-right">
     <span class="nav-plan">QuantusData Professional</span>
     <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-      <a href="javascript:void(0)" onclick="signOutUser()" style="font-size:0.78rem;color:#ff6b6b;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,107,107,0.3);border-radius:4px;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6b6b'" onmouseout="this.style.borderColor='rgba(255,107,107,0.3)'">Sign Out</a>
+      
   </div>
 </nav>
 
@@ -183,7 +181,7 @@ Visit quantusdata.ai to upgrade.'); };
 </div>
 
 <div class="disclaimer">
-  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified insurance professional or attorney before use in actual claims decisions. © 2026 Existential Gateway, LLC. All Rights Reserved. Proprietary Software.
+  <strong>⚠️ PRIVACY NOTICE:</strong> Remove ALL personally identifiable information (PII) before uploading documents — including names, addresses, phone numbers, SSNs, policy/claim numbers, VINs, and license plates. By uploading, you confirm all PII has been removed. See our <a href="https://quantusdata.ai/privacy.html" target="_blank" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a>.
 </div>
 
 <div class="tabs-container">
@@ -644,7 +642,7 @@ Visit quantusdata.ai to upgrade.'); };
           <div>
             <label class="field-label">Document 1</label>
             <div class="upload-zone">
-              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc1', this)" onclick="event.stopPropagation()">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="handleDoc('chat-doc1', this)" onclick="event.stopPropagation()">
               <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
               <span class="upload-zone-name" id="doc-chat-doc1-name"></span>
             </div>
@@ -652,7 +650,7 @@ Visit quantusdata.ai to upgrade.'); };
           <div>
             <label class="field-label">Document 2</label>
             <div class="upload-zone">
-              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc2', this)" onclick="event.stopPropagation()">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="handleDoc('chat-doc2', this)" onclick="event.stopPropagation()">
               <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
               <span class="upload-zone-name" id="doc-chat-doc2-name"></span>
             </div>
@@ -660,7 +658,7 @@ Visit quantusdata.ai to upgrade.'); };
           <div>
             <label class="field-label">Document 3</label>
             <div class="upload-zone">
-              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc3', this)" onclick="event.stopPropagation()">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="handleDoc('chat-doc3', this)" onclick="event.stopPropagation()">
               <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
               <span class="upload-zone-name" id="doc-chat-doc3-name"></span>
             </div>
@@ -668,7 +666,7 @@ Visit quantusdata.ai to upgrade.'); };
           <div>
             <label class="field-label">Document 4</label>
             <div class="upload-zone">
-              <input type="file" accept=".pdf,.csv,.xlsx,.xls" onchange="handleDoc('chat-doc4', this)" onclick="event.stopPropagation()">
+              <input type="file" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="handleDoc('chat-doc4', this)" onclick="event.stopPropagation()">
               <span class="upload-zone-icon">📄</span><span class="upload-zone-text">Upload Document</span>
               <span class="upload-zone-name" id="doc-chat-doc4-name"></span>
             </div>
@@ -696,6 +694,9 @@ Visit quantusdata.ai to upgrade.'); };
 
 </div>
 
+<div class="disclaimer" style="margin:40px 40px 0;">
+  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified insurance professional or attorney before use in actual claims decisions. This tool does not constitute legal or professional advice. State laws and insurance regulations change frequently. The developers assume no liability for decisions made based on this tool's output.
+</div>
 <div class="watermark">© 2026 Existential Gateway, LLC · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
 
 <script>
@@ -985,7 +986,10 @@ Visit quantusdata.ai to upgrade.'); };
         body: JSON.stringify({ data })
       });
       const result = await res.json();
-      const text = result.data?.[0] || 'No response.';
+      let text = 'No response.';
+      const chatData = result.data?.[0];
+      if (typeof chatData === 'string') { text = chatData; }
+      else if (Array.isArray(chatData)) { const lastMsg = chatData.filter(m => m.role === 'assistant').pop(); if (lastMsg && lastMsg.content) { if (typeof lastMsg.content === 'string') { text = lastMsg.content; } else if (Array.isArray(lastMsg.content)) { text = lastMsg.content.map(c => c.text || '').join(''); } } }
       thinking.querySelector('.bubble').innerHTML = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
     } catch(e) {
       thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';

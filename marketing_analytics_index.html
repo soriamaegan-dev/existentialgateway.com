@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Analytics Suite — QuantusData™.ai</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a1628'/><circle cx='90' cy='88' r='72' fill='none' stroke='%23c9a84c' stroke-width='14'/><rect x='34' y='108' width='18' height='30' fill='%23c9a84c' opacity='0.6' rx='2'/><rect x='56' y='88' width='18' height='50' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='78' y='62' width='18' height='76' fill='%23c9a84c' rx='2'/><rect x='100' y='78' width='18' height='60' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='122' y='98' width='18' height='40' fill='%23c9a84c' opacity='0.6' rx='2'/><line x1='138' y1='134' x2='170' y2='168' stroke='%23c9a84c' stroke-width='14' stroke-linecap='round'/></svg>" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(async function() {
+  const sb = supabase.createClient("https://jolvnzhwwchbkuzkeqjt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs", { auth: { persistSession: true, storageKey: "quantusdata-auth" } });
+  if (window.location.hash && window.location.hash.includes("access_token")) {
+    await sb.auth.exchangeCodeForSession(window.location.href);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) { window.location.href = "/dashboard.html"; return; }
+  const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
+  if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
+  const plan = data.plan;
+  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  if (!BASIC_PLANS.includes(plan)) {
+    window.location.href = "/dashboard.html?error=upgrade_required";
+    return;
+  }
+  const PREMIUM_PLANS = ["professional", "business", "owner"];
+  const isPremium = PREMIUM_PLANS.includes(plan);
+  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
+  const applyPlan = () => {
+    document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    if (!isPremium) {
+      const PREMIUM_KEYWORDS = ["Visualizations", "Reports", "Data Cleaning", "Multi-Dataset", "Chat"];
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        const label = btn.textContent.trim();
+        const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
+        if (isLocked) {
+          btn.style.opacity = "0.4"; btn.style.cursor = "not-allowed";
+          btn.title = "Upgrade to Professional to unlock";
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert("This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade."); };
+          btn.innerHTML = "🔒 " + btn.innerHTML;
+        }
+      });
+    }
+  };
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", applyPlan); } else { applyPlan(); }
+})();
+</script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;
+      --white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);
+      --success:#2dd4a0;--error:#ff6b6b;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+    nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 40px;background:rgba(10,22,40,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-left{display:flex;align-items:center;gap:16px;}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-brand-name{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--white);}
+    .nav-brand-name span{color:var(--gold);}
+    .nav-divider{width:1px;height:22px;background:var(--border);}
+    .nav-tool{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .nav-right{display:flex;align-items:center;gap:14px;}
+    .nav-plan{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+    .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all 0.2s;}
+    .nav-back:hover{color:var(--gold);border-color:var(--gold);}
+    .tool-header{position:relative;z-index:1;padding:20px 40px;background:rgba(17,34,64,0.6);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .tool-header-left{display:flex;align-items:center;gap:16px;}
+    .tool-icon{font-size:2rem;}
+    .tool-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--white);font-weight:400;}
+    .tool-tagline{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
+    .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;line-height:1.6;}
+    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .disclaimer strong{color:var(--gold);}
+    .pii-notice{position:relative;z-index:1;margin:12px 40px 0;padding:14px 20px;background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.2);border-left:3px solid var(--error);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .pii-notice strong{color:var(--error);}
+    .tabs-container{position:relative;z-index:1;margin:24px 40px 0;}
+    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+    .tabs-nav::-webkit-scrollbar{display:none;}
+    .tab-btn{padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;}
+    .tab-btn:hover{color:var(--white);}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.05);}
+    .tab-panel{display:none;padding:28px 0;}
+    .tab-panel.active{display:block;}
+    .upload-zone{border:2px dashed rgba(201,168,76,0.3);border-radius:8px;padding:40px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(17,34,64,0.4);position:relative;}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+    .upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upload-icon{font-size:2.5rem;margin-bottom:12px;display:block;}
+    .upload-title{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:6px;}
+    .upload-sub{font-size:0.78rem;color:var(--muted);}
+    .file-name{margin-top:12px;padding:8px 16px;background:rgba(201,168,76,0.1);border-radius:4px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold);display:none;}
+    .context-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
+    textarea.context-input{width:100%;min-height:80px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
+    textarea.context-input:focus{outline:none;border-color:var(--gold);}
+    textarea.context-input::placeholder{color:var(--muted);}
+    select.styled-select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;cursor:pointer;transition:border-color 0.2s;}
+    select.styled-select:focus{outline:none;border-color:var(--gold);}
+    .btn-analyze,.gold-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+    .btn-analyze:hover,.gold-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
+    .btn-analyze:disabled,.gold-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .results-area,.results{margin-top:24px;background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:120px;overflow:hidden;}
+    .results-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .results-label,.results-header span{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .results-body{padding:20px;font-size:1.05rem;font-family:Arial,sans-serif;color:var(--white);line-height:1.8;white-space:pre-wrap;}
+    .results-body.empty{color:var(--muted);font-style:italic;}
+    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000000;}
+    .copy-btn,.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .copy-btn:hover,.btn-secondary:hover{background:rgba(201,168,76,0.1);}
+    .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
+    .loading-bar.active{display:block;}
+    @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .col{display:flex;flex-direction:column;gap:1.5rem;}
+    .col h3{font-size:1rem;font-weight:600;color:var(--white);}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;}}
+    .watermark{position:relative;z-index:1;text-align:center;padding:20px 40px;margin-top:40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(136,146,164,0.5);letter-spacing:1px;}
+    .results-body h1,.results-body h2,.results-body h3{color:var(--gold);font-family:'DM Serif Display',serif;margin:16px 0 8px;font-weight:400;}
+    .results-body h1{font-size:1.2rem;}
+    .results-body h2{font-size:1.05rem;}
+    .results-body h3{font-size:0.95rem;}
+    .results-body strong{color:var(--white);font-weight:600;}
+    .results-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+    .chart-area{display:none;margin-top:16px;background:rgba(17,34,64,0.3);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:350px;}
+    .chart-area.active{display:block;}
+    .download-area{display:none;margin-top:12px;text-align:center;}
+    .download-area.active{display:block;}
+    .btn-download{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+    .chat-messages{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:16px;}
+    .chat-container{display:flex;flex-direction:column;height:600px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    .chat-bubble{display:flex;gap:0.75rem;}
+    .chat-bubble.user{justify-content:flex-end;}
+    .chat-bubble.assistant{justify-content:flex-start;}
+    .chat-bubble-content{max-width:70%;padding:1rem;border-radius:8px;line-height:1.5;word-wrap:break-word;}
+    .chat-bubble.user .chat-bubble-content{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);}
+    .chat-bubble.assistant .chat-bubble-content{background:rgba(201,168,76,0.1);border:1px solid var(--border);color:var(--white);}
+    .chat-input-area{display:flex;gap:0.5rem;padding:1rem;border-top:1px solid var(--border);background:rgba(201,168,76,0.02);}
+    .chat-input{flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;}
+    .chat-input:focus{outline:none;border-color:var(--gold);}
+    .chat-send{background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;color:var(--navy);padding:0.75rem 1.5rem;border-radius:6px;cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+    .chat-send:hover{transform:translateY(-2px);}
+    .chat-loading-dots{display:inline-block;animation:spin 1.2s linear infinite;}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .selector-group{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .selector-group label{display:flex;flex-direction:column;gap:0.5rem;color:var(--muted);font-size:0.9rem;}
+    .selector-group select{background:rgba(17,34,64,0.6);border:1px solid var(--border);color:var(--white);padding:0.5rem 1rem;border-radius:6px;font-family:'DM Sans',sans-serif;cursor:pointer;}
+    .selector-group select option{background:var(--navy-mid);color:var(--white);}
+    .cleaning-controls{display:flex;flex-direction:column;gap:1.5rem;margin-bottom:2rem;}
+    .cleaning-section{background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:8px;padding:1.5rem;}
+    .cleaning-section h4{color:var(--gold);margin-bottom:1rem;font-size:1rem;}
+    .cleaning-option{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;color:var(--muted);}
+    .cleaning-option input[type="checkbox"]{cursor:pointer;width:18px;height:18px;accent-color:var(--gold);}
+    .cleaning-preview{background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:1rem;max-height:300px;overflow-y:auto;font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--muted);}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0;}
+    .stat-card{background:rgba(201,168,76,0.05);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center;}
+    .stat-card .stat-label{color:var(--muted);font-size:0.85rem;margin-bottom:0.5rem;}
+    .stat-card .stat-value{color:var(--gold);font-size:1.5rem;font-weight:600;font-family:'DM Mono',monospace;}
+    .instructions{background:rgba(45,212,160,0.05);border-left:3px solid var(--success);border-radius:4px;padding:1rem;margin-bottom:1.5rem;color:var(--white);font-size:0.9rem;line-height:1.6;}
+    .instructions strong{color:var(--success);}
+    .error-message{background:rgba(255,107,107,0.1);border-left:3px solid var(--error);border-radius:4px;padding:1rem;margin:1rem 0;color:var(--white);font-size:0.9rem;}
+    .success-message{background:rgba(45,212,160,0.1);border-left:3px solid var(--success);border-radius:4px;padding:1rem;margin:1rem 0;color:var(--white);font-size:0.9rem;}
+  </style>
+</head>
+<body>
+
+<script>
+(async function() {
+  const sb = supabase.createClient("https://jolvnzhwwchbkuzkeqjt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvbHZuemh3d2NoYmt1emtlcWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg5NDYsImV4cCI6MjA5MDI4NDk0Nn0.gNd-q8SjDjMKBiYZtQALhqQvTsbTnQuQj9FZG4q3lIs", { auth: { persistSession: true, storageKey: "quantusdata-auth" } });
+  if (window.location.hash && window.location.hash.includes("access_token")) {
+    await sb.auth.exchangeCodeForSession(window.location.href);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) { window.location.href = "/dashboard.html"; return; }
+  const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
+  if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
+  const plan = data.plan;
+  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  if (!BASIC_PLANS.includes(plan)) {
+    window.location.href = "/dashboard.html?error=upgrade_required";
+    return;
+  }
+  const PREMIUM_PLANS = ["professional", "business", "owner"];
+  const isPremium = PREMIUM_PLANS.includes(plan);
+  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
+  const applyPlan = () => {
+    document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
+    if (!isPremium) {
+      const PREMIUM_KEYWORDS = ["Visualizations", "Reports", "Data Cleaning", "Multi-Dataset", "Chat"];
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        const label = btn.textContent.trim();
+        const isLocked = PREMIUM_KEYWORDS.some(k => label.includes(k));
+        if (isLocked) {
+          btn.style.opacity = "0.4"; btn.style.cursor = "not-allowed";
+          btn.title = "Upgrade to Professional to unlock";
+          btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); alert("This feature requires a Professional or Business plan. Visit quantusdata.ai to upgrade."); };
+          btn.innerHTML = "🔒 " + btn.innerHTML;
+        }
+      });
+    }
+  };
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", applyPlan); } else { applyPlan(); }
+})();
+</script>
+
+<nav>
+  <div class="nav-left">
+    <a href="/dashboard.html" class="nav-brand">
+      <svg width="26" height="26" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/>
+        <rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/>
+        <rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/>
+        <rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/>
+        <rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/>
+        <rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/>
+        <line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
+    </a>
+    <div class="nav-divider"></div>
+    <span class="nav-tool">Marketing Analytics Suite</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-plan">QuantusData Professional</span>
+    <a href="/dashboard.html" class="nav-back">&larr; Dashboard</a>
+  </div>
+</nav>
+
+<div class="tool-header">
+  <div class="tool-header-left">
+    <span class="tool-icon">📈</span>
+    <div>
+      <div class="tool-title">Marketing Analytics Suite</div>
+      <div class="tool-tagline">AI-Powered Marketing Channel Intelligence</div>
+    </div>
+  </div>
+  <div class="tool-desc">Upload your marketing data for instant AI analysis — paid media performance, creative optimization, brand lift studies, attribution modeling, and executive-ready reports.</div>
+</div>
+
+<div class="disclaimer">
+  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified marketing professional before use in actual business decisions. Marketing trends and platform algorithms change frequently. &copy; 2026 Existential Gateway, LLC. All Rights Reserved. Proprietary Software.
+</div>
+<div class="pii-notice">
+  <strong>DATA PRIVACY NOTICE:</strong> Before uploading any data, you MUST remove all personally identifiable information including: Customer Names | Email Addresses | Phone Numbers | IP Addresses | Cookie IDs | Device Identifiers | Physical Addresses | Financial Account Numbers. This platform is not intended to store personal identifying information.
+</div>
+
+<div class="tabs-container">
+  <div class="tabs-wrapper">
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">📊 Paid Media Analytics</button>
+    <button class="tab-btn" onclick="switchTab(1)">🎨 Creative Performance</button>
+    <button class="tab-btn" onclick="switchTab(2)">📡 Brand Lift & Attribution</button>
+    <button class="tab-btn" onclick="switchTab(3)">🎯 Audience & Segmentation</button>
+    <button class="tab-btn" onclick="switchTab(4)">📋 Campaign Reporting</button>
+    <button class="tab-btn" onclick="switchTab(5)">🌿 Organic Social</button>
+    <button class="tab-btn" onclick="switchTab(6)">📖 Data Storytelling</button>
+    <button class="tab-btn" onclick="switchTab(7)">📈 Visualizations</button>
+    <button class="tab-btn" onclick="switchTab(8)">📝 Reports</button>
+    <button class="tab-btn" onclick="switchTab(9)">🧹 Data Cleaning</button>
+    <button class="tab-btn" onclick="switchTab(10)">🔗 Multi-Dataset</button>
+    <button class="tab-btn" onclick="switchTab(11)">💬 AI Chat</button>
+  </div>
+    <!-- TAB 0: Paid Media Analytics -->
+    <div class="tab-panel active" id="tab-0">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(0, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(0, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(0)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-0"></span>
+          </div>
+          <label class="context-label">Additional Context (Optional)</label>
+          <textarea class="context-input" id="context-0" placeholder="Additional context or instructions (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(0, 'analyze_paid_media')">🔍 Analyze Dataset</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-0"><div class="loading-fill"></div></div>
+          <div class="results" id="results-0">
+            <div class="results-header"><span class="results-label">Analysis Results</span><button class="copy-btn" onclick="copyResults(0)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-0">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-0" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: Creative Performance -->
+    <div class="tab-panel" id="tab-1">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(1, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(1, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(1)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-1"></span>
+          </div>
+          <label class="context-label">Additional Context (Optional)</label>
+          <textarea class="context-input" id="context-1" placeholder="Additional context or instructions (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(1, 'analyze_creative_performance')">🔍 Analyze Dataset</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-1"><div class="loading-fill"></div></div>
+          <div class="results" id="results-1">
+            <div class="results-header"><span class="results-label">Analysis Results</span><button class="copy-btn" onclick="copyResults(1)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-1">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-1" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Brand Lift & Attribution -->
+    <div class="tab-panel" id="tab-2">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(2, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(2, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(2)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-2"></span>
+          </div>
+          <label class="context-label">Additional Context (Optional)</label>
+          <textarea class="context-input" id="context-2" placeholder="Additional context or instructions (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(2, 'analyze_brand_lift')">🔍 Analyze Dataset</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-2"><div class="loading-fill"></div></div>
+          <div class="results" id="results-2">
+            <div class="results-header"><span class="results-label">Analysis Results</span><button class="copy-btn" onclick="copyResults(2)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-2">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-2" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Audience & Segmentation -->
+    <div class="tab-panel" id="tab-3">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(3, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(3, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(3)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-3"></span>
+          </div>
+          <label class="context-label">Additional Context (Optional)</label>
+          <textarea class="context-input" id="context-3" placeholder="Additional context or instructions (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(3, 'analyze_audience')">🔍 Analyze Dataset</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-3"><div class="loading-fill"></div></div>
+          <div class="results" id="results-3">
+            <div class="results-header"><span class="results-label">Analysis Results</span><button class="copy-btn" onclick="copyResults(3)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-3">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-3" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Campaign Reporting -->
+    <div class="tab-panel" id="tab-4">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(4, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(4, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(4)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-4"></span>
+          </div>
+          <label class="context-label">Additional Context (Optional)</label>
+          <textarea class="context-input" id="context-4" placeholder="Additional context or instructions (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(4, 'analyze_campaign_reporting')">🔍 Analyze Dataset</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-4"><div class="loading-fill"></div></div>
+          <div class="results" id="results-4">
+            <div class="results-header"><span class="results-label">Analysis Results</span><button class="copy-btn" onclick="copyResults(4)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-4">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-4" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Organic Social -->
+    <div class="tab-panel" id="tab-5">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(5, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(5, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(5)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-5"></span>
+          </div>
+          <label class="context-label">Additional Context (Optional)</label>
+          <textarea class="context-input" id="context-5" placeholder="Additional context or instructions (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(5, 'analyze_organic_social')">🔍 Analyze Dataset</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-5"><div class="loading-fill"></div></div>
+          <div class="results" id="results-5">
+            <div class="results-header"><span class="results-label">Analysis Results</span><button class="copy-btn" onclick="copyResults(5)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-5">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-5" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: Data Storytelling -->
+    <div class="tab-panel" id="tab-6">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" onclick="triggerUpload(6, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(6, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(6)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-6"></span>
+          </div>
+          <label class="context-label">Narrative Direction (Optional)</label>
+          <textarea class="context-input" id="context-6" placeholder="Tell us what story to highlight (optional)..."></textarea>
+          <button class="gold-btn" onclick="runAnalysis(6, 'analyze_data_storytelling')">📖 Generate Narrative</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-6"><div class="loading-fill"></div></div>
+          <div class="results" id="results-6">
+            <div class="results-header"><span class="results-label">Narrative Results</span><button class="copy-btn" onclick="copyResults(6)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-6">Results will appear here after analysis...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: Visualizations [PREMIUM] -->
+    <div class="tab-panel" id="tab-7">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Data File</label>
+          <div class="upload-zone" onclick="triggerUpload(7, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(7, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(7)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-7"></span>
+          </div>
+          <div style="margin-top:1.5rem;">
+            <label class="context-label">Chart Type</label>
+            <select id="viz-chart-type" class="styled-select">
+              <option value="scatter">Scatter Plot</option>
+              <option value="bar">Bar Chart</option>
+              <option value="histogram">Histogram</option>
+              <option value="line">Line Chart</option>
+              <option value="pie">Pie Chart</option>
+            </select>
+          </div>
+          <div style="margin-top:1rem;">
+            <label class="context-label">X Axis</label>
+            <select id="viz-x-col" class="styled-select">
+              <option value="">-- Select Column --</option>
+            </select>
+          </div>
+          <div style="margin-top:1rem;">
+            <label class="context-label">Y Axis</label>
+            <select id="viz-y-col" class="styled-select">
+              <option value="">-- Select Column --</option>
+            </select>
+          </div>
+          <div style="margin-top:1rem;">
+            <label class="context-label">Group By (Optional)</label>
+            <select id="viz-group-col" class="styled-select">
+              <option value="">-- None --</option>
+            </select>
+          </div>
+          <button class="gold-btn" onclick="runViz()" style="margin-top:1.5rem;width:100%;">📊 Generate Visualization</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-7"><div class="loading-fill"></div></div>
+          <div class="results" id="results-7">
+            <div class="results-header"><span class="results-label">Visualization Results</span><button class="copy-btn" onclick="copyResults(7)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-7">Visualization will appear here...</div>
+          </div>
+          <div class="chart-area" id="chart-7" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 8: Reports [PREMIUM] -->
+    <div class="tab-panel" id="tab-8">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Data File</label>
+          <div class="upload-zone" onclick="triggerUpload(8, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(8, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(8)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-8"></span>
+          </div>
+          <div style="margin-top:1.5rem;">
+            <label class="context-label">Report Type</label>
+            <select id="report-type" class="styled-select">
+              <option value="executive_summary">Executive Summary</option>
+              <option value="channel_deep_dive">Channel Deep Dive</option>
+              <option value="creative_audit">Creative Audit</option>
+              <option value="budget_optimization">Budget Optimization</option>
+              <option value="pdf_export">PDF Report</option>
+              <option value="presentation">PowerPoint Presentation</option>
+            </select>
+          </div>
+          <button class="gold-btn" onclick="runAnalysis(8, 'generate_report')" style="margin-top:1.5rem;width:100%;">📑 Generate Report</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-8"><div class="loading-fill"></div></div>
+          <div class="results" id="results-8">
+            <div class="results-header"><span class="results-label">Report Results</span><button class="copy-btn" onclick="copyResults(8)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-8">Report will appear here after generation...</div>
+          </div>
+          <div class="download-area" id="download-8"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 9: Data Cleaning [PREMIUM] -->
+    <div class="tab-panel" id="tab-9">
+      <div class="two-col">
+        <div class="col">
+          <label class="context-label">Upload Data File</label>
+          <div class="upload-zone" onclick="triggerUpload(9, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(9, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(9)" style="display:none" />
+            <div class="upload-icon">📁</div>
+            <p>Click or drag file here</p>
+            <span class="file-name" id="fname-9"></span>
+          </div>
+          <div class="cleaning-section">
+            <h4>Cleaning Options</h4>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-empty" checked>
+              <label for="clean-empty">Remove Empty Rows</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-dupes" checked>
+              <label for="clean-dupes">Remove Duplicates</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-nulls" checked>
+              <label for="clean-nulls">Fill Null Values</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-case">
+              <label for="clean-case">Standardize Text Casing</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-date">
+              <label for="clean-date">Standardize Dates</label>
+            </div>
+            <div class="cleaning-option">
+              <input type="checkbox" id="clean-outliers">
+              <label for="clean-outliers">Flag Outliers</label>
+            </div>
+          </div>
+          <button class="gold-btn" onclick="runCleaning()" style="width:100%;margin-top:1rem;">🧹 Clean Data</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-9"><div class="loading-fill"></div></div>
+          <div class="results" id="results-9">
+            <div class="results-header"><span class="results-label">Cleaning Results</span></div>
+            <div class="results-body empty" id="results-body-9">Cleaning report will appear here...</div>
+          </div>
+          <div class="download-area" id="download-9"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 10: Multi-Dataset [PREMIUM] -->
+    <div class="tab-panel" id="tab-10">
+      <div class="two-col">
+        <div class="col">
+          <h4 style="color:var(--gold);margin-bottom:0.8rem;">Dataset 1 (Required)</h4>
+          <div class="upload-zone" style="min-height:80px;padding:12px;" onclick="triggerUpload(10, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(10, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(10)" style="display:none" />
+            <div class="upload-icon" style="font-size:1.2rem;">📁</div>
+            <p style="font-size:0.75rem;">Click or drag file</p>
+            <span class="file-name" id="fname-10"></span>
+          </div>
+          <h4 style="color:var(--gold);margin:0.8rem 0;">Dataset 2 (Required)</h4>
+          <div class="upload-zone" style="min-height:80px;padding:12px;" onclick="triggerUpload('10b', event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop('10b', event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile('10b')" style="display:none" />
+            <div class="upload-icon" style="font-size:1.2rem;">📁</div>
+            <p style="font-size:0.75rem;">Click or drag file</p>
+            <span class="file-name" id="fname-10b"></span>
+          </div>
+          <h4 style="color:var(--gold);margin:0.8rem 0;">Dataset 3 (Optional)</h4>
+          <div class="upload-zone" style="min-height:80px;padding:12px;" onclick="triggerUpload('10c', event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop('10c', event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile('10c')" style="display:none" />
+            <div class="upload-icon" style="font-size:1.2rem;">📁</div>
+            <p style="font-size:0.75rem;">Click or drag file</p>
+            <span class="file-name" id="fname-10c"></span>
+          </div>
+          <div style="margin-top:1rem;">
+            <label class="context-label">Analysis Type</label>
+            <select id="multi-analysis-type" class="styled-select">
+              <option value="Comparison">Comparison</option>
+              <option value="Trend Analysis">Trend Analysis</option>
+              <option value="Cohort Analysis">Cohort Analysis</option>
+            </select>
+          </div>
+          <div style="margin-top:0.8rem;">
+            <label class="context-label">Custom Instructions (Optional)</label>
+            <textarea class="context-input" id="context-10" placeholder="Any special instructions..." style="min-height:60px;"></textarea>
+          </div>
+          <button class="gold-btn" onclick="runMultiDataset()" style="width:100%;margin-top:1rem;">🔗 Analyze Datasets</button>
+        </div>
+        <div class="col">
+          <div class="loading-bar" id="loading-10"><div class="loading-fill"></div></div>
+          <div class="results" id="results-10">
+            <div class="results-header"><span class="results-label">Multi-Dataset Results</span><button class="copy-btn" onclick="copyResults(10)">📋 Copy</button></div>
+            <div class="results-body empty" id="results-body-10">Results will appear here after analysis...</div>
+          </div>
+          <div class="chart-area" id="chart-10" style="display:none;margin-top:16px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 11: AI Chat [PREMIUM] -->
+    <div class="tab-panel" id="tab-11">
+      <div class="two-col">
+        <div class="col" style="flex:0 0 280px;max-width:280px;">
+          <label class="context-label">Upload Marketing Data</label>
+          <div class="upload-zone" style="min-height:100px;padding:14px;" onclick="triggerUpload(11, event)" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(11, event)">
+            <input type="file" accept=".csv,.xlsx,.xls" onchange="handleFile(11)" style="display:none" />
+            <div class="upload-icon" style="font-size:1.4rem;">📁</div>
+            <p style="font-size:0.75rem;">Click or drag file</p>
+            <span class="file-name" id="fname-11"></span>
+          </div>
+          <button class="gold-btn" onclick="loadChatData()" style="width:100%;margin-top:1rem;">💾 Load Data</button>
+          <div style="margin-top:1.2rem;">
+            <p style="color:var(--muted);font-size:0.7rem;line-height:1.5;">Upload your CSV or Excel file, click <b>Load Data</b>, then ask questions in the chat panel.</p>
+          </div>
+          <div class="loading-bar" id="loading-11"><div class="loading-fill"></div></div>
+        </div>
+        <div class="col" style="flex:1;">
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;height:600px;">
+            <div class="chat-messages" id="chat-messages" style="margin:0;border-radius:0;border:none;">
+              <div class="chat-bubble assistant">
+                <div class="chat-bubble-content">Hi! Upload your marketing data on the left, then ask me anything about it. I can analyze performance, identify trends, and help optimize your campaigns.</div>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <input type="text" id="chat-input" class="chat-input" placeholder="Ask about your marketing data..." onkeypress="if(event.key==='Enter')sendChat()">
+              <button class="chat-send" onclick="sendChat()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="watermark">© 2026 Existential Gateway, LLC — QuantusData™.ai Marketing Analytics Suite — All Rights Reserved</div>
+
+<script>
+  const GRADIO_URL = '/tools/marketing-analytics/gradio_api';
+  const uploadedFiles = {};
+  let chatDataContext = '';
+  let chatDataSummary = '';
+
+  const FN_MAP = {
+    'analyze_paid_media': '/analyze_paid_media',
+    'analyze_creative_performance': '/analyze_creative_performance',
+    'analyze_brand_lift': '/analyze_brand_lift',
+    'analyze_audience': '/analyze_audience',
+    'analyze_campaign_reporting': '/analyze_campaign_reporting',
+    'analyze_organic_social': '/analyze_organic_social',
+    'analyze_data_storytelling': '/analyze_data_storytelling',
+    'create_visualization': '/create_visualization',
+    'generate_report': '/generate_report',
+  };
+
+  function switchTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+    document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  }
+
+  function triggerUpload(idx, event) {
+    if (event && (event.target.tagName === 'INPUT' || event.target.closest('input'))) return;
+    // For multi-dataset sub-uploads (10b, 10c), find by closest upload-zone
+    if (event && event.currentTarget) {
+      var input = event.currentTarget.querySelector('input[type="file"]');
+      if (input) { input.click(); return; }
+    }
+    var idxFloor = typeof idx === 'number' ? Math.floor(idx) : parseInt(idx);
+    var input = document.querySelector('#tab-' + idxFloor + ' input[type="file"]');
+    if (input) input.click();
+  }
+
+  function handleFile(idx) {
+    // Find the file input via the fname element's parent upload-zone
+    var fnEl = document.getElementById('fname-' + idx);
+    var input = fnEl ? fnEl.closest('.upload-zone').querySelector('input[type="file"]') : null;
+    if (!input) {
+      var idxFloor = typeof idx === 'number' ? Math.floor(idx) : parseInt(idx);
+      input = document.querySelector('#tab-' + idxFloor + ' input[type="file"]');
+    }
+    if (!input || !input.files || !input.files[0]) return;
+    var file = input.files[0];
+    uploadedFiles[idx] = file;
+    if (fnEl) { fnEl.textContent = '\ud83d\udcce ' + file.name; fnEl.style.display = 'block'; }
+
+    // Viz tab: populate column dropdowns
+    if (idxFloor === 7) {
+      const isExcel = file.name.match(/\.xlsx?$/i);
+      if (isExcel && typeof XLSX !== 'undefined') {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            if (json.length > 0) {
+              const headers = json[0].map(function(h) { return String(h).trim(); }).filter(function(h) { return h; });
+              populateVizDropdowns(headers);
+            }
+          } catch(err) { console.warn('Excel parse error:', err); }
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          var firstLine = e.target.result.split(/\r?\n/)[0];
+          if (firstLine) {
+            var headers = firstLine.split(',').map(function(h) { return h.trim().replace(/^["']|["']$/g, ''); });
+            populateVizDropdowns(headers);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+
+  function handleDrop(idx, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.remove('dragover');
+    if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
+      var file = event.dataTransfer.files[0];
+      uploadedFiles[idx] = file;
+      var fn = document.getElementById('fname-' + idx);
+      if (fn) { fn.textContent = '\ud83d\udcce ' + file.name; fn.style.display = 'block'; }
+      // For viz tab, populate dropdowns
+      var idxNum = typeof idx === 'number' ? idx : parseInt(idx);
+      if (idxNum === 7) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var firstLine = e.target.result.split(/\r?\n/)[0];
+          if (firstLine) {
+            var headers = firstLine.split(',').map(function(h) { return h.trim().replace(/^["']|["']$/g, ''); });
+            populateVizDropdowns(headers);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+
+  function populateVizDropdowns(headers) {
+    var xSel = document.getElementById('viz-x-col');
+    var ySel = document.getElementById('viz-y-col');
+    var groupSel = document.getElementById('viz-group-col');
+    if (!xSel || !ySel) return;
+    xSel.innerHTML = '<option value="">-- Select Column --</option>';
+    ySel.innerHTML = '<option value="">-- Select Column --</option>';
+    if (groupSel) groupSel.innerHTML = '<option value="">-- None --</option>';
+    headers.forEach(function(h) {
+      if (h) {
+        xSel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+        ySel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+        if (groupSel) groupSel.innerHTML += '<option value="' + h + '">' + h + '</option>';
+      }
+    });
+  }
+
+  function setLoading(idx, on) {
+    var loadEl = document.getElementById('loading-' + Math.floor(idx));
+    if (loadEl) loadEl.classList.toggle('active', on);
+  }
+
+  function renderMarkdown(text) {
+    var codeBlocks = [];
+    text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, function(match, lang, code) {
+      codeBlocks.push('<pre style="background:rgba(10,22,40,0.8);border:1px solid var(--border);border-radius:6px;padding:14px 18px;overflow-x:auto;margin:12px 0;"><code style="font-family:\'DM Mono\',monospace;font-size:0.82rem;color:var(--gold-light);line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>');
+      return '%%CODEBLOCK_' + (codeBlocks.length - 1) + '%%';
+    });
+    text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(10,22,40,0.6);padding:2px 6px;border-radius:3px;font-family:\'DM Mono\',monospace;font-size:0.85em;color:var(--gold-light);">$1</code>');
+    text = text
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^---$/gm, '<hr>')
+      .replace(/^- (.+)$/gm, '<div style="padding-left:16px;">• $1</div>')
+      .replace(/^\d+\. (.+)$/gm, function(m, p1) { return '<div style="padding-left:16px;">' + m.match(/^\d+/)[0] + '. ' + p1 + '</div>'; })
+      .replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid var(--gold);padding-left:12px;color:var(--muted);">$1</blockquote>');
+    text = text.replace(/%%CODEBLOCK_(\d+)%%/g, function(m, idx) { return codeBlocks[parseInt(idx)]; });
+    return text;
+  }
+
+  async function callGradioApi(endpoint, fileIdx, extraArgs) {
+    var file = uploadedFiles[fileIdx];
+    if (!file) return { error: 'Please upload a file first.' };
+
+    var formData = new FormData();
+    formData.append('files', file);
+    var uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+    if (!uploadRes.ok) return { error: 'File upload failed. Status: ' + uploadRes.status };
+    var uploadData = await uploadRes.json();
+    var filePath = uploadData[0];
+
+    var body = { data: [{ path: filePath, orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } }].concat(extraArgs || []) };
+    var res = await fetch(GRADIO_URL + '/run' + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      var txt = await res.text();
+      return { error: 'Analysis request failed: ' + txt };
+    }
+    return await res.json();
+  }
+
+  function renderPlotlyChart(chartEl, chartData) {
+    if (!chartEl || !chartData) return;
+    try {
+      if (chartData && typeof chartData === 'object' && chartData.type === 'plotly' && chartData.plot) {
+        var plotData = JSON.parse(chartData.plot);
+        plotData.layout = plotData.layout || {};
+        plotData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+        plotData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+        plotData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+        plotData.layout.margin = plotData.layout.margin || { t:40, r:20, b:40, l:60 };
+        chartEl.style.minHeight = '350px';
+        chartEl.classList.add('active');
+        Plotly.newPlot(chartEl, plotData.data, plotData.layout, { responsive: true, displayModeBar: true });
+      } else if (chartData && typeof chartData === 'object' && chartData.data && Array.isArray(chartData.data)) {
+        chartData.layout = chartData.layout || {};
+        chartData.layout.paper_bgcolor = 'rgba(17,34,64,0)';
+        chartData.layout.plot_bgcolor = 'rgba(17,34,64,0.3)';
+        chartData.layout.font = { color: '#f8f9fc', family: 'DM Sans, sans-serif' };
+        chartData.layout.margin = chartData.layout.margin || { t:40, r:20, b:40, l:60 };
+        chartEl.style.minHeight = '350px';
+        chartEl.classList.add('active');
+        Plotly.newPlot(chartEl, chartData.data, chartData.layout, { responsive: true, displayModeBar: true });
+      } else if (typeof chartData === 'string' && chartData.startsWith('/')) {
+        chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData + '" alt="Chart" style="width:100%;border-radius:6px;">';
+        chartEl.classList.add('active');
+      } else if (chartData && typeof chartData === 'object' && chartData.path) {
+        chartEl.innerHTML = '<img src="' + GRADIO_URL + '/file=' + chartData.path + '" alt="Chart" style="width:100%;border-radius:6px;">';
+        chartEl.classList.add('active');
+      }
+    } catch(e) { console.warn('Chart rendering error:', e); }
+  }
+
+  async function runAnalysis(tabIdx, fnName) {
+    if (!uploadedFiles[tabIdx]) { alert('Please upload a file first.'); return; }
+    setLoading(tabIdx, true);
+    var resultsEl = document.getElementById('results-body-' + tabIdx);
+    resultsEl.classList.remove('empty');
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⏳ Analyzing... this may take 1-2 minutes</span>';
+
+    try {
+      var extraArgs = [];
+      var ctx = document.getElementById('context-' + tabIdx);
+      if (ctx) extraArgs.push(ctx.value || '');
+
+      // Reports tab (8): send report type
+      if (tabIdx === 8) {
+        extraArgs.length = 0;
+        extraArgs.push(document.getElementById('report-type').value);
+      }
+
+      var result = await callGradioApi(FN_MAP[fnName], tabIdx, extraArgs);
+
+      if (result.error) {
+        resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + result.error + '</span>';
+      } else {
+        var data = result.data;
+        var text = data[0] || '';
+        resultsEl.innerHTML = renderMarkdown(text) + '<div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--border);font-family:\'DM Mono\',monospace;font-size:0.6rem;color:rgba(136,146,164,0.5);letter-spacing:0.5px;line-height:1.6;text-align:center;">© 2026 Existential Gateway, LLC | AI Marketing Analytics Suite<br>Unauthorized reproduction strictly prohibited. Licensing: existentialgateway@gmail.com</div>';
+        try { if (data[1] != null) console.log('Tab ' + tabIdx + ' chart data:', JSON.stringify(data[1]).substring(0, 500)); } catch(logErr) {}
+        if (data[1] && tabIdx !== 8) {
+          var chartEl = document.getElementById('chart-' + tabIdx);
+          if (chartEl) { chartEl.style.display = 'block'; renderPlotlyChart(chartEl, data[1]); }
+        }
+        // Report download
+        if (tabIdx === 8 && data[1]) {
+          var dlArea = document.getElementById('download-8');
+          var fileData = data[1];
+          var fileUrl = '';
+          if (typeof fileData === 'string') fileUrl = GRADIO_URL + '/file=' + fileData;
+          else if (fileData && fileData.path) fileUrl = GRADIO_URL + '/file=' + fileData.path;
+          if (fileUrl && dlArea) {
+            dlArea.innerHTML = '<a href="' + fileUrl + '" target="_blank" class="gold-btn secondary" download>📥 Download Report</a>';
+            dlArea.style.display = 'block';
+          }
+        }
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
+    }
+    setLoading(tabIdx, false);
+  }
+
+  async function runViz() {
+    if (!uploadedFiles[7]) { alert('Please upload a data file first.'); return; }
+    var chartType = document.getElementById('viz-chart-type').value;
+    var xCol = document.getElementById('viz-x-col').value;
+    var yCol = document.getElementById('viz-y-col').value;
+    var groupCol = document.getElementById('viz-group-col').value;
+    if (!xCol) { alert('Please select an X Axis column.'); return; }
+
+    setLoading(7, true);
+    var resultsEl = document.getElementById('results-body-7');
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⏳ Generating visualization...</span>';
+
+    try {
+      var result = await callGradioApi(FN_MAP['create_visualization'], 7, [chartType, xCol || '', yCol || '', groupCol || '']);
+      if (result.error) {
+        resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + result.error + '</span>';
+      } else {
+        var data = result.data;
+        var chartOutput = data[0];
+        var statusText = data[1] || '';
+        resultsEl.innerHTML = renderMarkdown(typeof statusText === 'string' ? statusText : 'Chart generated.');
+        var chartEl = document.getElementById('chart-7');
+        var chartData = chartOutput && typeof chartOutput === 'object' ? chartOutput : null;
+        if (chartEl) { chartEl.style.display = 'block'; renderPlotlyChart(chartEl, chartData); }
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
+    }
+    setLoading(7, false);
+  }
+
+  function copyResults(idx) {
+    var el = document.getElementById('results-body-' + idx);
+    if (!el) return;
+    var text = el.innerText;
+    var clipItem = new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }) });
+    navigator.clipboard.write([clipItem]).then(function() { alert('✅ Copied!'); });
+  }
+
+  function addChatMsg(role, text) {
+    var msgs = document.getElementById('chat-messages');
+    var div = document.createElement('div');
+    div.className = 'chat-bubble ' + role;
+    div.innerHTML = '<div class="chat-bubble-content">' + text + '</div>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  async function loadChatData() {
+    var file = uploadedFiles[11];
+    if (!file) { alert('Please upload a file first.'); return; }
+    setLoading(11, true);
+    try {
+      var ab = await file.arrayBuffer();
+      var wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      var headers = raw[0] ? raw[0].map(function(h) { return String(h).trim(); }) : [];
+      var rows = raw.slice(1);
+
+      var ctx = 'Dataset: ' + file.name + ' (' + rows.length + ' rows x ' + headers.length + ' columns)\n';
+      ctx += 'Columns: ' + headers.join(', ') + '\n\n';
+      ctx += 'NUMERIC COLUMN STATISTICS:\n';
+      headers.forEach(function(h, ci) {
+        var vals = rows.map(function(r) { return r[ci]; }).filter(function(v) { return v !== '' && v !== null && v !== undefined; });
+        var nums = vals.map(Number).filter(function(n) { return !isNaN(n); });
+        if (nums.length > vals.length * 0.5 && nums.length > 0) {
+          nums.sort(function(a, b) { return a - b; });
+          var sum = nums.reduce(function(a, b) { return a + b; }, 0);
+          var mean = sum / nums.length;
+          var median = nums.length % 2 === 0 ? (nums[nums.length/2-1] + nums[nums.length/2]) / 2 : nums[Math.floor(nums.length/2)];
+          var variance = nums.reduce(function(s, n) { return s + Math.pow(n - mean, 2); }, 0) / nums.length;
+          var std = Math.sqrt(variance);
+          ctx += '  ' + h + ': count=' + nums.length + ', mean=' + (Math.round(mean * 100) / 100) + ', median=' + (Math.round(median * 100) / 100) + ', std=' + (Math.round(std * 100) / 100) + ', min=' + nums[0] + ', max=' + nums[nums.length-1] + '\n';
+        }
+      });
+      ctx += '\nCATEGORICAL COLUMN DISTRIBUTIONS:\n';
+      headers.forEach(function(h, ci) {
+        var vals = rows.map(function(r) { return r[ci]; }).filter(function(v) { return v !== '' && v !== null && v !== undefined && typeof v === 'string'; });
+        if (vals.length < rows.length * 0.3) return;
+        var freq = {};
+        vals.forEach(function(v) { var k = String(v).trim(); freq[k] = (freq[k] || 0) + 1; });
+        var sorted = Object.entries(freq).sort(function(a, b) { return b[1] - a[1]; });
+        ctx += '  ' + h + ' (' + Object.keys(freq).length + ' unique): ' + sorted.slice(0, 8).map(function(e) { return e[0] + '(' + e[1] + ')'; }).join(', ') + '\n';
+      });
+      ctx += '\nFIRST 10 ROWS:\n';
+      rows.slice(0, 10).forEach(function(r, ri) {
+        ctx += '  Row ' + (ri + 1) + ': ' + headers.map(function(h, ci) { return h + '=' + (r[ci] === '' ? 'NULL' : r[ci]); }).join(' | ') + '\n';
+      });
+
+      chatDataContext = ctx;
+      chatDataSummary = rows.length + ' rows x ' + headers.length + ' columns';
+
+      try {
+        var formData = new FormData();
+        formData.append('files', file);
+        var uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+        var uploadData = await uploadRes.json();
+        var fileData = { path: uploadData[0], orig_name: file.name, size: file.size, mime_type: file.type, meta: { "_type": "gradio.FileData" } };
+        await fetch(GRADIO_URL + '/run/upload_chat_data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: [fileData] })
+        });
+      } catch(e) { /* server upload optional */ }
+
+      addChatMsg('assistant', '✅ Data loaded: ' + file.name + ' (' + chatDataSummary + '). Ask me anything about your marketing data!');
+    } catch(e) {
+      addChatMsg('assistant', '⚠️ Error loading data: ' + e.message);
+    }
+    setLoading(11, false);
+  }
+
+  function useChatExample(el) {
+    var input = document.getElementById('chat-input');
+    input.value = el.textContent;
+    input.focus();
+  }
+
+  async function sendChat() {
+    var input = document.getElementById('chat-input');
+    var message = input.value.trim();
+    if (!message) return;
+    if (!chatDataContext) { alert('Please load data first.'); return; }
+
+    addChatMsg('user', message);
+    input.value = '';
+
+    var loadingId = 'chat-loading-' + Date.now();
+    var msgs = document.getElementById('chat-messages');
+    var loadingDiv = document.createElement('div');
+    loadingDiv.className = 'chat-bubble assistant';
+    loadingDiv.id = loadingId;
+    loadingDiv.innerHTML = '<div class="chat-bubble-content"><span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.8rem;display:flex;align-items:center;gap:8px;"><span class="chat-loading-dots">⏳</span> Analyzing data... this may take a moment</span></div>';
+    msgs.appendChild(loadingDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    var enrichedMsg = 'You are a senior marketing analytics expert. The user has uploaded real data and you have access to its statistics and sample rows below. State all findings directly with specific numbers, percentages, and metrics. DO NOT use phrases like "As the professional analyst", "the data shows", "it appears", "I have identified", or "this dataset appears to portray". Just state the facts and figures directly.\n\nDATA CONTEXT:\n' + chatDataContext + '\n\nUSER QUESTION: ' + message;
+
+    try {
+      var result = await callGradioApi('/chat_with_data', 11, [enrichedMsg]);
+      if (result.error) {
+        result = await callGradioApi('/analyze_paid_media', 11, [enrichedMsg]);
+      }
+      var loadEl = document.getElementById(loadingId);
+      if (loadEl) loadEl.remove();
+
+      if (result.error) {
+        addChatMsg('assistant', '⚠️ ' + result.error);
+      } else {
+        var text = result.data ? result.data[0] : (result.response || 'No response');
+        addChatMsg('assistant', renderMarkdown(text));
+      }
+    } catch(e) {
+      var loadEl = document.getElementById(loadingId);
+      if (loadEl) loadEl.remove();
+      addChatMsg('assistant', '⚠️ Error: ' + e.message);
+    }
+    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+  }
+
+  async function runCleaning() {
+    var file = uploadedFiles[9];
+    if (!file) { alert('Please upload a file first.'); return; }
+    setLoading(9, true);
+    var resultsEl = document.getElementById('results-body-9');
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⏳ Cleaning data...</span>';
+
+    try {
+      var ab = await file.arrayBuffer();
+      var wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      var headers = raw[0] ? raw[0].map(function(h) { return String(h).trim(); }) : [];
+      var rows = raw.slice(1).map(function(r) {
+        var obj = {};
+        headers.forEach(function(h, i) { obj[h] = (r[i] !== undefined && r[i] !== null) ? r[i] : ''; });
+        return obj;
+      });
+
+      var origCount = rows.length;
+      var report = [];
+
+      var opts = {
+        empty: document.getElementById('clean-empty').checked,
+        dupes: document.getElementById('clean-dupes').checked,
+        nulls: document.getElementById('clean-nulls').checked,
+        stdCase: document.getElementById('clean-case').checked,
+        date: document.getElementById('clean-date').checked,
+        outliers: document.getElementById('clean-outliers').checked,
+      };
+
+      if (opts.empty) {
+        var before = rows.length;
+        rows = rows.filter(function(r) { return Object.values(r).some(function(v) { return v !== '' && v !== null && v !== undefined; }); });
+        report.push('Removed ' + (before - rows.length) + ' empty rows');
+      }
+
+      if (opts.dupes) {
+        var before = rows.length;
+        var seen = new Set();
+        rows = rows.filter(function(r) { var key = JSON.stringify(r); if (seen.has(key)) return false; seen.add(key); return true; });
+        report.push('Removed ' + (before - rows.length) + ' duplicate rows');
+      }
+
+      var nullsFilled = 0;
+      if (opts.nulls) {
+        var medians = {};
+        headers.forEach(function(col) {
+          var nums = rows.map(function(r) { return parseFloat(r[col]); }).filter(function(v) { return !isNaN(v); });
+          if (nums.length > 0) { nums.sort(function(a,b){return a-b;}); medians[col] = nums[Math.floor(nums.length / 2)]; }
+        });
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (r[col] === '' || r[col] === null || r[col] === undefined) {
+              r[col] = medians[col] !== undefined ? medians[col] : 'Unknown';
+              nullsFilled++;
+            }
+          });
+        });
+        report.push('Filled ' + nullsFilled + ' null/blank values');
+      }
+
+      var caseFixed = 0;
+      if (opts.stdCase) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string' && r[col].length > 0) {
+              var orig = r[col];
+              r[col] = r[col].trim().split(/\s+/).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
+              if (r[col] !== orig) caseFixed++;
+            }
+          });
+        });
+        report.push('Standardized casing on ' + caseFixed + ' values');
+      }
+
+      var datesFixed = 0;
+      if (opts.date) {
+        rows.forEach(function(r) {
+          headers.forEach(function(col) {
+            if (typeof r[col] === 'string' && r[col].match(/\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/)) {
+              var d = new Date(r[col]);
+              if (!isNaN(d.getTime()) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+                r[col] = d.toISOString().split('T')[0];
+                datesFixed++;
+              }
+            }
+          });
+        });
+        report.push('Standardized ' + datesFixed + ' dates to YYYY-MM-DD');
+      }
+
+      var outlierCount = 0;
+      if (opts.outliers) {
+        headers.forEach(function(col) {
+          var nums = rows.map(function(r) { return parseFloat(r[col]); }).filter(function(v) { return !isNaN(v); });
+          if (nums.length > 3) {
+            nums.sort(function(a,b){return a-b;});
+            var q1 = nums[Math.floor(nums.length / 4)];
+            var q3 = nums[Math.floor(nums.length * 3 / 4)];
+            var iqr = q3 - q1;
+            var lo = q1 - 1.5 * iqr;
+            var hi = q3 + 1.5 * iqr;
+            rows.forEach(function(r) {
+              var v = parseFloat(r[col]);
+              if (!isNaN(v) && (v < lo || v > hi)) {
+                if (!r['Outlier_Flag']) r['Outlier_Flag'] = '';
+                r['Outlier_Flag'] += (r['Outlier_Flag'] ? '; ' : '') + col + '=' + v;
+                outlierCount++;
+              }
+            });
+          }
+        });
+        report.push('Flagged ' + outlierCount + ' outlier values (Outlier_Flag column added)');
+      }
+
+      var html = '<h3>Data Cleaning Report</h3>';
+      html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;">';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Original Rows</div><div style="font-size:1.4rem;color:var(--gold);font-weight:700;">' + origCount + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Cleaned Rows</div><div style="font-size:1.4rem;color:var(--success);font-weight:700;">' + rows.length + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Rows Removed</div><div style="font-size:1.4rem;color:var(--error);font-weight:700;">' + (origCount - rows.length) + '</div></div>';
+      html += '<div style="background:rgba(17,34,64,0.6);padding:12px;border-radius:8px;text-align:center;border:1px solid var(--border);"><div style="color:var(--muted);font-size:0.75rem;">Outliers Flagged</div><div style="font-size:1.4rem;color:var(--gold-light);font-weight:700;">' + outlierCount + '</div></div>';
+      html += '</div>';
+      html += '<h4>Actions Taken</h4>';
+      report.forEach(function(r) { html += '<div style="padding:4px 0;padding-left:16px;">• ' + r + '</div>'; });
+      html += '<div style="margin-top:16px;"><button class="gold-btn" onclick="downloadCleanedData()" style="font-size:0.85rem;">📥 Download Cleaned Dataset</button></div>';
+
+      resultsEl.innerHTML = html;
+
+      window._cleanedData = rows;
+      window._cleanedHeaders = headers.concat(opts.outliers ? ['Outlier_Flag'] : []);
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
+    }
+    setLoading(9, false);
+  }
+
+  function downloadCleanedData() {
+    if (!window._cleanedData) { alert('No cleaned data available.'); return; }
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.json_to_sheet(window._cleanedData);
+    XLSX.utils.book_append_sheet(wb, ws, "Cleaned Data");
+    XLSX.writeFile(wb, "cleaned_data.xlsx");
+  }
+
+  function handleMultiFile(slotIdx) {
+    var idx = 10 + slotIdx;
+    var input = document.querySelector('#tab-10 input[type="file"]');
+    if (slotIdx > 0) {
+      var allInputs = document.querySelectorAll('#tab-10 input[type="file"]');
+      if (allInputs[slotIdx]) input = allInputs[slotIdx];
+    }
+    if (!input || !input.files || !input.files[0]) return;
+    var file = input.files[0];
+    uploadedFiles[idx] = file;
+    var fn = document.getElementById('fname-' + idx);
+    if (fn) { fn.textContent = '📄 ' + file.name; fn.style.display = 'block'; }
+  }
+
+  async function runMultiDataset() {
+    var file1 = uploadedFiles[10];
+    var file2 = uploadedFiles['10b'];
+    var file3 = uploadedFiles['10c'];
+    if (!file1 || !file2) { alert('Please upload at least 2 datasets (Dataset 1 and Dataset 2 are required).'); return; }
+    setLoading(10, true);
+    var resultsEl = document.getElementById('results-body-10');
+    resultsEl.classList.remove('empty');
+    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⏳ Analyzing datasets... this may take 1-2 minutes</span>';
+
+    try {
+      // Upload all files
+      var uploadFile = async function(f) {
+        if (!f) return null;
+        var formData = new FormData();
+        formData.append('files', f);
+        var res = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
+        if (!res.ok) return null;
+        var data = await res.json();
+        return { path: data[0], orig_name: f.name, size: f.size, mime_type: f.type, meta: { "_type": "gradio.FileData" } };
+      };
+
+      var fd1 = await uploadFile(file1);
+      var fd2 = await uploadFile(file2);
+      var fd3 = file3 ? await uploadFile(file3) : null;
+
+      var analysisType = document.getElementById('multi-analysis-type').value;
+      var customInstr = document.getElementById('context-10').value || '';
+
+      var body = { data: [fd1, fd2, fd3, analysisType, customInstr] };
+      var res = await fetch(GRADIO_URL + '/run/analyze_multi_dataset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        var txt = await res.text();
+        resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Analysis request failed: ' + txt + '</span>';
+      } else {
+        var result = await res.json();
+        var data = result.data;
+        var text = data[0] || '';
+        resultsEl.innerHTML = renderMarkdown(text) + '<div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--border);font-family:\'DM Mono\',monospace;font-size:0.6rem;color:rgba(136,146,164,0.5);letter-spacing:0.5px;line-height:1.6;text-align:center;">© 2026 Existential Gateway, LLC | AI Marketing Analytics Suite<br>Unauthorized reproduction strictly prohibited. Licensing: existentialgateway@gmail.com</div>';
+      }
+    } catch(e) {
+      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ Error: ' + e.message + '</span>';
+    }
+    setLoading(10, false);
+  }
+
+</script>
+
+</body>
+</html>
