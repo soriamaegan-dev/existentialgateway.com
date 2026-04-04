@@ -358,12 +358,14 @@ def fetch_fred_series(series_id):
 def fetch_commodity_price(ticker):
     """Fetch live commodity prices from Stooq."""
     stooq_map = {
-        'GC=F': 'xauusd',
-        'SI=F': 'xagusd',
-        'PL=F': 'xptusd',
-        'PA=F': 'xpdusd',
-        'HG=F': 'hgusd',
-        'CL=F': 'clusd',
+        "GC=F": "xauusd",
+        "SI=F": "xagusd",
+        "PL=F": "xptusd",
+        "PA=F": "xpdusd",
+        "HG=F": "hg.f",
+        "CL=F": "cl.f",
+        "NG=F": "ng.f",
+        "BZ=F": "cb.f",
     }
     stooq_ticker = stooq_map.get(ticker)
     if not stooq_ticker:
@@ -379,8 +381,11 @@ def fetch_commodity_price(ticker):
             if len(lines) > 1:
                 parts = lines[1].split(",")
                 price = parts[6] if len(parts) > 6 else None
+                prev = parts[3] if len(parts) > 3 else None
                 if price and price != "N/D":
-                    return round(float(price), 2), None
+                    price_f = round(float(price), 2)
+                    chg = round(((float(price) - float(prev)) / float(prev)) * 100, 2) if prev and prev != "N/D" else None
+                    return price_f, chg
         return None, None
     except Exception:
         return None, None

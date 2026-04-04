@@ -308,27 +308,43 @@ def query_llm_with_file(prompt, file_context):
 
 
 def fetch_crypto_price(ticker):
+    """Fetch live crypto prices from Stooq."""
     try:
-        import yfinance as yf
-        t = yf.Ticker(ticker)
-        hist = t.history(period="2d")
-        if not hist.empty:
-            price = hist["Close"].iloc[-1]
-            prev = hist["Close"].iloc[-2] if len(hist) > 1 else price
-            chg = ((price - prev) / prev) * 100
-            return round(price, 4), round(chg, 2)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        r = requests.get(
+            f"https://stooq.com/q/l/?s={ticker.lower()}&f=sd2t2ohlcv&h&e=csv",
+            headers=headers, timeout=10
+        )
+        if r.status_code == 200:
+            lines = r.text.strip().split("\n")
+            if len(lines) > 1:
+                parts = lines[1].split(",")
+                price = parts[6] if len(parts) > 6 else None
+                prev = parts[3] if len(parts) > 3 else None
+                if price and price != "N/D":
+                    price_f = round(float(price), 4)
+                    chg = round(((float(price) - float(prev)) / float(prev)) * 100, 2) if prev and prev != "N/D" else None
+                    return price_f, chg
         return None, None
     except Exception:
         return None, None
 
 
 def fetch_forex_rate(pair):
+    """Fetch live FOREX rates from Stooq."""
     try:
-        import yfinance as yf
-        t = yf.Ticker(pair)
-        hist = t.history(period="2d")
-        if not hist.empty:
-            return round(hist["Close"].iloc[-1], 6)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        r = requests.get(
+            f"https://stooq.com/q/l/?s={pair.lower()}&f=sd2t2ohlcv&h&e=csv",
+            headers=headers, timeout=10
+        )
+        if r.status_code == 200:
+            lines = r.text.strip().split("\n")
+            if len(lines) > 1:
+                parts = lines[1].split(",")
+                price = parts[6] if len(parts) > 6 else None
+                if price and price != "N/D":
+                    return round(float(price), 6)
         return None
     except Exception:
         return None
