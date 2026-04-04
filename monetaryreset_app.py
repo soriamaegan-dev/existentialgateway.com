@@ -150,8 +150,6 @@ def enrich_with_urls(text):
 
 def query_llm(prompt):
     import os
-import base64
-import io
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     msgs = messages if 'messages' in dir() else [{"role": "user", "content": prompt}]
@@ -174,8 +172,6 @@ def process_uploaded_file(file):
         return ""
     try:
         import os
-import base64
-import io
         filepath = file.name if hasattr(file, 'name') else str(file)
         ext = os.path.splitext(filepath)[1].lower()
         if ext == ".csv":
@@ -204,8 +200,6 @@ import io
                 return f"PDF uploaded (extraction error: {str(e)})"
         elif ext in [".png", ".jpg", ".jpeg", ".webp"]:
             import os
-import base64
-import io
             filename = os.path.basename(filepath)
             filesize = round(os.path.getsize(filepath) / 1024, 1)
 
@@ -250,10 +244,10 @@ import io
 
 
 def query_vision(prompt, image_path):
-    """Send an image to GPT-4o for visual analysis."""
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     try:
+        from PIL import Image
         pil_img = Image.open(image_path)
         if pil_img.mode in ("RGBA", "P", "LA"):
             pil_img = pil_img.convert("RGB")
@@ -262,12 +256,9 @@ def query_vision(prompt, image_path):
         buf = io.BytesIO()
         pil_img.save(buf, format="JPEG", quality=85)
         b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+        vision_text = "You are looking at a real image. You CAN see it. Analyze it thoroughly."
         content_parts = [
-            {"type": "text", "text": SYSTEM_PROMPT + "
-
-You are looking at a real image attached to this message. You CAN see it. Analyze it thoroughly. Reference specific visual details, charts, numbers, or text you can see in the image.
-
-" + prompt},
+            {"type": "text", "text": SYSTEM_PROMPT + "\n\n" + vision_text + "\n\n" + prompt},
             {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + b64}}
         ]
         msgs = [{"role": "user", "content": content_parts}]
@@ -286,7 +277,7 @@ def query_llm_with_file(prompt, file_context):
         filepath = file_context.name if hasattr(file_context, 'name') else str(file_context)
         ext = os.path.splitext(filepath)[1].lower()
         if ext in ['.png', '.jpg', '.jpeg', '.webp']:
-            vision_prompt = prompt + ' The user has uploaded an image. Analyze the visual content and incorporate what you see into your analysis. Describe any charts, data, text, screenshots, or relevant visual information.'
+            vision_prompt = prompt + ' The user has uploaded an image. Analyze the visual content and incorporate what you see into your analysis.'
             return query_vision(vision_prompt, filepath)
         else:
             file_context = process_uploaded_file(file_context)
@@ -2097,8 +2088,6 @@ def financial_chat(message, history):
     messages.append({"role": "user", "content": message})
 
     import os
-import base64
-import io
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     msgs = messages if 'messages' in dir() else [{"role": "user", "content": prompt}]
