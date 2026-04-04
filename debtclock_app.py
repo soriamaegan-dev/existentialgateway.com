@@ -356,15 +356,70 @@ def fetch_fred_series(series_id):
 
 
 def fetch_commodity_price(ticker):
+    """Fetch live commodity prices from multiple free sources."""
     try:
-        import yfinance as yf
-        t = yf.Ticker(ticker)
-        hist = t.history(period="5d")
-        if not hist.empty:
-            price = hist["Close"].iloc[-1]
-            prev = hist["Close"].iloc[-2] if len(hist) > 1 else price
-            change_pct = ((price - prev) / prev) * 100
-            return round(price, 2), round(change_pct, 2)
+        # Map tickers to commodity names for API lookup
+        commodity_map = {
+            'GC=F': ('gold', 'XAU'),
+            'SI=F': ('silver', 'XAG'),
+            'PL=F': ('platinum', 'XPT'),
+            'PA=F': ('palladium', 'XPD'),
+            'HG=F': ('copper', 'XCU'),
+            'CL=F': ('oil', 'OIL'),
+            'NG=F': ('naturalgas', 'GAS'),
+        }
+        # Try metals-api.com (free tier)
+        metal_code = commodity_map.get(ticker, (None, None))[1]
+        if metal_code in ['XAU', 'XAG', 'XPT', 'XPD']:
+            try:
+                r = requests.get(
+                    f"https://api.metals.live/v1/spot/{metal_code.lower()}",
+                    timeout=10
+                )
+                if r.status_code == 200:
+                    data = r.json()
+                    price = float(data.get('price', 0))
+                    if price > 0:
+                        return round(price, 2), None
+            except Exception:
+                pass
+        # Try frankfurter/exchangerate for metals via USD
+        if metal_code in ['XAU', 'XAG']:
+            try:
+                r = requests.get(
+                    f"https://api.frankfurter.app/latest?from={metal_code}&to=USD",
+                    timeout=10
+                )
+                if r.status_code == 200:
+                    data = r.json()
+                    price = data.get('rates', {}).get('USD', 0)
+                    if price > 0:
+                        return round(price, 2), None
+            except Exception:
+                pass
+        # Fallback: scrape COMEX settlement from CME Group public data
+        comex_map = {
+            'GC=F': 'GC', 'SI=F': 'SI', 'PL=F': 'PL',
+            'PA=F': 'PA', 'HG=F': 'HG', 'CL=F': 'CL'
+        }
+        comex_code = comex_map.get(ticker)
+        if comex_code:
+            try:
+                r = requests.get(
+                    f"https://www.cmegroup.com/CmeWS/mvc/Quotes/Future/{comex_code}/G?quoteCodes=null&_=",
+                    headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"},
+                    timeout=10
+                )
+                if r.status_code == 200:
+                    data = r.json()
+                    quotes = data.get('quotes', [])
+                    if quotes:
+                        price = quotes[0].get('last', quotes[0].get('settle', '0'))
+                        price = float(str(price).replace(',', ''))
+                        if price > 0:
+                            return round(price, 2), None
+            except Exception:
+                pass
         return None, None
     except Exception:
         return None, None
