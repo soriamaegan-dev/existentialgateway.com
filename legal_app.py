@@ -1347,7 +1347,13 @@ with gr.Blocks(title="AI Legal & Law Firm Analyzer", theme=gr.themes.Base(
                         choices=["PowerPoint Presentation", "PDF Report",
                                  "Case Summary", "Client Briefing"],
                         value="PDF Report", label="Report Type")
-                    t8_btn = gr.Button("📄 Generate Report", variant="primary")
+                    t8_btn = gr.Textbox(
+                        label="🏷️ Company Name — White Label (Business Plan)",
+                        placeholder="Enter your company name for branded reports. Leave blank for QuantusData branding.",
+                        value="",
+                        lines=1
+                    ),
+                    gr.Button("📄 Generate Report", variant="primary")
                     gr.Markdown(WAIT_MSG)
                     t8_download = gr.File(label="⬇️ Download Report")
                 with gr.Column(scale=2):

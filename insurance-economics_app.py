@@ -1793,7 +1793,13 @@ def create_app():
                 with gr.Row():
                     report_type = gr.Textbox(label="Report Type", value="executive_summary", visible=False)
                 with gr.Row():
-                    report_btn = gr.Button("Generate Report", variant="primary")
+                    report_btn = gr.Textbox(
+                        label="🏷️ Company Name — White Label (Business Plan)",
+                        placeholder="Enter your company name for branded reports. Leave blank for QuantusData branding.",
+                        value="",
+                        lines=1
+                    ),
+                    gr.Button("Generate Report", variant="primary")
                 with gr.Row():
                     report_output = gr.Textbox(label="Report", lines=20)
                 with gr.Row():

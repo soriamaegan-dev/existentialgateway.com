@@ -1557,7 +1557,13 @@ with gr.Blocks(title="AI Insurance Data Analyzer", theme=gr.themes.Base(
                     t7_format = gr.Dropdown(
                         choices=["PDF Report", "PowerPoint Presentation"],
                         value="PDF Report", label="Download Format")
-                    t7_btn = gr.Button("📄 Generate Report", variant="primary")
+                    t7_btn = gr.Textbox(
+                        label="🏷️ Company Name — White Label (Business Plan)",
+                        placeholder="Enter your company name for branded reports. Leave blank for QuantusData branding.",
+                        value="",
+                        lines=1
+                    ),
+                    gr.Button("📄 Generate Report", variant="primary")
                     gr.Markdown(WAIT_MSG)
                     t7_download = gr.File(label="⬇️ Download Report")
                 with gr.Column(scale=2):
