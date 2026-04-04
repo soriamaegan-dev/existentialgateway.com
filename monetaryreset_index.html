@@ -435,13 +435,22 @@
   async function uploadFile(idx) {
     const fileInput = document.getElementById('file-'+idx);
     if (!fileInput || !fileInput.files[0]) return null;
+    const file = fileInput.files[0];
     const formData = new FormData();
-    formData.append('files', fileInput.files[0]);
+    formData.append('files', file);
     try {
       const res = await fetch(G + '/upload', {method:'POST', body: formData});
       if (!res.ok) return null;
-      const result = await res.json();
-      return result?.[0] || null;
+      const paths = await res.json();
+      if (!paths || !paths[0]) return null;
+      // Return Gradio FileData object format
+      return {
+        path: paths[0],
+        size: file.size,
+        orig_name: file.name,
+        mime_type: file.type,
+        meta: {"_type": "gradio.FileData"}
+      };
     } catch(e) { return null; }
   }
 
