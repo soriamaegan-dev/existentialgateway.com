@@ -1,6 +1,8 @@
 import gradio as gr
 import requests
 import os
+import base64
+import io
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
@@ -148,6 +150,8 @@ def enrich_with_urls(text):
 
 def query_llm(prompt):
     import os
+import base64
+import io
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     msgs = messages if 'messages' in dir() else [{"role": "user", "content": prompt}]
@@ -170,6 +174,8 @@ def process_uploaded_file(file):
         return ""
     try:
         import os
+import base64
+import io
         filepath = file.name if hasattr(file, 'name') else str(file)
         ext = os.path.splitext(filepath)[1].lower()
         if ext == ".csv":
@@ -198,6 +204,8 @@ def process_uploaded_file(file):
                 return f"PDF uploaded (extraction error: {str(e)})"
         elif ext in [".png", ".jpg", ".jpeg", ".webp"]:
             import os
+import base64
+import io
             filename = os.path.basename(filepath)
             filesize = round(os.path.getsize(filepath) / 1024, 1)
 
@@ -240,10 +248,48 @@ def process_uploaded_file(file):
         return f"File processing error: {str(e)}"
 
 
+
+def query_vision(prompt, image_path):
+    """Send an image to GPT-4o for visual analysis."""
+    API_KEY = os.environ.get("OPENAI_API_KEY", "")
+    headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+    try:
+        pil_img = Image.open(image_path)
+        if pil_img.mode in ("RGBA", "P", "LA"):
+            pil_img = pil_img.convert("RGB")
+        if max(pil_img.size) > 1024:
+            pil_img.thumbnail((1024, 1024))
+        buf = io.BytesIO()
+        pil_img.save(buf, format="JPEG", quality=85)
+        b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+        content_parts = [
+            {"type": "text", "text": SYSTEM_PROMPT + "
+
+You are looking at a real image attached to this message. You CAN see it. Analyze it thoroughly. Reference specific visual details, charts, numbers, or text you can see in the image.
+
+" + prompt},
+            {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + b64}}
+        ]
+        msgs = [{"role": "user", "content": content_parts}]
+        payload = {"model": "gpt-4o", "max_tokens": 4000, "messages": msgs}
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload, timeout=240)
+        result = response.json()
+        if "choices" in result:
+            return result["choices"][0]["message"]["content"]
+        return f"API Error: {result}"
+    except Exception as e:
+        return f"Vision Error: {str(e)}"
+
 def query_llm_with_file(prompt, file_context):
     # Process the file if it is a raw file object from gr.File
     if file_context is not None and hasattr(file_context, 'name'):
-        file_context = process_uploaded_file(file_context)
+        filepath = file_context.name if hasattr(file_context, 'name') else str(file_context)
+        ext = os.path.splitext(filepath)[1].lower()
+        if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+            vision_prompt = prompt + ' The user has uploaded an image. Analyze the visual content and incorporate what you see into your analysis. Describe any charts, data, text, screenshots, or relevant visual information.'
+            return query_vision(vision_prompt, filepath)
+        else:
+            file_context = process_uploaded_file(file_context)
     elif file_context is not None and not isinstance(file_context, str):
         file_context = process_uploaded_file(file_context)
 
@@ -2051,6 +2097,8 @@ def financial_chat(message, history):
     messages.append({"role": "user", "content": message})
 
     import os
+import base64
+import io
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     msgs = messages if 'messages' in dir() else [{"role": "user", "content": prompt}]
