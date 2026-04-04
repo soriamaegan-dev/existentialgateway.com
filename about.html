@@ -458,5 +458,16 @@
       <p>All Rights Reserved</p>
     </div>
   </footer>
+<script>
+function egToggleNav() {
+  var nav = document.querySelector('.nav-links');
+  var btn = document.getElementById('hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('open');
+}
+</script>
 </body>
 </html>
