@@ -462,5 +462,31 @@
     } catch(e) { alert('Failed. Email existentialgateway@gmail.com'); }
   }
 </script>
+
+<script>
+// Data Retention for Business Plan
+async function saveAnalysisHistory(toolName, tabName, result) {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) return;
+    const { data: sub } = await sb.from('subscriptions')
+      .select('plan')
+      .eq('email', session.user.email)
+      .eq('status', 'active')
+      .single();
+    if (!sub || sub.plan !== 'business') return;
+    await sb.from('analysis_history').insert({
+      email: session.user.email,
+      tool_name: toolName,
+      tab_name: tabName,
+      result: result ? result.substring(0, 5000) : '',
+      created_at: new Date().toISOString()
+    });
+    console.log('Analysis saved to history');
+  } catch(e) {
+    console.log('History save skipped:', e.message);
+  }
+}
+</script>
 </body>
 </html>
