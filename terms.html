@@ -390,7 +390,7 @@
       <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;">We use session cookies for authentication only. We do not use tracking cookies or serve third-party advertising cookies on our platform.</p>
 
       <h3 style="color:var(--gold);font-size:1rem;margin-bottom:10px;margin-top:20px;">Children's Privacy</h3>
-      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;">Our services are not directed at children under 13. We do not knowingly collect personal information from children.</p>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;">Our services are not directed at children under 18. We do not knowingly collect personal information from minors. Our subscription services require users to be at least 18 years of age.</p>
     </div>
 
     <!-- Section 12 -->
@@ -438,3 +438,14 @@
 }
 </style>
 <a href="https://buy.stripe.com/3cI9AUb5q1im37l0K763K03" target="_blank" class="floating-subscribe">✦ Subscribe Now</a>
+<script>
+function egToggleNav() {
+  var nav = document.querySelector('.nav-links');
+  var btn = document.getElementById('hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('open');
+}
+</script>
