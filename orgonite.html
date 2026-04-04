@@ -522,3 +522,14 @@
 <a href="https://buy.stripe.com/3cI9AUb5q1im37l0K763K03" target="_blank" class="floating-subscribe">✦ Subscribe Now</a>
 </body>
 </html>
+<script>
+function egToggleNav() {
+  var nav = document.querySelector('.nav-links');
+  var btn = document.getElementById('hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('open');
+}
+</script>
