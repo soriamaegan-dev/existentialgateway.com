@@ -1323,5 +1323,37 @@ async function saveAnalysisHistory(toolName, tabName, result) {
   }
 }
 </script>
+
+<script>
+// Hide white-label field for non-Business plan users
+(async function() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) return;
+    const { data } = await sb.from('subscriptions')
+      .select('plan').eq('email', session.user.email).eq('status', 'active').single();
+    if (data && ['business', 'owner'].includes(data.plan)) return;
+    // Not business - hide the white label field after Gradio renders
+    let attempts = 0;
+    const interval = setInterval(() => {
+      attempts++;
+      document.querySelectorAll('label, span, .label-wrap').forEach(el => {
+        if (el.textContent && (el.textContent.includes('White Label') || el.textContent.includes('Company Name'))) {
+          let parent = el;
+          for (let i = 0; i < 6; i++) {
+            parent = parent.parentElement;
+            if (!parent) break;
+            if (parent.tagName === 'DIV' && parent.children.length <= 3) {
+              parent.style.display = 'none';
+              break;
+            }
+          }
+        }
+      });
+      if (attempts > 30) clearInterval(interval);
+    }, 400);
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>
