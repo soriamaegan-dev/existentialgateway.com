@@ -61,6 +61,59 @@ PII_WARNING = """
 """
 
 
+
+def fetch_url_content(text):
+    """Detect URLs in user text, fetch their content, and return as context."""
+    import re
+    urls = re.findall(r'https?://[^\s<>"{}|\^`\[\]]+', text)
+    if not urls:
+        return ""
+    fetched = []
+    for url in urls[:3]:  # limit to 3 URLs
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (compatible; ExistentialGateway/1.0)",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            }
+            r = requests.get(url, timeout=15, headers=headers)
+            if r.status_code == 200:
+                from html.parser import HTMLParser
+                class TextExtractor(HTMLParser):
+                    def __init__(self):
+                        super().__init__()
+                        self.text = []
+                        self.skip = False
+                    def handle_starttag(self, tag, attrs):
+                        if tag in ('script', 'style', 'nav', 'footer', 'header'):
+                            self.skip = True
+                    def handle_endtag(self, tag):
+                        if tag in ('script', 'style', 'nav', 'footer', 'header'):
+                            self.skip = False
+                    def handle_data(self, data):
+                        if not self.skip and data.strip():
+                            self.text.append(data.strip())
+                parser = TextExtractor()
+                parser.feed(r.text)
+                page_text = ' '.join(parser.text)[:3000]
+                fetched.append(f"[URL: {url}]\n{page_text}")
+        except Exception as e:
+            fetched.append(f"[URL: {url}] Could not fetch: {str(e)}")
+    if fetched:
+        return "\n\nUSER-PROVIDED URL CONTENT (analyze this as part of your response):\n" + "\n---\n".join(fetched)
+    return ""
+
+
+
+def enrich_with_urls(text):
+    """If text contains URLs, fetch and append their content."""
+    if not text or 'http' not in text:
+        return text
+    url_content = fetch_url_content(text)
+    if url_content:
+        return text + url_content
+    return text
+
+
 def query_llm(prompt):
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
