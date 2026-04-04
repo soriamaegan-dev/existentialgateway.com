@@ -2092,7 +2092,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t1_output = gr.Markdown(label="Analysis")
             t1_chart = gr.Plot(label="Integration Progress Chart")
-            t1_btn.click(analyze_blockchain_banking, inputs=[t1_context],
+            t1_btn.click(analyze_blockchain_banking, inputs=[t1_context, t1_upload],
                          outputs=[t1_output, t1_chart])
 
         # ── Tab 2: Crypto/Stablecoin ───────────────────────────────────────────
@@ -2112,7 +2112,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t2_output = gr.Markdown(label="Analysis")
             t2_chart = gr.Plot(label="Market Overview Chart")
-            t2_btn.click(analyze_crypto_stablecoin, inputs=[t2_context],
+            t2_btn.click(analyze_crypto_stablecoin, inputs=[t2_context, t2_upload],
                          outputs=[t2_output, t2_chart])
 
         # ── Tab 3: US Crypto Regulations ──────────────────────────────────────
@@ -2131,7 +2131,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t3_output = gr.Markdown(label="Regulatory Analysis")
             t3_chart = gr.Plot(label="Regulatory Clarity Chart")
-            t3_btn.click(analyze_crypto_regulations, inputs=[t3_context],
+            t3_btn.click(analyze_crypto_regulations, inputs=[t3_context, t3_upload],
                          outputs=[t3_output, t3_chart])
 
         # ── Tab 4: Asset-Backed Dollar ─────────────────────────────────────────
@@ -2150,7 +2150,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t4_output = gr.Markdown(label="Analysis")
             t4_chart = gr.Plot(label="Dollar Backing Scenarios Chart")
-            t4_btn.click(analyze_asset_backed_dollar, inputs=[t4_context],
+            t4_btn.click(analyze_asset_backed_dollar, inputs=[t4_context, t4_upload],
                          outputs=[t4_output, t4_chart])
 
         # ── Tab 5: XRP & Cross-Border ──────────────────────────────────────────
@@ -2169,7 +2169,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t5_output = gr.Markdown(label="XRP Analysis")
             t5_chart = gr.Plot(label="XRP Adoption by Region")
-            t5_btn.click(analyze_xrp_payments, inputs=[t5_context],
+            t5_btn.click(analyze_xrp_payments, inputs=[t5_context, t5_upload],
                          outputs=[t5_output, t5_chart])
 
         # ── Tab 6: FOREX & Currencies ──────────────────────────────────────────
@@ -2188,7 +2188,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t6_output = gr.Markdown(label="FOREX Analysis")
             t6_chart = gr.Plot(label="Currency Analysis Chart")
-            t6_btn.click(analyze_forex_currencies, inputs=[t6_context],
+            t6_btn.click(analyze_forex_currencies, inputs=[t6_context, t6_upload],
                          outputs=[t6_output, t6_chart])
 
         # ── Tab 7: Currency Revaluation ────────────────────────────────────────
@@ -2216,7 +2216,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t7_output = gr.Markdown(label="Revaluation Analysis")
             t7_chart = gr.Plot(label="Revaluation Radar Chart")
-            t7_btn.click(analyze_currency_revaluation, inputs=[t7_currency, t7_context],
+            t7_btn.click(analyze_currency_revaluation, inputs=[t7_currency, t7_context, t7_upload],
                          outputs=[t7_output, t7_chart])
 
         # ── Tab 8: Credit Unions vs Banks ──────────────────────────────────────
@@ -2234,7 +2234,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t8_output = gr.Markdown(label="Analysis")
             t8_chart = gr.Plot(label="Comparison Radar Chart")
-            t8_btn.click(analyze_credit_unions_vs_banks, inputs=[t8_context],
+            t8_btn.click(analyze_credit_unions_vs_banks, inputs=[t8_context, t8_upload],
                          outputs=[t8_output, t8_chart])
 
         # ── Tab 9: Metallicus & XPR Network ───────────────────────────────────
@@ -2253,7 +2253,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t9_output = gr.Markdown(label="Metallicus Analysis")
             t9_chart = gr.Plot(label="Metallicus Milestones Chart")
-            t9_btn.click(analyze_metallicus_xpr, inputs=[t9_context],
+            t9_btn.click(analyze_metallicus_xpr, inputs=[t9_context, t9_upload],
                          outputs=[t9_output, t9_chart])
 
         # ── Tab 10: US Treasury & Fed ──────────────────────────────────────────
@@ -2271,7 +2271,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t10_output = gr.Markdown(label="Treasury & Fed Analysis")
             t10_chart = gr.Plot(label="Monetary Policy Chart")
-            t10_btn.click(analyze_treasury_fed_news, inputs=[t10_context],
+            t10_btn.click(analyze_treasury_fed_news, inputs=[t10_context, t10_upload],
                           outputs=[t10_output, t10_chart])
 
         # ── Tab 11: Gods vs Beast System ───────────────────────────────────────
@@ -2290,7 +2290,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t11_output = gr.Markdown(label="Biblical Financial Analysis")
             t11_chart = gr.Plot(label="System Alignment Chart")
-            t11_btn.click(analyze_gods_vs_beast_system, inputs=[t11_context],
+            t11_btn.click(analyze_gods_vs_beast_system, inputs=[t11_context, t11_upload],
                           outputs=[t11_output, t11_chart])
 
         # ── Tab 12: Prediction & Scenarios ────────────────────────────────────
@@ -2319,7 +2319,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                 with gr.Column(scale=2):
                     t12_output = gr.Markdown(label="Scenario Analysis")
             t12_chart = gr.Plot(label="Probability Chart")
-            t12_btn.click(analyze_monetary_scenarios, inputs=[t12_focus, t12_horizon, t12_context],
+            t12_btn.click(analyze_monetary_scenarios, inputs=[t12_focus, t12_horizon, t12_context, t12_upload],
                           outputs=[t12_output, t12_chart])
 
         # ── Tab 13: Dashboard ──────────────────────────────────────────────────
@@ -2373,7 +2373,7 @@ with gr.Blocks(title="AI Monetary Reset Tracker") as demo:
                     t14_download = gr.File(label="⬇️ Download Report")
                 with gr.Column(scale=2):
                     t14_output = gr.Markdown(label="Report Preview")
-            t14_btn.click(generate_monetary_report, inputs=[t14_type, t14_focus, t14_audience, t14_context],
+            t14_btn.click(generate_monetary_report, inputs=[t14_type, t14_focus, t14_audience, t14_context, t14_upload],
                           outputs=[t14_output, t14_download])
 
         # ── Tab 15: AI Financial Chat ──────────────────────────────────────────
