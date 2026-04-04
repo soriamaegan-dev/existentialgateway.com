@@ -818,7 +818,13 @@ Assume all data is fully de-identified per FERPA."""
     except Exception as e:
         report_text += f"\n\n[Document generation error: {str(e)}]"
 
-    return report_text + "\n\n" + WATERMARK, output_path
+        custom_watermark = f"""
+---
+{company_name if company_name and company_name.strip() else "© 2026 Existential Gateway, LLC | QuantusData.ai"}
+Powered by QuantusData AI | Unauthorized reproduction prohibited.
+---
+""" if company_name and company_name.strip() else WATERMARK
+    return report_text + "\n\n" + custom_watermark, output_path
 
 
 def _make_pptx(text, df):

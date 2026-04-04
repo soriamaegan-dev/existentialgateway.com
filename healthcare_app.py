@@ -654,7 +654,7 @@ def get_columns(file):
 
 # ─── Tab 8: Reports and Presentations ────────────────────────────────────────
 
-def generate_report(file, report_type, output_format="PDF Report"):
+def generate_report(file, report_type, output_format="PDF Report", company_name=""):
     if file is None:
         return "Please upload a data file.", None
     df, err = load_data(file)
@@ -698,7 +698,13 @@ Write professionally for a healthcare administration audience. Use specific numb
     except Exception as e:
         report_text += f"\n\n[Document generation error: {str(e)}]"
 
-    return report_text + "\n\n" + WATERMARK, output_path
+        custom_watermark = f"""
+---
+{company_name if company_name and company_name.strip() else "© 2026 Existential Gateway, LLC | QuantusData.ai"}
+Powered by QuantusData AI | Unauthorized reproduction prohibited.
+---
+""" if company_name and company_name.strip() else WATERMARK
+    return report_text + "\n\n" + custom_watermark, output_path
 
 
 def _make_pptx(text, df):
