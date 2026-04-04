@@ -14,14 +14,14 @@
   const { data, error } = await sb.from("subscriptions").select("*").eq("email", session.user.email).eq("status", "active").single();
   if (error || !data) { window.location.href = "/dashboard.html?error=no_subscription"; return; }
   const plan = data.plan;
-  const BASIC_PLANS = ["basic", "professional", "business", "owner"];
+  const BASIC_PLANS = ["gateway", "basic", "professional", "business", "owner"];
   if (!BASIC_PLANS.includes(plan)) {
     window.location.href = "/dashboard.html?error=upgrade_required";
     return;
   }
   const PREMIUM_PLANS = ["professional", "business", "owner"];
   const isPremium = PREMIUM_PLANS.includes(plan);
-  const PLAN_NAMES = { "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
+  const PLAN_NAMES = { "gateway": "The Gateway Plan — $9.99/mo", "basic": "Basic Plan — $29/mo", "professional": "Professional Plan — $79/mo", "business": "Business Plan — $199/mo", "owner": "Owner Access" };
   const applyPlan = () => {
     document.querySelectorAll(".nav-plan").forEach(el => { el.textContent = PLAN_NAMES[plan] || plan.toUpperCase(); });
     if (!isPremium) {
