@@ -35,6 +35,7 @@ All 5 civic and faith intelligence tools included:
 
 | Tool | Description |
 |------|-------------|
+| 💼 Investment Analyzer | Stocks, crypto, ETFs, and prediction markets including Polymarket and Kalshi |
 | ✝️ End Times Prophecy Analyzer | 16-tab Biblical prophecy tracking — Matthew 24, Revelation seals, Jubilee calendar, Middle East watch, Rapture analysis, live solar data |
 | 💰 Monetary Reset Tracker | XRP/Ripple, BRICS, FOREX revaluations, Gods vs Beast financial system, Metallicus, US Treasury policy |
 | 💸 US Debt Clock Analyzer | Live Treasury debt data, paradigm shift analysis, gold/silver transition indicators |
