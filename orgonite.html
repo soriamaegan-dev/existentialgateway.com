@@ -318,7 +318,18 @@
             <span class="material">Copper Coil</span>
             <span class="material">Clear Quartz</span>
           </div>
-          <div class="product-footer">
+          <script>
+function egToggleNav() {
+  var nav = document.querySelector('.nav-links');
+  var btn = document.getElementById('hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('open');
+}
+</script>
+    <div class="product-footer">
             <span class="price">$45</span>
             <a href="/cdn-cgi/l/email-protection#84f7ebf6ede5aae9e5e1e3e5eac4e3e9e5ede8aae7ebe9bbf7f1e6eee1e7f0b9cbf6e0e1f6bea4d4f6ebf0e1e7f0edebeaa4d4fdf6e5e9ede0a4660410a4c1fcedf7f0e1eaf0ede5e8a4c3e5f0e1f3e5fd" class="order-btn">Order Now</a>
           </div>
@@ -420,16 +431,6 @@
     </div>
     <div style="text-align:center; margin-top:40px;">
       <a href="/cdn-cgi/l/email-protection#c2b1adb0aba3ecafa3a7a5a3ac82a5afa3abaeeca1adaffdb1b7a0a8a7a1b6ff81b7b
-<script>
-function egToggleNav() {
-  var nav = document.querySelector('.nav-links');
-  var btn = document.getElementById('hamburger');
-  var overlay = document.getElementById('nav-overlay');
-  if (!nav) return;
-  nav.classList.toggle('open');
-  if (btn) btn.classList.toggle('open');
-  if (overlay) overlay.classList.toggle('open');
-}
-</script>
+
 </body>
 </html>
