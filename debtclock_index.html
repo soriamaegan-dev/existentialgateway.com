@@ -49,6 +49,13 @@
     select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;cursor:pointer;margin-bottom:12px;}
     .btn-go{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:16px;}
     .btn-go:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
+
+    .upload-area{margin-top:12px;border:1px dashed rgba(201,168,76,0.3);border-radius:6px;padding:10px 14px;background:rgba(17,34,64,0.4);cursor:pointer;transition:all 0.2s;}
+    .upload-area:hover{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+    .upload-area input[type=file]{display:none;}
+    .upload-label{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--muted);font-size:0.8rem;}
+    .upload-label span{color:var(--gold);}
+    .upload-name{font-size:0.75rem;color:var(--gold);margin-top:6px;font-family:'DM Mono',monospace;}
     .btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
     .results-box{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:200px;overflow:hidden;}
     .results-head{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
@@ -199,60 +206,110 @@
   <div class="tab-panel active" id="tab-0"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-0" placeholder="e.g. Analyze current US national debt trajectory, per-capita debt, debt-to-GDP ratio..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-0').click()">
+      <input type="file" id="file-0" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(0)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-0"></div>
+    </div>
     <button class="btn-go" onclick="run(0,'/us_debt_dashboard')" id="btn-0">💰 Analyze US Debt</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-0"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(0)">📋 Copy</button></div><div class="results-body empty" id="rb-0">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-1"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-1" placeholder="e.g. Analyze Fed monetary policy, interest rate decisions, QT pace, Powell statements..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-1').click()">
+      <input type="file" id="file-1" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(1)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-1"></div>
+    </div>
     <button class="btn-go" onclick="run(1,'/federal_reserve_monitor')" id="btn-1">🏦 Monitor Federal Reserve</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-1"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(1)">📋 Copy</button></div><div class="results-body empty" id="rb-1">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-2"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-2" placeholder="e.g. Score the fiscal health of the US economy, debt sustainability, revenue vs spending..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-2').click()">
+      <input type="file" id="file-2" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(2)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-2"></div>
+    </div>
     <button class="btn-go" onclick="run(2,'/fiscal_health_score')" id="btn-2">❤️ Score Fiscal Health</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-2"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(2)">📋 Copy</button></div><div class="results-body empty" id="rb-2">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-3"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-3" placeholder="e.g. Analyze gold as hedge, gold-to-silver ratio, central bank buying, price forecast..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-3').click()">
+      <input type="file" id="file-3" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(3)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-3"></div>
+    </div>
     <button class="btn-go" onclick="run(3,'/gold_silver_tracker')" id="btn-3">🏅 Track Gold & Silver</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-3"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(3)">📋 Copy</button></div><div class="results-body empty" id="rb-3">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-4"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-4" placeholder="e.g. Analyze oil, natural gas, copper, agricultural commodities as inflation indicators..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-4').click()">
+      <input type="file" id="file-4" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(4)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-4"></div>
+    </div>
     <button class="btn-go" onclick="run(4,'/commodities_monitor')" id="btn-4">📦 Monitor Commodities</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-4"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(4)">📋 Copy</button></div><div class="results-body empty" id="rb-4">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-5"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-5" placeholder="e.g. Analyze de-dollarization trends, BRICS alternatives, US dollar reserve share decline..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-5').click()">
+      <input type="file" id="file-5" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(5)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-5"></div>
+    </div>
     <button class="btn-go" onclick="run(5,'/dedollarization_index')" id="btn-5">📉 Analyze De-dollarization</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-5"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(5)">📋 Copy</button></div><div class="results-body empty" id="rb-5">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-6"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-6" placeholder="e.g. What gold price needed to back dollar at various percentages, gold revaluation scenarios..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-6').click()">
+      <input type="file" id="file-6" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(6)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-6"></div>
+    </div>
     <button class="btn-go" onclick="run(6,'/dollar_gold_backing')" id="btn-6">💵 Analyze Dollar Gold Backing</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-6"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(6)">📋 Copy</button></div><div class="results-body empty" id="rb-6">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-7"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-7" placeholder="e.g. Analyze BRICS economic power vs US dollar, BRICS Unit currency, trade settlement alternatives..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-7').click()">
+      <input type="file" id="file-7" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(7)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-7"></div>
+    </div>
     <button class="btn-go" onclick="run(7,'/brics_vs_dollar')" id="btn-7">🌍 Analyze BRICS vs Dollar</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-7"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(7)">📋 Copy</button></div><div class="results-body empty" id="rb-7">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-8"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-8" placeholder="e.g. Compare US gold reserves vs BRICS combined, Fort Knox audit questions..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-8').click()">
+      <input type="file" id="file-8" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(8)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-8"></div>
+    </div>
     <button class="btn-go" onclick="run(8,'/us_vs_brics_gold')" id="btn-8">⚖️ Compare US vs BRICS Gold</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-8"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(8)">📋 Copy</button></div><div class="results-body empty" id="rb-8">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-9"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-9" placeholder="e.g. Analyze the dollar-to-gold ratio historically and currently..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-9').click()">
+      <input type="file" id="file-9" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(9)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-9"></div>
+    </div>
     <button class="btn-go" onclick="run(9,'/dollar_gold_ratio')" id="btn-9">📊 Analyze Dollar Gold Ratio</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-9"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(9)">📋 Copy</button></div><div class="results-body empty" id="rb-9">Results will appear here...</div></div></div></div></div>
 
@@ -268,12 +325,22 @@
     <select id="sel-10c"><option>Conservative</option><option>Moderate</option><option>Aggressive</option></select>
     <label class="field-label">Additional Context</label>
     <textarea id="ctx-10" placeholder="e.g. What assets best protect wealth in each scenario?"></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-10').click()">
+      <input type="file" id="file-10" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(10)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-10"></div>
+    </div>
     <button class="btn-go" onclick="run(10,'/prediction_scenario_engine')" id="btn-10">🔮 Run Scenario Engine</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-10"></div><div class="results-head"><span class="results-label">Scenario Analysis</span><button class="copy-btn" onclick="cp(10)">📋 Copy</button></div><div class="results-body empty" id="rb-10">Results will appear here...</div></div></div></div></div>
 
   <div class="tab-panel" id="tab-11"><div class="two-col"><div>
     <label class="field-label">Context / Focus (Optional)</label>
     <textarea id="ctx-11" placeholder="e.g. Analyze signs of a coming Golden Age economy, American Renaissance indicators..."></textarea>
+    <div class="upload-area" onclick="document.getElementById('file-11').click()">
+      <input type="file" id="file-11" accept=".pdf,.csv,.xlsx,.xls,.png,.jpg,.jpeg,.webp" onchange="showFileName(11)">
+      <label class="upload-label"><span>📎</span> Upload Image or File (Optional)</label>
+      <div class="upload-name" id="fname-11"></div>
+    </div>
     <button class="btn-go" onclick="run(11,'/golden_age_tracker')" id="btn-11">✨ Track Golden Age</button>
   </div><div><div class="results-box"><div class="loading-bar" id="lb-11"></div><div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp(11)">📋 Copy</button></div><div class="results-body empty" id="rb-11">Results will appear here...</div></div></div></div></div>
 
@@ -340,6 +407,33 @@
     navigator.clipboard.writeText(el.innerText).then(() => alert('✅ Copied!'));
   }
 
+  function showFileName(idx) {
+    const f = document.getElementById('file-'+idx);
+    const n = document.getElementById('fname-'+idx);
+    if (f && f.files[0] && n) n.textContent = '📄 ' + f.files[0].name;
+  }
+
+  async function uploadFile(idx) {
+    const fileInput = document.getElementById('file-'+idx);
+    if (!fileInput || !fileInput.files[0]) return null;
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('files', file);
+    try {
+      const res = await fetch(G + '/upload', {method:'POST', body: formData});
+      if (!res.ok) return null;
+      const paths = await res.json();
+      if (!paths || !paths[0]) return null;
+      return {
+        path: paths[0],
+        size: file.size,
+        orig_name: file.name,
+        mime_type: file.type,
+        meta: {"_type": "gradio.FileData"}
+      };
+    } catch(e) { return null; }
+  }
+
   async function run(idx, endpoint) {
     const lb = document.getElementById('lb-'+idx);
     const rb = document.getElementById('rb-'+idx);
@@ -352,7 +446,8 @@
       const a = document.getElementById('sel-'+idx+'a')?.value || '';
       const b = document.getElementById('sel-'+idx+'b')?.value || '';
       const c = document.getElementById('sel-'+idx+'c')?.value || '';
-      let data = endpoint === '/prediction_scenario_engine' ? [a, b, c, ctx] : [ctx];
+      const uploadedFile = await uploadFile(idx);
+      let data = endpoint === '/prediction_scenario_engine' ? [a, b, c, ctx, uploadedFile] : [ctx, uploadedFile];
       const res = await fetch(G + '/run' + endpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})});
       if (!res.ok) throw new Error(await res.text());
       const result = await res.json();
