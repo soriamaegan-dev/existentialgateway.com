@@ -116,8 +116,9 @@ def fetch_url_content(text):
     for url in urls[:3]:  # limit to 3 URLs
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (compatible; ExistentialGateway/1.0)",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
             }
             r = requests.get(url, timeout=15, headers=headers)
             if r.status_code == 200:
@@ -127,15 +128,41 @@ def fetch_url_content(text):
                         super().__init__()
                         self.text = []
                         self.skip = False
+                        self.skip_tags = {'script', 'style', 'nav', 'footer', 'header',
+                                         'aside', 'menu', 'form', 'button', 'noscript',
+                                         'iframe', 'figure', 'figcaption', 'advertisement'}
+                        self.depth = 0
+                        self.article_found = False
+                        self.in_article = False
+                        self.article_depth = 0
                     def handle_starttag(self, tag, attrs):
-                        if tag in ('script', 'style', 'nav', 'footer', 'header'):
+                        self.depth += 1
+                        attrs_dict = dict(attrs)
+                        # Detect article/main content containers
+                        cls = attrs_dict.get('class', '') or ''
+                        id_ = attrs_dict.get('id', '') or ''
+                        role = attrs_dict.get('role', '') or ''
+                        if (tag in ('article', 'main') or
+                            role == 'main' or
+                            any(x in cls.lower() for x in ['article', 'story', 'content', 'post-body', 'entry-content', 'article-body']) or
+                            any(x in id_.lower() for x in ['article', 'story', 'content', 'main'])):
+                            self.in_article = True
+                            self.article_depth = self.depth
+                        if tag in self.skip_tags:
                             self.skip = True
                     def handle_endtag(self, tag):
-                        if tag in ('script', 'style', 'nav', 'footer', 'header'):
+                        if tag in self.skip_tags:
                             self.skip = False
+                        if self.in_article and self.depth <= self.article_depth:
+                            self.in_article = False
+                        self.depth -= 1
                     def handle_data(self, data):
                         if not self.skip and data.strip():
-                            self.text.append(data.strip())
+                            # Prefer article content, but fall back to all content
+                            if self.in_article:
+                                self.text.insert(0, data.strip())  # prioritize article content
+                            else:
+                                self.text.append(data.strip())
                 parser = TextExtractor()
                 parser.feed(r.text)
                 page_text = ' '.join(parser.text)[:3000]
