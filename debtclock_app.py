@@ -129,7 +129,23 @@ def fetch_url_content(text):
                 "User-Agent": "Mozilla/5.0 (compatible; ExistentialGateway/1.0)",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
             }
-            r = requests.get(url, timeout=15, headers=headers)
+            # Special handling for X.com/Twitter URLs
+        if 'x.com' in url or 'twitter.com' in url:
+            try:
+                oembed_url = f"https://publish.twitter.com/oembed?url={url}"
+                r2 = requests.get(oembed_url, timeout=10)
+                if r2.status_code == 200:
+                    data = r2.json()
+                    author = data.get("author_name", "")
+                    html_content = data.get("html", "")
+                    # Strip HTML tags
+                    import re as re2
+                    text = re2.sub(r"<[^>]+>", " ", html_content)
+                    text = re2.sub(r"\s+", " ", text).strip()
+                    return f"[X/Twitter post by {author}]: {text}"
+            except Exception:
+                pass
+        r = requests.get(url, timeout=15, headers=headers)
             if r.status_code == 200:
                 from html.parser import HTMLParser
                 class TextExtractor(HTMLParser):
