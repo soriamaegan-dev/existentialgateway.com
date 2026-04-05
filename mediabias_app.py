@@ -157,7 +157,11 @@ def analyze_article(article_text, article_url, outlet_name, extra_context):
     if not article_text and not article_url:
         return "Please paste an article or enter a URL.", None
 
-    content = article_text if article_text else f"Article URL: {article_url}"
+        if article_url and not article_text:
+        fetched = fetch_url_content(article_url)
+        article_content = fetched if fetched else article_url
+    else:
+        article_content = article_text
 
     prompt = f"""You are a media literacy expert analyzing a news article for bias.
 
@@ -165,7 +169,7 @@ Outlet: {outlet_name if outlet_name else "Unknown"}
 Additional Context: {extra_context}
 
 Article Content:
-{content[:4000]}
+{article_content[:4000]}
 
 Provide a comprehensive article bias analysis:
 
