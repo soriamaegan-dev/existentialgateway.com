@@ -191,10 +191,9 @@
           <div class="field-group">
             <label class="field-label">Your Position</label>
             <select id="s-position">
-              <option>Not Invested</option>
-              <option>Long (Own Shares)</option>
-              <option>Short</option>
-              <option>Watching</option>
+              <option value="Not Invested">Not Invested</option>
+              <option value="Long">Long (Own Shares)</option>
+              <option value="Short">Short</option>
             </select>
           </div>
         </div>
@@ -320,10 +319,9 @@
         <div class="field-group">
           <label class="field-label">Time Horizon</label>
           <select id="c-horizon">
-            <option>Short-term (days-weeks)</option>
-            <option>Medium-term (months)</option>
-            <option>Long-term (1+ years)</option>
-            <option>Day Trade</option>
+            <option value="Short Term">Short Term</option>
+            <option value="Medium Term" selected>Medium Term</option>
+            <option value="Long Term">Long Term</option>
           </select>
         </div>
         <div class="field-group">
@@ -482,10 +480,10 @@
         <div class="field-group">
           <label class="field-label">Market Status</label>
           <select id="n-market">
-            <option>Market Open</option>
-            <option>Market Closed</option>
-            <option>Pre-Market</option>
-            <option>After-Hours</option>
+            <option value="Yes">Market Open</option>
+            <option value="No">Market Closed</option>
+            <option value="Pre-Market">Pre-Market</option>
+            <option value="After-Hours">After-Hours</option>
           </select>
         </div>
         <div class="field-group">
@@ -636,12 +634,11 @@
         <div class="field-group">
           <label class="field-label">Your Emotional State</label>
           <select id="fg-emotion">
-            <option>Fearful / Panicking</option>
-            <option>Anxious / Nervous</option>
-            <option>Neutral / Calm</option>
-            <option>Optimistic</option>
-            <option>Greedy / FOMO</option>
-            <option>Overconfident</option>
+            <option value="Very Fearful">Very Fearful</option>
+            <option value="Fearful">Fearful</option>
+            <option value="Neutral" selected>Neutral</option>
+            <option value="Greedy">Greedy</option>
+            <option value="Extremely Greedy">Extremely Greedy</option>
           </select>
         </div>
         <div class="field-group">
@@ -671,10 +668,9 @@
         <div class="field-group">
           <label class="field-label">Lookout Period</label>
           <select id="ev-period">
-            <option>Next 24 hours</option>
-            <option>Next week</option>
-            <option>Next month</option>
-            <option>Next quarter</option>
+            <option value="Next 7 Days">Next 7 Days</option>
+            <option value="Next 30 Days" selected>Next 30 Days</option>
+            <option value="Next 90 Days">Next 90 Days</option>
           </select>
         </div>
         <div class="field-group">
