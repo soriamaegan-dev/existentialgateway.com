@@ -152,16 +152,16 @@
 
 <div class="tabs-wrapper">
   <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab(0)">📈 Stock Analysis</button>
-    <button class="tab-btn" onclick="switchTab(1)">₿ Crypto</button>
-    <button class="tab-btn" onclick="switchTab(2)">🎯 Prediction Markets</button>
-    <button class="tab-btn" onclick="switchTab(3)">💼 Portfolio</button>
-    <button class="tab-btn" onclick="switchTab(4)">📰 News Impact</button>
-    <button class="tab-btn" onclick="switchTab(5)">🔮 Scenarios</button>
-    <button class="tab-btn" onclick="switchTab(6)">🔄 Contrarian</button>
-    <button class="tab-btn" onclick="switchTab(7)">😨 Fear & Greed</button>
-    <button class="tab-btn" onclick="switchTab(8)">📅 Events Calendar</button>
-    <button class="tab-btn" onclick="switchTab(9)">💬 AI Chat</button>
+    <button class="tab-btn active" data-tab="0">📈 Stock Analysis</button>
+    <button class="tab-btn" data-tab="1">₿ Crypto</button>
+    <button class="tab-btn" data-tab="2">🎯 Prediction Markets</button>
+    <button class="tab-btn" data-tab="3">💼 Portfolio</button>
+    <button class="tab-btn" data-tab="4">📰 News Impact</button>
+    <button class="tab-btn" data-tab="5">🔮 Scenarios</button>
+    <button class="tab-btn" data-tab="6">🔄 Contrarian</button>
+    <button class="tab-btn" data-tab="7">😨 Fear & Greed</button>
+    <button class="tab-btn" data-tab="8">📅 Events Calendar</button>
+    <button class="tab-btn" data-tab="9">💬 AI Chat</button>
   </div>
 
   <!-- Tab 0: Stock Analysis -->
@@ -741,7 +741,7 @@
 <script>
   const G = '/tools/investment/gradio_api';
 
-  function switchTab(idx) {
+  function switchTab(idx) { window._currentTab = idx;
     document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
     document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
   }
