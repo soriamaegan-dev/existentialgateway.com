@@ -307,8 +307,16 @@ Visit quantusdata.ai to upgrade.'); };
     <div class="two-col">
       <div>
                 <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-0" placeholder="Paste article text or URL here..."></textarea>
+          <label class="context-label">Article Text or URL *</label>
+          <textarea class="context-input" id="context-0" placeholder="Paste article text or URL here... e.g. https://www.cnn.com/article..."></textarea>
+          <div style="margin-top:10px;">
+            <label class="context-label">News Outlet (Optional)</label>
+            <input type="text" id="outlet-0" placeholder="e.g. CNN, Fox News, Reuters, NYT..." style="width:100%;background:rgba(17,34,64,0.6);border:1px solid rgba(201,168,76,0.15);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;">
+          </div>
+          <div style="margin-top:10px;">
+            <label class="context-label">Additional Context (Optional)</label>
+            <input type="text" id="extra-0" placeholder="e.g. Focus on political framing, fact-check claims..." style="width:100%;background:rgba(17,34,64,0.6);border:1px solid rgba(201,168,76,0.15);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;">
+          </div>
         </div>
         
         <div style="margin-top:16px;">
@@ -577,23 +585,16 @@ Visit quantusdata.ai to upgrade.'); };
 
     try {
       let data = [];
-
-      if (hasFile && uploadedFiles[tabIdx]) {
-        const formData = new FormData();
-        formData.append('files', uploadedFiles[tabIdx]);
-        const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
-        if (!uploadRes.ok) throw new Error('File upload failed. Status: ' + uploadRes.status);
-        const uploadData = await uploadRes.json();
-        data.push({ path: uploadData[0], orig_name: uploadedFiles[tabIdx].name, size: uploadedFiles[tabIdx].size, mime_type: uploadedFiles[tabIdx].type, meta: { "_type": "gradio.FileData" } });
+      if (tabIdx === 0 && endpoint === '/analyze_article') {
+        const isUrl = context.startsWith('http');
+        const outlet = document.getElementById('outlet-0') ? document.getElementById('outlet-0').value : '';
+        const extra = document.getElementById('extra-0') ? document.getElementById('extra-0').value : '';
+        data = [isUrl ? '' : context, isUrl ? context : '', outlet, extra];
+      } else {
+        if (context) data.push(context);
+        const extraEl = document.getElementById('extra-' + tabIdx);
+        if (extraEl) data.push(extraEl.value);
       }
-
-      // Only send context if file was also uploaded
-      if (hasFile && uploadedFiles[tabIdx] && context) data.push(context);
-      if (!hasFile && context) data.push(context);
-
-      const extraEl = document.getElementById('extra-' + tabIdx);
-      if (extraEl) data.push(extraEl.value);
-
       const res = await fetch(GRADIO_URL + '/run' + endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
