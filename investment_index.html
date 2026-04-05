@@ -741,7 +741,7 @@
 <script>
   const G = '/tools/investment/gradio_api';
 
-  function switchTab(idx) { window._currentTab = idx;
+  function switchTab(idx) {
     document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
     document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
   }
