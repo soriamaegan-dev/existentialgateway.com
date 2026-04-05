@@ -174,12 +174,20 @@ def fetch_url_content(text):
 
 
 def enrich_with_urls(text):
-    """If text contains URLs, fetch and append their content."""
+    """If text contains URLs, fetch and append their content with explicit AI instructions."""
     if not text or 'http' not in text:
         return text
     url_content = fetch_url_content(text)
     if url_content:
-        return text + url_content
+        return (
+            text +
+            "\n\n=== FETCHED URL CONTENT — YOU MUST REFERENCE THIS IN YOUR ANALYSIS ==="
+            "\nThe following content was fetched from the URL(s) provided by the user. "
+            "You MUST directly reference, quote, and analyze this content in your response. "
+            "Do not ignore it. Incorporate specific details, facts, names, and data from this content:\n\n" +
+            url_content +
+            "\n=== END OF FETCHED URL CONTENT ==="
+        )
     return text
 
 
