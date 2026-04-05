@@ -526,71 +526,82 @@ def profile_journalist(journalist_name, outlet, beat, sample_work, extra_context
     if not journalist_name:
         return "Please enter a journalist's name."
 
-    prompt = f"""You are a media analyst profiling a journalist's body of work for media literacy purposes.
+    prompt = f"""You are a strictly nonpartisan media literacy analyst. Complete the STRUCTURED SCORING TEMPLATE below for the journalist provided. Fill in EVERY field with a specific score or answer. Base scores ONLY on the sample work content — NEVER on outlet reputation.
 
-Journalist: {journalist_name}
+JOURNALIST TO PROFILE:
+Name: {journalist_name}
 Outlet: {outlet if outlet else "Unknown"}
-Beat/Coverage Area: {beat if beat else "General"}
-Sample Work/Headlines: {sample_work if sample_work else "Not provided"}
+Beat: {beat if beat else "General"}
+Sample Work: {sample_work[:3000] if sample_work else "Not provided"}
 Additional Context: {extra_context}
 
-Provide a journalist bias profile based on their documented body of work:
+MANDATORY STRUCTURED TEMPLATE — COMPLETE EVERY FIELD:
 
 ## ✍️ JOURNALIST PROFILE
-Name, outlet, beat, years of experience if known.
-Notable work and recognition.
-Career background.
+- **Name:** {journalist_name}
+- **Outlet:** {outlet if outlet else "Unknown"}
+- **Beat/Coverage Area:** [state based on sample work]
+- **Years of Experience:** [state if known, otherwise "Not publicly documented"]
+- **Notable Work:** [list topics covered based on sample work]
+- **Career Background:** [state what is known, or "Limited public information available"]
 
-## 🎯 REPORTING STYLE ASSESSMENT
-Writing style: STRAIGHT NEWS / ADVOCACY / OPINION-LEANING / INVESTIGATIVE / ANALYSIS
-Political lean in reporting: FAR LEFT / LEFT / CENTER-LEFT / CENTER / CENTER-RIGHT / RIGHT / FAR RIGHT
-Lean Score: X/10
-Confidence: HIGH / MEDIUM / LOW
+## 🎯 STRUCTURED BIAS SCORING
+Score each category 1-10 where: 1=Strongly Liberal, 5=Perfectly Neutral, 10=Strongly Conservative.
+Base ONLY on the sample work provided. NOT on outlet reputation or political association.
+
+| Category | Score (1-10) | Evidence from Sample Work |
+|----------|-------------|--------------------------|
+| Political Framing | X/10 | [quote specific language from sample] |
+| Source Selection | X/10 | [who is quoted in the sample] |
+| Topic Selection | X/10 | [what the sample covers] |
+| Language/Tone | X/10 | [specific word choices from sample] |
+| Headline Framing | X/10 | [how the headline is written] |
+| **OVERALL LEAN SCORE** | **X/10** | [summary based on above] |
+
+**Political Lean:** [FAR LEFT / LEFT / CENTER-LEFT / CENTER / CENTER-RIGHT / RIGHT / FAR RIGHT]
+**Confidence Level:** [HIGH / MEDIUM / LOW] — [explain why based on sample size]
+
+CRITICAL SCORING RULES:
+- 5/10 = perfectly neutral. 1-4 = liberal lean. 6-10 = conservative lean.
+- If you would score a CNN journalist 5/10 for similar content, score a Fox journalist 5/10 too.
+- NEVER adjust scores based on outlet political reputation.
 
 ## 📊 PATTERN ANALYSIS
-Based on known body of work:
+**Writing Style:** [Pick ONE: STRAIGHT NEWS / ANALYSIS / OPINION / INVESTIGATIVE]
 
-**Topic Selection Patterns**
-Topics they cover frequently: [list]
-Topics they appear to avoid: [list]
-Pattern analysis: [what this reveals]
+**Topic Selection:**
+- Covers frequently: [based on sample]
+- Appears to avoid: [based on sample, or "Insufficient sample to determine"]
 
-**Source Patterns**
-Types of sources they typically quote: [list]
-Perspectives they regularly include: [list]
-Perspectives they tend to omit: [list]
+**Source Patterns:**
+- Typically quotes: [list from sample]
+- Perspectives included: [list]
+- Perspectives omitted: [list or "None evident in sample"]
 
-**Language Patterns**
-Recurring loaded language or framing: [examples if known]
-Signature rhetorical techniques: [analysis]
+**Language Patterns:**
+- Loaded language: [quote exact phrases, or "None detected"]
+- Rhetorical techniques: [describe specifically]
 
-**Accuracy Record**
-Notable corrections or retractions if any: [list]
-Awards for accuracy or investigative work: [list]
-Fact-check results on their work: [if known]
+## 🏆 STRENGTHS
+[2-3 specific strengths based ONLY on sample work]
 
-## 🏆 STRENGTHS AS A JOURNALIST
-Areas where their reporting is generally strong.
-Investigative work or important stories broken.
-Journalistic contributions to public discourse.
-
-## ⚠️ CONCERNS OR CRITICISMS
-Documented instances of bias or inaccuracy.
-Criticism from media watchdog organizations.
-Conflicts of interest if any on public record.
+## ⚠️ CONCERNS
+[2-3 specific concerns based ONLY on sample work, or "No significant concerns identified in the provided sample"]
 
 ## 📚 HOW TO READ THIS JOURNALIST
-When their reporting is most reliable.
-When to apply extra scrutiny.
-How to balance their perspective with other sources.
+- Most reliable for: [topic areas]
+- Apply extra scrutiny when: [situations]
+- Balance with: [other source types]
 
-Note: This profile is based on publicly available information and known body of work.
-All assessments should be verified independently."""
+## ⚖️ FAIRNESS SELF-CHECK
+- Would I give a journalist from the OPPOSITE political outlet the same scores for similar content? [YES/NO]
+- Are my concerns based on SAMPLE WORK or OUTLET REPUTATION? [state which]
+- Is my language equally charitable compared to an opposite-leaning journalist? [YES/NO]
 
-    return query_llm(prompt) + "\n\n" + WATERMARK
-
-
-# ─── Tab 5: Headline Analyzer ─────────────────────────────────────────────────
+Note: This profile is based solely on the provided sample. A comprehensive assessment requires a broader body of work.
+{WATERMARK}"""
+    result = query_llm(prompt)
+    return result
 
 def analyze_headline(headline, article_body, outlet_name, extra_context):
     if not headline:
