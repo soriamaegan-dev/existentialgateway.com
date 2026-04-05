@@ -841,12 +841,31 @@
     const ticker = document.getElementById('c-ticker').value.trim().toUpperCase();
     if (!ticker) { alert('Enter a ticker first'); return; }
     // Map common crypto tickers to Stooq format
+    // Stooq uses .v suffix for crypto, usd suffix for some
     const cryptoMap = {
-      'BTC': 'btcusd', 'ETH': 'ethusd', 'XRP': 'xrpusd',
-      'SOL': 'solusd', 'ADA': 'adausd', 'AVAX': 'avaxusd',
-      'DOGE': 'dogeusd', 'LTC': 'ltcusd', 'DOT': 'dotusd',
+      'BTC': 'btc.v', 'BITCOIN': 'btc.v',
+      'ETH': 'eth.v', 'ETHEREUM': 'eth.v',
+      'XRP': 'xrp.v', 'RIPPLE': 'xrp.v',
+      'SOL': 'sol.v', 'SOLANA': 'sol.v',
+      'ADA': 'ada.v', 'CARDANO': 'ada.v',
+      'DOGE': 'doge.v', 'DOGECOIN': 'doge.v',
+      'LTC': 'ltc.v', 'LITECOIN': 'ltc.v',
+      'DOT': 'dot.v', 'POLKADOT': 'dot.v',
+      'AVAX': 'avax.v', 'AVALANCHE': 'avax.v',
+      'LINK': 'link.v', 'CHAINLINK': 'link.v',
+      'XLM': 'xlm.v', 'STELLAR': 'xlm.v',
+      'MATIC': 'matic.v', 'POLYGON': 'matic.v',
+      'BNB': 'bnb.v', 'BINANCE': 'bnb.v',
+      'SHIB': 'shib.v', 'SHIBAINU': 'shib.v',
+      'UNI': 'uni.v', 'UNISWAP': 'uni.v',
+      'ATOM': 'atom.v', 'COSMOS': 'atom.v',
+      'ALGO': 'algo.v', 'ALGORAND': 'algo.v',
+      'VET': 'vet.v', 'VECHAIN': 'vet.v',
+      'FIL': 'fil.v', 'FILECOIN': 'fil.v',
+      'TRX': 'trx.v', 'TRON': 'trx.v',
+      'XMR': 'xmr.v', 'MONERO': 'xmr.v',
     };
-    const stooqTicker = cryptoMap[ticker] || (ticker.toLowerCase() + 'usd');
+    const stooqTicker = cryptoMap[ticker.toUpperCase()] || (ticker.toLowerCase() + '.v');
     await fetchPrice(stooqTicker, 'c-live-price', 'c-price');
   }
 
