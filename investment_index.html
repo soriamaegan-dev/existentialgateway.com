@@ -987,6 +987,21 @@
     }
     msgs.scrollTop = msgs.scrollHeight;
   }
+
+  // Tab click handler
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-tab]');
+    if (btn && btn.classList.contains('tab-btn')) {
+      var idx = parseInt(btn.getAttribute('data-tab'));
+      document.querySelectorAll('.tab-panel').forEach(function(p, i) {
+        p.classList.toggle('active', i === idx);
+      });
+      document.querySelectorAll('.tab-btn').forEach(function(b, i) {
+        b.classList.toggle('active', i === idx);
+      });
+    }
+  });
+
 </script>
 
 </body>
