@@ -787,6 +787,27 @@ def investment_chat(message, history):
 
 # ─── Gradio UI ────────────────────────────────────────────────────────────────
 
+
+def fetch_live_price(ticker):
+    """Fetch live price from Stooq for stocks and crypto."""
+    try:
+        import requests as req
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        r = req.get(
+            f"https://stooq.com/q/l/?s={ticker.lower()}&f=sd2t2ohlcv&h&e=csv",
+            headers=headers, timeout=10
+        )
+        if r.status_code == 200:
+            lines = r.text.strip().split("\n")
+            if len(lines) > 1:
+                parts = lines[1].split(",")
+                price = parts[6] if len(parts) > 6 else None
+                if price and price != "N/D":
+                    return round(float(price), 4)
+        return 0
+    except Exception:
+        return 0
+
 with gr.Blocks(title="AI Investment Analyzer", theme=gr.themes.Base(
         primary_hue=gr.themes.colors.Color(
             c50="#fef9ec", c100="#faefd0", c200="#f4dea0", c300="#edc970",
@@ -1160,6 +1181,13 @@ with gr.Blocks(title="AI Investment Analyzer", theme=gr.themes.Base(
                 ],
                 title="",
             )
+
+
+        with gr.Tab("🔧 Price API", visible=False):
+            fp_ticker = gr.Textbox(label="Ticker")
+            fp_btn = gr.Button("Fetch")
+            fp_price = gr.Number(label="Price")
+            fp_btn.click(fetch_live_price, inputs=[fp_ticker], outputs=[fp_price])
 
     gr.Markdown(WATERMARK)
 
