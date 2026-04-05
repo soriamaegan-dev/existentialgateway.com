@@ -157,7 +157,8 @@ def analyze_article(article_text, article_url, outlet_name, extra_context):
     if not article_text and not article_url:
         return "Please paste an article or enter a URL.", None
 
-        if article_url and not article_text:
+    # Fetch URL content if URL provided
+    if article_url and not article_text:
         fetched = fetch_url_content(article_url)
         article_content = fetched if fetched else article_url
     else:
