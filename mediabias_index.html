@@ -625,12 +625,11 @@ Visit quantusdata.ai to upgrade.'); };
         data = [resolvedContext, '', '', '', '', '', '', ''];
       } else if (endpoint === '/profile_journalist') {
         // profile_journalist(name, outlet, beat, work_examples, extra_context)
-        data = [context, '', '', '', ''];
+        const jName = document.getElementById('journalist-name') ? document.getElementById('journalist-name').value : '';
+        const jOutlet = document.getElementById('journalist-outlet') ? document.getElementById('journalist-outlet').value : '';
+        data = [jName || context, jOutlet, '', resolvedContext, ''];
       } else if (endpoint === '/analyze_headline') {
         // analyze_headline(headline, article_body, outlet_name, extra_context)
-        const jName = document.getElementById('journalist-name') ? document.getElementById('journalist-name').value : resolvedContext;
-        const jOutlet = document.getElementById('journalist-outlet') ? document.getElementById('journalist-outlet').value : '';
-        data = [jName || resolvedContext, jOutlet, '', resolvedContext, ''];
       } else if (endpoint === '/score_bias') {
         // score_bias(article_text, content_type, outlet_name, political_lean, extra_context)
         data = [resolvedContext, 'News Article', '', 'Center', ''];
