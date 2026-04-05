@@ -51,13 +51,8 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a1628'/><circle cx='90' cy='88' r='72' fill='none' stroke='%23c9a84c' stroke-width='14'/><rect x='34' y='108' width='18' height='30' fill='%23c9a84c' opacity='0.6' rx='2'/><rect x='56' y='88' width='18' height='50' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='78' y='62' width='18' height='76' fill='%23c9a84c' rx='2'/><rect x='100' y='78' width='18' height='60' fill='%23c9a84c' opacity='0.8' rx='2'/><rect x='122' y='98' width='18' height='40' fill='%23c9a84c' opacity='0.6' rx='2'/><line x1='138' y1='134' x2='170' y2='168' stroke='%23c9a84c' stroke-width='14' stroke-linecap='round'/></svg>" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;
-      --white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);
-      --success:#2dd4a0;--error:#ff6b6b;
-    }
+    :root{--navy:#0a1628;--navy-mid:#112240;--gold:#c9a84c;--gold-light:#e8c96a;--white:#f8f9fc;--muted:#8892a4;--border:rgba(201,168,76,0.15);--error:#ff6b6b;--green:#27ae60;}
     *{margin:0;padding:0;box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
     body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;}
     body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
     nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 40px;background:rgba(10,22,40,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
@@ -68,563 +63,931 @@
     .nav-divider{width:1px;height:22px;background:var(--border);}
     .nav-tool{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
     .nav-right{display:flex;align-items:center;gap:14px;}
-    .nav-plan{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
-    .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all 0.2s;}
-    .nav-back:hover{color:var(--gold);border-color:var(--gold);}
+    .nav-plan{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#c9a84c;padding:4px 12px;border-radius:20px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;}
+    .nav-back{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;}
     .tool-header{position:relative;z-index:1;padding:20px 40px;background:rgba(17,34,64,0.6);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .tool-header-left{display:flex;align-items:center;gap:16px;}
     .tool-icon{font-size:2rem;}
-    .tool-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--white);font-weight:400;}
+    .tool-title{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--white);}
     .tool-tagline{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
-    .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;line-height:1.6;}
-    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+    .tool-desc{font-size:0.82rem;color:var(--muted);max-width:520px;}
+    .disclaimer{position:relative;z-index:1;margin:24px 40px 0;padding:14px 20px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);}
     .disclaimer strong{color:var(--gold);}
-    .pii-notice{position:relative;z-index:1;margin:12px 40px 0;padding:14px 20px;background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.2);border-left:3px solid var(--error);border-radius:0 6px 6px 0;font-size:0.76rem;color:var(--muted);line-height:1.6;}
-    .pii-notice strong{color:var(--error);}
-    .tabs-container{position:relative;z-index:1;margin:24px 40px 0;}
-    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
-    .tabs-nav::-webkit-scrollbar{display:none;}
-    .tab-btn{padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;}
-    .tab-btn:hover{color:var(--white);}
+    .tabs-wrapper{position:relative;margin:24px 40px 0;}
+    .tabs-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;}
+    .tab-btn{padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;margin-bottom:-1px;flex-shrink:0;}
     .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.05);}
     .tab-panel{display:none;padding:28px 0;}
     .tab-panel.active{display:block;}
-    .upload-zone{border:2px dashed rgba(201,168,76,0.3);border-radius:8px;padding:40px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(17,34,64,0.4);position:relative;}
-    .upload-zone:hover,.upload-zone.dragover{border-color:var(--gold);background:rgba(201,168,76,0.05);}
-    .upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-    .upload-icon{font-size:2.5rem;margin-bottom:12px;display:block;}
-    .upload-title{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:6px;}
-    .upload-sub{font-size:0.78rem;color:var(--muted);}
-    .upload-filename{margin-top:12px;padding:8px 16px;background:rgba(201,168,76,0.1);border-radius:4px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold);display:none;}
-    .context-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
-    textarea.context-input{width:100%;min-height:80px;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 16px;resize:vertical;transition:border-color 0.2s;}
-    textarea.context-input:focus{outline:none;border-color:var(--gold);}
-    textarea.context-input::placeholder{color:var(--muted);}
-    select.styled-select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;cursor:pointer;transition:border-color 0.2s;}
-    select.styled-select:focus{outline:none;border-color:var(--gold);}
-    .btn-analyze{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
-    .btn-analyze:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.3);}
-    .btn-analyze:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-    .results-area{margin-top:24px;background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;min-height:120px;overflow:hidden;}
-    .results-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-    .results-label{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
-    .results-body{padding:20px;font-size:1.05rem;font-family:Arial,sans-serif;color:var(--white);line-height:1.8;white-space:pre-wrap;}
-    .results-body.empty{color:var(--muted);font-style:italic;}
-    .results-body::selection,.results-body *::selection{background:#c9a84c;color:#000000;}
-    .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite;display:none;}
-    .loading-bar.active{display:block;}
-    @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;}}
-    .watermark{position:relative;z-index:1;text-align:center;padding:20px 40px;margin-top:40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(136,146,164,0.5);letter-spacing:1px;}
-    .results-body h1,.results-body h2,.results-body h3{color:var(--gold);font-family:'DM Serif Display',serif;margin:16px 0 8px;font-weight:400;}
-    .results-body h1{font-size:1.2rem;}
-    .results-body h2{font-size:1.05rem;}
-    .results-body h3{font-size:0.95rem;}
-    .results-body strong{color:var(--white);font-weight:600;}
-    .results-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
-    .chat-messages{background:rgba(17,34,64,0.5);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:16px;}
-    .chat-msg{margin-bottom:16px;}
-    .chat-msg.user .bubble{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px 8px 2px 8px;padding:10px 14px;font-size:0.85rem;max-width:80%;margin-left:auto;}
-    .chat-msg.assistant .bubble{background:rgba(17,34,64,0.8);border:1px solid var(--border);border-radius:2px 8px 8px 8px;padding:10px 14px;font-size:0.85rem;max-width:90%;white-space:pre-wrap;}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;}.tab-panel{padding:20px 0;}}
+    .field-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;}
+    .field-group{margin-bottom:14px;}
+    input[type=text],input[type=number],textarea,select{width:100%;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;transition:border-color 0.2s;}
+    input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);}
+    input::placeholder,textarea::placeholder{color:var(--muted);}
+    select option{background:#0a1628;}
+    textarea{min-height:80px;resize:vertical;}
+    .input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .input-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+    .price-field{position:relative;}
+    .price-field input{padding-left:36px;}
+    .price-prefix{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:700;font-size:0.9rem;}
+    .live-price{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--green);margin-top:4px;display:flex;align-items:center;gap:6px;}
+    .live-price.loading{color:var(--muted);}
+    .live-price.error{color:var(--error);}
+    .fetch-btn{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:6px 14px;border-radius:4px;font-family:'DM Mono',monospace;font-size:0.7rem;cursor:pointer;letter-spacing:1px;margin-top:8px;transition:all 0.2s;}
+    .fetch-btn:hover{background:rgba(201,168,76,0.2);}
+    .btn-go{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:16px;}
+    .btn-go:hover{transform:translateY(-1px);}
+    .btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .results-box{background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;min-height:300px;display:flex;flex-direction:column;}
+    .results-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+    .results-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;}
+    .results-body{padding:16px;font-size:0.85rem;line-height:1.8;flex:1;overflow-y:auto;max-height:600px;}
+    .results-body.empty{color:var(--muted);display:flex;align-items:center;justify-content:center;font-style:italic;}
+    .results-body h1,.results-body h2,.results-body h3{color:var(--gold);margin:16px 0 8px;font-family:'DM Serif Display',serif;}
+    .results-body table{width:100%;border-collapse:collapse;margin:12px 0;}
+    .results-body th{background:rgba(201,168,76,0.1);color:var(--gold);padding:8px 12px;text-align:left;font-size:0.8rem;}
+    .results-body td{padding:8px 12px;border-bottom:1px solid rgba(201,168,76,0.08);font-size:0.82rem;}
+    .loading-bar{height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-light));width:0;transition:width 0.3s;border-radius:2px;}
+    .loading-bar.active{animation:loadpulse 1.5s infinite;}
+    @keyframes loadpulse{0%{width:0}50%{width:100%}100%{width:0}}
+    .section-divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+    .chat-area{display:flex;flex-direction:column;gap:12px;}
+    .chat-messages{background:rgba(17,34,64,0.4);border:1px solid var(--border);border-radius:8px;padding:16px;min-height:200px;max-height:400px;overflow-y:auto;font-size:0.85rem;line-height:1.8;}
     .chat-input-row{display:flex;gap:10px;}
-    .chat-input{flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 16px;}
-    .chat-input:focus{outline:none;border-color:var(--gold);}
+    .chat-input{flex:1;background:rgba(17,34,64,0.6);border:1px solid var(--border);border-radius:6px;color:var(--white);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:0.85rem;}
+    .chat-send{padding:10px 20px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;border-radius:6px;font-weight:700;cursor:pointer;}
+    .watermark{font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(201,168,76,0.3);text-align:center;padding:20px 0;border-top:1px solid var(--border);margin-top:32px;}
   </style>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 </head>
 <body>
 <nav>
   <div class="nav-left">
-    <a href="/dashboard.html" class="nav-brand">
-      <svg width="26" height="26" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="90" cy="88" r="75" fill="none" stroke="#c9a84c" stroke-width="14"/>
-        <rect x="34" y="108" width="18" height="30" fill="#c9a84c" opacity="0.6" rx="2"/>
-        <rect x="56" y="88" width="18" height="50" fill="#c9a84c" opacity="0.8" rx="2"/>
-        <rect x="78" y="62" width="18" height="76" fill="#c9a84c" rx="2"/>
-        <rect x="100" y="78" width="18" height="60" fill="#c9a84c" opacity="0.8" rx="2"/>
-        <rect x="122" y="98" width="18" height="40" fill="#c9a84c" opacity="0.6" rx="2"/>
-        <line x1="138" y1="134" x2="170" y2="168" stroke="#c9a84c" stroke-width="14" stroke-linecap="round"/>
-      </svg>
-      <span class="nav-brand-name">Quantus<span>Data</span><span style="font-size:0.8em;">.ai</span></span>
-    </a>
+    <a class="nav-brand" href="/"><span class="nav-brand-name">Quantus<span>Data</span>.ai</span></a>
     <div class="nav-divider"></div>
     <span class="nav-tool">Investment Analyzer</span>
   </div>
   <div class="nav-right">
-    <span class="nav-plan">QuantusData Professional</span>
+    <span class="nav-plan">Loading...</span>
     <a href="/dashboard.html" class="nav-back">← Dashboard</a>
-      
   </div>
 </nav>
 
 <div class="tool-header">
-  <div class="tool-header-left">
+  <div style="display:flex;align-items:center;gap:16px;">
     <span class="tool-icon">💼</span>
     <div>
       <div class="tool-title">Investment Analyzer</div>
       <div class="tool-tagline">AI-Powered Investment Intelligence</div>
     </div>
   </div>
-  <div class="tool-desc">Stocks, crypto, ETFs, prediction markets — AI-driven analysis and portfolio optimization.</div>
+  <div class="tool-desc">Stocks, crypto, ETFs, prediction markets — live prices, AI-driven analysis, and portfolio optimization.</div>
 </div>
 
 <div class="disclaimer">
-  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by Artificial Intelligence and is intended for informational purposes only. All results are AI-generated and should be reviewed by a qualified professional. © 2026 Existential Gateway, LLC. All Rights Reserved.
+  <strong>LEGAL DISCLAIMER:</strong> This tool is powered by AI and is for informational purposes only. Not financial advice. © 2026 Existential Gateway, LLC.
 </div>
 
-
-<div class="tabs-container">
+<div class="tabs-wrapper">
   <div class="tabs-nav">
     <button class="tab-btn active" onclick="switchTab(0)">📈 Stock Analysis</button>
-    <button class="tab-btn " onclick="switchTab(1)">₿ Crypto</button>
-    <button class="tab-btn " onclick="switchTab(2)">🎯 Prediction Markets</button>
-    <button class="tab-btn " onclick="switchTab(3)">💼 Portfolio</button>
-    <button class="tab-btn " onclick="switchTab(4)">📰 News Impact</button>
-    <button class="tab-btn " onclick="switchTab(5)">🔮 Scenarios</button>
-    <button class="tab-btn " onclick="switchTab(6)">🔄 Contrarian</button>
-    <button class="tab-btn " onclick="switchTab(7)">😨 Fear & Greed</button>
+    <button class="tab-btn" onclick="switchTab(1)">₿ Crypto</button>
+    <button class="tab-btn" onclick="switchTab(2)">🎯 Prediction Markets</button>
+    <button class="tab-btn" onclick="switchTab(3)">💼 Portfolio</button>
+    <button class="tab-btn" onclick="switchTab(4)">📰 News Impact</button>
+    <button class="tab-btn" onclick="switchTab(5)">🔮 Scenarios</button>
+    <button class="tab-btn" onclick="switchTab(6)">🔄 Contrarian</button>
+    <button class="tab-btn" onclick="switchTab(7)">😨 Fear & Greed</button>
+    <button class="tab-btn" onclick="switchTab(8)">📅 Events Calendar</button>
+    <button class="tab-btn" onclick="switchTab(9)">💬 AI Chat</button>
   </div>
+
+  <!-- Tab 0: Stock Analysis -->
   <div class="tab-panel active" id="tab-0">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-0" placeholder="e.g. Analyze AAPL stock performance and outlook..."></textarea>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Stock Ticker *</label>
+            <input type="text" id="s-ticker" placeholder="e.g. AAPL" oninput="this.value=this.value.toUpperCase()">
+            <button class="fetch-btn" onclick="fetchStockPrice()">⚡ Fetch Live Price</button>
+            <div class="live-price" id="s-live-price"></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Company Name *</label>
+            <input type="text" id="s-company" placeholder="e.g. Apple Inc.">
+          </div>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(0, '/analyze_stock', false)" id="btn-0">🔍 Analyze Stock</button>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Current Price ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="s-price" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Your Position</label>
+            <select id="s-position">
+              <option>Not Invested</option>
+              <option>Long (Own Shares)</option>
+              <option>Short</option>
+              <option>Watching</option>
+            </select>
+          </div>
         </div>
+        <div class="input-row" id="s-position-details">
+          <div class="field-group">
+            <label class="field-label">Entry Price ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="s-entry" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Shares Owned</label>
+            <input type="number" id="s-shares" placeholder="0">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Time Horizon</label>
+            <select id="s-horizon">
+              <option>Short-term (days-weeks)</option>
+              <option>Medium-term (months)</option>
+              <option>Long-term (1+ years)</option>
+              <option>Day Trade</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Risk Tolerance</label>
+            <select id="s-risk">
+              <option>Conservative</option>
+              <option>Moderate</option>
+              <option>Aggressive</option>
+              <option>Speculative</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Additional Context / URL</label>
+          <textarea id="s-context" placeholder="e.g. Recent earnings miss, CEO change, paste a news article URL..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runStock()" id="btn-0">📈 Analyze Stock</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-0"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(0)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-0">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-0"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-0')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-0">Enter stock details and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-1">
+
+  <!-- Tab 1: Crypto -->
+  <div class="tab-panel" id="tab-1">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-1" placeholder="e.g. Analyze Bitcoin vs Ethereum risk-adjusted returns..."></textarea>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Crypto Name *</label>
+            <input type="text" id="c-name" placeholder="e.g. Bitcoin">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Ticker Symbol</label>
+            <input type="text" id="c-ticker" placeholder="e.g. BTC" oninput="this.value=this.value.toUpperCase()">
+            <button class="fetch-btn" onclick="fetchCryptoPrice()">⚡ Fetch Live Price</button>
+            <div class="live-price" id="c-live-price"></div>
+          </div>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(1, '/analyze_crypto', false)" id="btn-1">🔍 Analyze Crypto</button>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Current Price ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="c-price" placeholder="0.00" step="0.000001">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Network/Chain</label>
+            <select id="c-network">
+              <option>Bitcoin (BTC)</option>
+              <option>Ethereum (ETH)</option>
+              <option>XRP Ledger</option>
+              <option>Solana</option>
+              <option>Cardano</option>
+              <option>Avalanche</option>
+              <option>Other</option>
+            </select>
+          </div>
         </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Your Position</label>
+            <select id="c-position">
+              <option>Not Invested</option>
+              <option>Long (Holding)</option>
+              <option>Short</option>
+              <option>Watching</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Entry Price ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="c-entry" placeholder="0.00" step="0.000001">
+            </div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Amount Held</label>
+            <input type="number" id="c-amount" placeholder="0.00" step="0.000001">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Risk Tolerance</label>
+            <select id="c-risk">
+              <option>Conservative</option>
+              <option>Moderate</option>
+              <option>Aggressive</option>
+              <option>Speculative</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Time Horizon</label>
+          <select id="c-horizon">
+            <option>Short-term (days-weeks)</option>
+            <option>Medium-term (months)</option>
+            <option>Long-term (1+ years)</option>
+            <option>Day Trade</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Additional Context / URL</label>
+          <textarea id="c-context" placeholder="e.g. Recent regulatory news, halving event, paste a URL..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runCrypto()" id="btn-1">₿ Analyze Crypto</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-1"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-1">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-1"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-1')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-1">Enter crypto details and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-2">
+
+  <!-- Tab 2: Prediction Markets -->
+  <div class="tab-panel" id="tab-2">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-2" placeholder="e.g. Analyze Polymarket election prediction odds..."></textarea>
+        <div class="field-group">
+          <label class="field-label">Platform</label>
+          <select id="b-platform">
+            <option>Polymarket</option>
+            <option>Kalshi</option>
+            <option>Metaculus</option>
+            <option>PredictIt</option>
+            <option>Manifold</option>
+            <option>Other</option>
+          </select>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(2, '/analyze_bidding', false)" id="btn-2">🔍 Analyze Markets</button>
+        <div class="field-group">
+          <label class="field-label">Market Question *</label>
+          <textarea id="b-question" placeholder="e.g. Will the Fed cut rates before July 2026?"></textarea>
         </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">YES Price (¢)</label>
+            <input type="number" id="b-yes" placeholder="e.g. 65" min="0" max="100">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Your Position</label>
+            <select id="b-position">
+              <option>Not Invested</option>
+              <option>YES</option>
+              <option>NO</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Entry Price (¢)</label>
+            <input type="number" id="b-entry" placeholder="0" min="0" max="100">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Bet Amount ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="b-amount" placeholder="0.00">
+            </div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Resolution Date</label>
+            <input type="text" id="b-date" placeholder="e.g. June 30, 2026">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Category</label>
+            <select id="b-category">
+              <option>Politics</option>
+              <option>Economics/Finance</option>
+              <option>Crypto</option>
+              <option>Sports</option>
+              <option>Science/Tech</option>
+              <option>Geopolitics</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Context / URL</label>
+          <textarea id="b-context" placeholder="Paste relevant news, data, or a URL..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runBidding()" id="btn-2">🎯 Analyze Market</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-2"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-2">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-2"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-2')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-2">Enter market details and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-3">
+
+  <!-- Tab 3: Portfolio -->
+  <div class="tab-panel" id="tab-3">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-3" placeholder="e.g. Analyze a portfolio of 60% stocks 40% bonds..."></textarea>
+        <div class="field-group">
+          <label class="field-label">Stock Holdings</label>
+          <textarea id="p-stocks" placeholder="e.g. AAPL 50 shares @ $180, TSLA 20 shares @ $250, NVDA 10 shares @ $800..." style="min-height:100px;"></textarea>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(3, '/analyze_portfolio', false)" id="btn-3">🔍 Analyze Portfolio</button>
+        <div class="field-group">
+          <label class="field-label">Crypto Holdings</label>
+          <textarea id="p-crypto" placeholder="e.g. 0.5 BTC @ $45,000, 1000 XRP @ $2.50, 5 ETH @ $3,200..."></textarea>
         </div>
+        <div class="field-group">
+          <label class="field-label">Prediction Market Positions</label>
+          <textarea id="p-bids" placeholder="e.g. YES on Fed rate cut @ 65¢ ($200), NO on recession @ 30¢ ($500)..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Total Bankroll / Cash Available ($)</label>
+          <div class="price-field">
+            <span class="price-prefix">$</span>
+            <input type="number" id="p-bankroll" placeholder="0.00">
+          </div>
+        </div>
+        <button class="btn-go" onclick="runPortfolio()" id="btn-3">💼 Analyze Portfolio</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-3"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(3)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-3">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-3"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-3')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-3">Enter your holdings and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-4">
+
+  <!-- Tab 4: News Impact -->
+  <div class="tab-panel" id="tab-4">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-4" placeholder="e.g. How does the Fed rate decision affect tech stocks?"></textarea>
+        <div class="field-group">
+          <label class="field-label">News Headline *</label>
+          <input type="text" id="n-headline" placeholder="e.g. Fed holds rates steady, signals no cuts in 2026">
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(4, '/analyze_news', false)" id="btn-4">🔍 Analyze News</button>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Source</label>
+            <input type="text" id="n-source" placeholder="e.g. Bloomberg, Reuters, WSJ">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Date/Time</label>
+            <input type="text" id="n-datetime" placeholder="e.g. Apr 4, 2026 9:30 AM">
+          </div>
         </div>
+        <div class="field-group">
+          <label class="field-label">Your Current Holdings</label>
+          <textarea id="n-holdings" placeholder="e.g. Long AAPL, Short TSLA, holding XRP..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Market Status</label>
+          <select id="n-market">
+            <option>Market Open</option>
+            <option>Market Closed</option>
+            <option>Pre-Market</option>
+            <option>After-Hours</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Article URL or Additional Context</label>
+          <textarea id="n-context" placeholder="Paste the article URL or additional context here..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runNews()" id="btn-4">📰 Analyze News Impact</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-4"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(4)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-4">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-4"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-4')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-4">Enter news details and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-5">
+
+  <!-- Tab 5: Scenarios -->
+  <div class="tab-panel" id="tab-5">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-5" placeholder="e.g. What happens to my portfolio if rates rise 2%?"></textarea>
+        <div class="field-group">
+          <label class="field-label">Scenario Description *</label>
+          <textarea id="sc-scenario" placeholder="e.g. Fed announces emergency 100bps rate cut, dollar crashes 15% overnight..."></textarea>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(5, '/analyze_scenario', false)" id="btn-5">🔍 Run Scenario</button>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Probability (%)</label>
+            <input type="number" id="sc-prob" placeholder="e.g. 25" min="0" max="100">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Timeframe</label>
+            <select id="sc-timeframe">
+              <option>Next 24 hours</option>
+              <option>Next week</option>
+              <option>Next month</option>
+              <option>Next 3-6 months</option>
+              <option>Next 1-2 years</option>
+              <option>5+ years</option>
+            </select>
+          </div>
         </div>
+        <div class="field-group">
+          <label class="field-label">Current Holdings</label>
+          <textarea id="sc-holdings" placeholder="e.g. Long AAPL, 2 BTC, short bonds..."></textarea>
+        </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Cash Available ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="sc-cash" placeholder="0.00">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Risk Appetite</label>
+            <select id="sc-risk">
+              <option>Conservative</option>
+              <option>Moderate</option>
+              <option>Aggressive</option>
+              <option>Speculative</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Additional Context / URL</label>
+          <textarea id="sc-context" placeholder="Any relevant context or news URL..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runScenario()" id="btn-5">🔮 Build Scenario</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-5"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(5)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-5">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-5"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-5')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-5">Enter scenario details and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-6">
+
+  <!-- Tab 6: Contrarian -->
+  <div class="tab-panel" id="tab-6">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-6" placeholder="e.g. What are the contrarian arguments for shorting Tesla?"></textarea>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Asset *</label>
+            <input type="text" id="ct-asset" placeholder="e.g. Tesla, Bitcoin, Gold">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Asset Type</label>
+            <select id="ct-type">
+              <option>Stock</option>
+              <option>Cryptocurrency</option>
+              <option>Commodity</option>
+              <option>Bond/Fixed Income</option>
+              <option>Real Estate</option>
+              <option>Currency</option>
+              <option>Other</option>
+            </select>
+          </div>
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(6, '/analyze_contrarian', false)" id="btn-6">🔍 Contrarian View</button>
+        <div class="field-group">
+          <label class="field-label">Consensus View (What Everyone Thinks)</label>
+          <textarea id="ct-consensus" placeholder="e.g. Everyone is bearish on Tesla after CEO controversies, expecting further decline..."></textarea>
         </div>
+        <div class="field-group">
+          <label class="field-label">Price / Odds</label>
+          <input type="text" id="ct-price" placeholder="e.g. $180/share, 65¢ YES, $3,100/oz">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Why the Consensus Might Be Wrong</label>
+          <textarea id="ct-why" placeholder="e.g. Robotaxi launch underpriced, institutional accumulation pattern suggests..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Additional Context / URL</label>
+          <textarea id="ct-context" placeholder="Paste relevant research or a URL..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runContrarian()" id="btn-6">🔄 Contrarian View</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-6"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(6)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-6">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-6"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-6')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-6">Enter contrarian thesis and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="tab-panel " id="tab-7">
+
+  <!-- Tab 7: Fear & Greed -->
+  <div class="tab-panel" id="tab-7">
     <div class="two-col">
       <div>
-                <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-7" placeholder="e.g. What does current market sentiment suggest?"></textarea>
+        <div class="field-group">
+          <label class="field-label">Investment Focus</label>
+          <input type="text" id="fg-focus" placeholder="e.g. Tech stocks, crypto, gold, overall market">
         </div>
-        
-        <div style="margin-top:16px;">
-          <button class="btn-analyze" onclick="runAnalysis(7, '/analyze_fear_greed', false)" id="btn-7">🔍 Analyze Sentiment</button>
+        <div class="field-group">
+          <label class="field-label">Current Market Conditions</label>
+          <textarea id="fg-market" placeholder="e.g. Markets down 5% this week, VIX at 35, recession fears..."></textarea>
         </div>
+        <div class="field-group">
+          <label class="field-label">Recent Market Events</label>
+          <textarea id="fg-events" placeholder="e.g. Fed meeting, earnings season, geopolitical tensions..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Your Emotional State</label>
+          <select id="fg-emotion">
+            <option>Fearful / Panicking</option>
+            <option>Anxious / Nervous</option>
+            <option>Neutral / Calm</option>
+            <option>Optimistic</option>
+            <option>Greedy / FOMO</option>
+            <option>Overconfident</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Action You Are Considering</label>
+          <textarea id="fg-action" placeholder="e.g. Selling everything, buying the dip, doubling down on crypto..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Context / URL</label>
+          <textarea id="fg-context" placeholder="Any relevant news or context..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runFearGreed()" id="btn-7">😨 Analyze Sentiment</button>
       </div>
       <div>
-        <div class="results-area">
-          <div class="loading-bar" id="loading-7"></div>
-          <div class="results-header">
-            <span class="results-label">Results</span>
-            <button onclick="copyResults(7)" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:0.7rem;cursor:pointer;font-family:'DM Mono',monospace;">📋 Copy</button>
-          </div>
-          <div class="results-body empty" id="results-7">Results will appear here...</div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-7"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-7')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-7">Enter your market sentiment and click Analyze</div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Tab 8: Events Calendar -->
+  <div class="tab-panel" id="tab-8">
+    <div class="two-col">
+      <div>
+        <div class="field-group">
+          <label class="field-label">Lookout Period</label>
+          <select id="ev-period">
+            <option>Next 24 hours</option>
+            <option>Next week</option>
+            <option>Next month</option>
+            <option>Next quarter</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Current Holdings</label>
+          <textarea id="ev-holdings" placeholder="e.g. Long AAPL, 2 BTC, short bonds, XRP position..."></textarea>
+        </div>
+        <div class="input-row">
+          <div class="field-group">
+            <label class="field-label">Cash Available ($)</label>
+            <div class="price-field">
+              <span class="price-prefix">$</span>
+              <input type="number" id="ev-cash" placeholder="0.00">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Risk Appetite</label>
+            <select id="ev-risk">
+              <option>Conservative</option>
+              <option>Moderate</option>
+              <option>Aggressive</option>
+              <option>Speculative</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Known Upcoming Events</label>
+          <textarea id="ev-events" placeholder="e.g. FOMC meeting Apr 15, AAPL earnings Apr 28, CPI data Apr 10, Bitcoin halving..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Additional Context / URL</label>
+          <textarea id="ev-context" placeholder="Paste relevant context or a URL..."></textarea>
+        </div>
+        <button class="btn-go" onclick="runEvents()" id="btn-8">📅 Analyze Events</button>
+      </div>
+      <div>
+        <div class="results-box">
+          <div class="loading-bar" id="lb-8"></div>
+          <div class="results-head"><span class="results-label">Analysis</span><button class="copy-btn" onclick="cp('rb-8')">📋 Copy</button></div>
+          <div class="results-body empty" id="rb-8">Enter events and holdings and click Analyze</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 9: AI Chat -->
+  <div class="tab-panel" id="tab-9">
+    <div class="chat-area">
+      <div class="chat-messages" id="chat-messages">
+        <span style="color:var(--muted);font-style:italic;">Ask me anything about stocks, crypto, markets, prediction markets, or your portfolio...</span>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chat-in" placeholder="e.g. What's your view on XRP in 2026?" onkeydown="if(event.key==='Enter') sendChat()">
+        <button class="chat-send" onclick="sendChat()">Send →</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<div class="watermark">© 2026 Existential Gateway, LLC · <a href="https://quantusdata.ai/terms.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Terms</a> · <a href="https://quantusdata.ai/privacy.html" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">Privacy</a> · <a href="https://quantusdata.ai" style="color:rgba(136,146,164,0.6);text-decoration:none;" target="_blank">quantusdata.ai</a></div>
+<div class="watermark" style="margin:0 40px;">
+  © 2026 Existential Gateway, LLC · AI Investment Analyzer · For informational purposes only
+</div>
 
 <script>
-  const GRADIO_URL = '/tools/investment/gradio_api';
-  const uploadedFiles = {};
+  const G = '/tools/investment/gradio_api';
 
   function switchTab(idx) {
-    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
     document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
   }
 
-  function triggerUpload(idx, event) {
-    if (event && (event.target.tagName === 'INPUT' || event.target.closest('input'))) return;
-    const input = document.getElementById('file-' + idx);
-    if (input) { input.click(); }
-  }
-
-  function handleFile(idx) {
-    const file = document.getElementById('file-' + idx).files[0];
-    if (!file) return;
-    uploadedFiles[idx] = file;
-    const fn = document.getElementById('filename-' + idx);
-    fn.textContent = '📎 ' + file.name;
-    fn.style.display = 'block';
+  function md(text) {
+    if (typeof text !== 'string') return '';
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/^#{3} (.+)$/gm,'<h3>$1</h3>')
+      .replace(/^#{2} (.+)$/gm,'<h2>$1</h2>')
+      .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+      .replace(/^\| (.+)$/gm, (m) => '<tr><td>' + m.replace(/^\| /,'').replace(/ \| /g,'</td><td>').replace(/ \|$/,'') + '</td></tr>')
+      .replace(/(<tr>.*<\/tr>)/gs, '<table>$1</table>')
+      .replace(/^- (.+)$/gm,'<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/gs,'<ul>$1</ul>')
+      .replace(/\n/g,'<br>');
   }
 
   function setLoading(idx, on) {
-    document.getElementById('loading-' + idx).classList.toggle('active', on);
+    const lb = document.getElementById('lb-' + idx);
     const btn = document.getElementById('btn-' + idx);
+    if (lb) lb.classList.toggle('active', on);
     if (btn) btn.disabled = on;
   }
 
-  function renderMarkdown(text) {
-    return text
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^---$/gm, '<hr>');
+  function showResult(rbId, text) {
+    const el = document.getElementById(rbId);
+    if (el) { el.className = 'results-body'; el.innerHTML = md(text); }
   }
 
-  async function runAnalysis(tabIdx, endpoint, hasFile) {
-    const ctx = document.getElementById('context-' + tabIdx);
-    const context = ctx ? ctx.value.trim() : '';
+  function showError(rbId, msg) {
+    const el = document.getElementById(rbId);
+    if (el) { el.className = 'results-body'; el.innerHTML = '<span style="color:var(--error);">⚠️ ' + msg + '</span>'; }
+  }
 
-    if (hasFile && !uploadedFiles[tabIdx] && !context) {
-      alert('Please upload a file or enter context first.');
-      return;
-    }
+  function cp(id) {
+    const el = document.getElementById(id);
+    if (el) navigator.clipboard.writeText(el.innerText);
+  }
 
-    setLoading(tabIdx, true);
-    const resultsEl = document.getElementById('results-' + tabIdx);
-    resultsEl.className = 'results-body';
-    resultsEl.innerHTML = '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing... this may take 1-2 minutes</span>';
-
+  async function callGradio(endpoint, data, loadIdx, rbId) {
+    setLoading(loadIdx, true);
+    showResult(rbId, '<span style="color:var(--gold);font-family:'DM Mono',monospace;font-size:0.75rem;">⟳ Analyzing... please wait 1-2 minutes</span>');
     try {
-      let data = [];
-
-      if (hasFile && uploadedFiles[tabIdx]) {
-        const formData = new FormData();
-        formData.append('files', uploadedFiles[tabIdx]);
-        const uploadRes = await fetch(GRADIO_URL + '/upload', { method: 'POST', body: formData });
-        if (!uploadRes.ok) throw new Error('File upload failed. Status: ' + uploadRes.status);
-        const uploadData = await uploadRes.json();
-        data.push({ path: uploadData[0], orig_name: uploadedFiles[tabIdx].name, size: uploadedFiles[tabIdx].size, mime_type: uploadedFiles[tabIdx].type, meta: { "_type": "gradio.FileData" } });
-      }
-
-      // Only send context if file was also uploaded
-      if (hasFile && uploadedFiles[tabIdx] && context) data.push(context);
-      if (!hasFile && context) data.push(context);
-
-      const extraEl = document.getElementById('extra-' + tabIdx);
-      if (extraEl) data.push(extraEl.value);
-
-      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+      const res = await fetch(G + '/run' + endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data})
       });
-      if (!res.ok) throw new Error('Request failed: ' + await res.text());
+      if (!res.ok) throw new Error(await res.text());
       const result = await res.json();
       const text = result.data?.[0] || 'No results returned.';
-      resultsEl.innerHTML = renderMarkdown(typeof text === 'string' ? text : JSON.stringify(text, null, 2));
+      showResult(rbId, typeof text === 'string' ? text : JSON.stringify(text));
     } catch(e) {
-      resultsEl.innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
+      showError(rbId, e.message);
     }
-    setLoading(tabIdx, false);
+    setLoading(loadIdx, false);
   }
 
-  function copyResults(idx) {
-    const el = document.getElementById('results-' + idx);
-    const text = el.innerText;
-    const clipItem = new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }) });
-    navigator.clipboard.write([clipItem]).then(() => alert('✅ Copied as plain text!'));
-  }
-
-  function addChatMsg(role, text) {
-    const msgs = document.getElementById('chat-messages');
-    const div = document.createElement('div');
-    div.className = 'chat-msg ' + role;
-    div.innerHTML = '<div class="bubble">' + text + '</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  async function sendChat(tabIdx, endpoint) {
-    const input = document.getElementById('chat-input-' + tabIdx);
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-    addChatMsg('user', msg);
-    const thinking = document.createElement('div');
-    thinking.className = 'chat-msg assistant';
-    thinking.innerHTML = '<div class="bubble" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.75rem;">⟳ Analyzing...</div>';
-    document.getElementById('chat-messages').appendChild(thinking);
+  // Live price fetching via Stooq
+  async function fetchPrice(stooqTicker, displayEl, inputEl) {
+    const el = document.getElementById(displayEl);
+    el.className = 'live-price loading';
+    el.textContent = '⟳ Fetching live price...';
     try {
-      const res = await fetch(GRADIO_URL + '/run' + endpoint, {
+      const res = await fetch(\`/tools/investment/gradio_api/run/fetch_live_price\`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: [msg, null] })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data: [stooqTicker]})
       });
       const result = await res.json();
-      thinking.querySelector('.bubble').innerHTML = renderMarkdown(result.data?.[0] || 'No response.');
-    } catch(e) {
-      thinking.querySelector('.bubble').innerHTML = '<span style="color:var(--error);">⚠️ ' + e.message + '</span>';
-    }
-    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
-  }
-
-  document.querySelectorAll('.upload-zone').forEach(zone => {
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault(); zone.classList.remove('dragover');
-      const idx = zone.id.replace('upload-', '');
-      const file = e.dataTransfer.files[0];
-      if (file) {
-        uploadedFiles[idx] = file;
-        const fn = document.getElementById('filename-' + idx);
-        fn.textContent = '📎 ' + file.name;
-        fn.style.display = 'block';
+      const price = result.data?.[0];
+      if (price && price > 0) {
+        document.getElementById(inputEl).value = price;
+        el.className = 'live-price';
+        el.textContent = '✓ Live price: $' + price.toLocaleString();
+      } else {
+        el.className = 'live-price error';
+        el.textContent = '⚠ Price unavailable — enter manually';
       }
-    });
-  });
-</script>
-
-<!-- Report an Issue Button -->
-<div id="report-btn" onclick="document.getElementById('report-modal').style.display='flex'" style="position:fixed;bottom:24px;right:24px;z-index:999;background:rgba(17,34,64,0.95);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#8892a4;transition:all 0.2s;backdrop-filter:blur(10px);" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#f8f9fc'" onmouseout="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='#8892a4'">
-  ⚠️ Report an Issue
-</div>
-
-<!-- Report Modal -->
-<div id="report-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#112240;border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:32px;max-width:480px;width:100%;position:relative;">
-    <button onclick="document.getElementById('report-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;">✕</button>
-    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#f8f9fc;font-weight:400;margin-bottom:8px;">Report an Issue</h3>
-    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;">Help us improve QuantusData™</p>
-    <div style="margin-bottom:16px;">
-      <label style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px;">Issue Type</label>
-      <select id="report-type" style="width:100%;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;">
-        <option>Tool not working correctly</option>
-        <option>Analysis results seem incorrect</option>
-        <option>File upload issue</option>
-        <option>Login / access issue</option>
-        <option>Billing issue</option>
-        <option>Feature request</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div style="margin-bottom:20px;">
-      <label style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px;">Description</label>
-      <textarea id="report-desc" placeholder="Please describe the issue in detail..." style="width:100%;min-height:120px;background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:12px 14px;resize:vertical;"></textarea>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="submitReport()" style="flex:1;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a1628;border:none;border-radius:6px;padding:12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">Submit Report</button>
-      <button onclick="document.getElementById('report-modal').style.display='none'" style="background:transparent;border:1px solid rgba(201,168,76,0.2);color:#8892a4;border-radius:6px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;">Cancel</button>
-    </div>
-    <p id="report-success" style="display:none;color:#2dd4a0;font-size:0.82rem;margin-top:12px;text-align:center;">✅ Report submitted! We'll look into this shortly.</p>
-    <p id="report-error" style="display:none;color:#ff6b6b;font-size:0.82rem;margin-top:12px;text-align:center;">⚠️ Failed to submit. Please email existentialgateway@gmail.com</p>
-  </div>
-</div>
-
-<script>
-async function submitReport() {
-  const type = document.getElementById('report-type').value;
-  const desc = document.getElementById('report-desc').value.trim();
-  if (!desc) { alert('Please describe the issue.'); return; }
-
-  const tool = document.title.split(' —')[0];
-  const email = window.userEmail || 'Unknown';
-
-  try {
-    const res = await fetch('https://formspree.io/f/xwvwlyke', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tool: tool,
-        type: type,
-        description: desc,
-        user_email: email,
-        _subject: 'QuantusData Issue Report: ' + type
-      })
-    });
-
-    if (res.ok) {
-      document.getElementById('report-success').style.display = 'block';
-      document.getElementById('report-error').style.display = 'none';
-      document.getElementById('report-desc').value = '';
-      setTimeout(() => {
-        document.getElementById('report-modal').style.display = 'none';
-        document.getElementById('report-success').style.display = 'none';
-      }, 3000);
-    } else {
-      document.getElementById('report-error').style.display = 'block';
+    } catch(e) {
+      el.className = 'live-price error';
+      el.textContent = '⚠ Could not fetch — enter manually';
     }
-  } catch(e) {
-    document.getElementById('report-error').style.display = 'block';
   }
-}
+
+  async function fetchStockPrice() {
+    const ticker = document.getElementById('s-ticker').value.trim().toUpperCase();
+    if (!ticker) { alert('Enter a ticker first'); return; }
+    await fetchPrice(ticker + '.US', 's-live-price', 's-price');
+  }
+
+  async function fetchCryptoPrice() {
+    const ticker = document.getElementById('c-ticker').value.trim().toUpperCase();
+    if (!ticker) { alert('Enter a ticker first'); return; }
+    // Map common crypto tickers to Stooq format
+    const cryptoMap = {
+      'BTC': 'btcusd', 'ETH': 'ethusd', 'XRP': 'xrpusd',
+      'SOL': 'solusd', 'ADA': 'adausd', 'AVAX': 'avaxusd',
+      'DOGE': 'dogeusd', 'LTC': 'ltcusd', 'DOT': 'dotusd',
+    };
+    const stooqTicker = cryptoMap[ticker] || (ticker.toLowerCase() + 'usd');
+    await fetchPrice(stooqTicker, 'c-live-price', 'c-price');
+  }
+
+  // Analysis functions
+  function runStock() {
+    callGradio('/analyze_stock', [
+      document.getElementById('s-ticker').value,
+      document.getElementById('s-company').value,
+      document.getElementById('s-price').value,
+      document.getElementById('s-position').value,
+      document.getElementById('s-entry').value || '0',
+      document.getElementById('s-shares').value || '0',
+      document.getElementById('s-horizon').value,
+      document.getElementById('s-risk').value,
+      document.getElementById('s-context').value || ''
+    ], 0, 'rb-0');
+  }
+
+  function runCrypto() {
+    callGradio('/analyze_crypto', [
+      document.getElementById('c-name').value,
+      document.getElementById('c-ticker').value,
+      document.getElementById('c-price').value,
+      document.getElementById('c-position').value,
+      document.getElementById('c-entry').value || '0',
+      document.getElementById('c-amount').value || '0',
+      document.getElementById('c-horizon').value,
+      document.getElementById('c-risk').value,
+      document.getElementById('c-network').value,
+      document.getElementById('c-context').value || ''
+    ], 1, 'rb-1');
+  }
+
+  function runBidding() {
+    callGradio('/analyze_bidding', [
+      document.getElementById('b-platform').value,
+      '',
+      document.getElementById('b-question').value,
+      document.getElementById('b-yes').value || '50',
+      document.getElementById('b-position').value,
+      document.getElementById('b-entry').value || '0',
+      document.getElementById('b-amount').value || '0',
+      document.getElementById('b-date').value || 'Not specified',
+      document.getElementById('b-category').value,
+      document.getElementById('b-context').value || ''
+    ], 2, 'rb-2');
+  }
+
+  function runPortfolio() {
+    callGradio('/analyze_portfolio', [
+      document.getElementById('p-stocks').value || '',
+      document.getElementById('p-crypto').value || '',
+      document.getElementById('p-bids').value || '',
+      document.getElementById('p-bankroll').value || '0'
+    ], 3, 'rb-3');
+  }
+
+  function runNews() {
+    callGradio('/analyze_news', [
+      document.getElementById('n-headline').value,
+      document.getElementById('n-source').value || 'Unknown',
+      document.getElementById('n-datetime').value || 'Recent',
+      document.getElementById('n-holdings').value || 'Not specified',
+      document.getElementById('n-market').value,
+      document.getElementById('n-context').value || ''
+    ], 4, 'rb-4');
+  }
+
+  function runScenario() {
+    callGradio('/analyze_scenario', [
+      document.getElementById('sc-scenario').value,
+      document.getElementById('sc-prob').value || '50',
+      document.getElementById('sc-timeframe').value,
+      document.getElementById('sc-holdings').value || 'Not specified',
+      document.getElementById('sc-cash').value || '0',
+      document.getElementById('sc-risk').value,
+      document.getElementById('sc-context').value || ''
+    ], 5, 'rb-5');
+  }
+
+  function runContrarian() {
+    callGradio('/analyze_contrarian', [
+      document.getElementById('ct-asset').value,
+      document.getElementById('ct-type').value,
+      document.getElementById('ct-consensus').value,
+      document.getElementById('ct-price').value || 'Market price',
+      document.getElementById('ct-why').value,
+      document.getElementById('ct-context').value || ''
+    ], 6, 'rb-6');
+  }
+
+  function runFearGreed() {
+    callGradio('/analyze_fear_greed', [
+      document.getElementById('fg-focus').value || 'Overall market',
+      document.getElementById('fg-market').value,
+      document.getElementById('fg-events').value || 'None specified',
+      document.getElementById('fg-emotion').value,
+      document.getElementById('fg-action').value || 'None specified',
+      document.getElementById('fg-context').value || ''
+    ], 7, 'rb-7');
+  }
+
+  function runEvents() {
+    callGradio('/analyze_events', [
+      document.getElementById('ev-period').value,
+      document.getElementById('ev-holdings').value || 'Not specified',
+      document.getElementById('ev-cash').value || '0',
+      document.getElementById('ev-events').value || 'None specified',
+      document.getElementById('ev-risk').value,
+      document.getElementById('ev-context').value || ''
+    ], 8, 'rb-8');
+  }
+
+  // Chat
+  let chatHistory = [];
+  async function sendChat() {
+    const inp = document.getElementById('chat-in');
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    const msgs = document.getElementById('chat-messages');
+    msgs.innerHTML += '<p><strong style="color:var(--gold);">You:</strong> ' + msg + '</p>';
+    msgs.innerHTML += '<p id="chat-thinking" style="color:var(--muted);font-style:italic;">⟳ Thinking...</p>';
+    msgs.scrollTop = msgs.scrollHeight;
+    try {
+      const res = await fetch(G + '/run/financial_chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data: [msg]})
+      });
+      const result = await res.json();
+      const reply = result.data?.[0] || 'No response';
+      document.getElementById('chat-thinking')?.remove();
+      msgs.innerHTML += '<p><strong style="color:var(--gold);">AI:</strong> ' + md(reply) + '</p>';
+    } catch(e) {
+      document.getElementById('chat-thinking')?.remove();
+      msgs.innerHTML += '<p style="color:var(--error);">⚠️ Error: ' + e.message + '</p>';
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+  }
 </script>
 
-
-<script>
-// Data Retention for Business Plan
-async function saveAnalysisHistory(toolName, tabName, result) {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) return;
-    const { data: sub } = await sb.from('subscriptions')
-      .select('plan')
-      .eq('email', session.user.email)
-      .eq('status', 'active')
-      .single();
-    if (!sub || sub.plan !== 'business') return;
-    await sb.from('analysis_history').insert({
-      email: session.user.email,
-      tool_name: toolName,
-      tab_name: tabName,
-      result: result ? result.substring(0, 5000) : '',
-      created_at: new Date().toISOString()
-    });
-    console.log('Analysis saved to history');
-  } catch(e) {
-    console.log('History save skipped:', e.message);
-  }
-}
-</script>
 </body>
 </html>
