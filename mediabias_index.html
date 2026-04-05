@@ -387,8 +387,12 @@ Visit quantusdata.ai to upgrade.'); };
     <div class="two-col">
       <div>
                 <div>
-          <label class="context-label">Context / Instructions</label>
-          <textarea class="context-input" id="context-3" placeholder="e.g. Profile Tucker Carlson's reporting history and bias"></textarea>
+          <label class="context-label">Journalist Name *</label>
+          <input type="text" id="journalist-name" placeholder="e.g. Tucker Carlson, Anderson Cooper, Lauren Kent..." style="width:100%;background:rgba(17,34,64,0.6);border:1px solid rgba(201,168,76,0.15);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;margin-bottom:10px;">
+          <label class="context-label">News Outlet</label>
+          <input type="text" id="journalist-outlet" placeholder="e.g. CNN, Fox News, NYT..." style="width:100%;background:rgba(17,34,64,0.6);border:1px solid rgba(201,168,76,0.15);border-radius:6px;color:#f8f9fc;font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:10px 14px;margin-bottom:10px;">
+          <label class="context-label">Article URL or Sample Work (Optional)</label>
+          <textarea class="context-input" id="context-3" placeholder="Paste an article URL or describe their recent work..."></textarea>
         </div>
         
         <div style="margin-top:16px;">
@@ -624,7 +628,9 @@ Visit quantusdata.ai to upgrade.'); };
         data = [context, '', '', '', ''];
       } else if (endpoint === '/analyze_headline') {
         // analyze_headline(headline, article_body, outlet_name, extra_context)
-        data = [resolvedContext, '', '', ''];
+        const jName = document.getElementById('journalist-name') ? document.getElementById('journalist-name').value : resolvedContext;
+        const jOutlet = document.getElementById('journalist-outlet') ? document.getElementById('journalist-outlet').value : '';
+        data = [jName || resolvedContext, jOutlet, '', resolvedContext, ''];
       } else if (endpoint === '/score_bias') {
         // score_bias(article_text, content_type, outlet_name, political_lean, extra_context)
         data = [resolvedContext, 'News Article', '', 'Center', ''];
