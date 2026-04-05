@@ -141,9 +141,12 @@ def analyze_stock(ticker, company, price, position, entry_price,
     if not ticker or not company:
         return "Please enter a stock ticker and company name."
     position_str = ""
-    if position != "Not Invested" and entry_price and shares:
-        pl = (float(price) - float(entry_price)) * float(shares)
-        pl_pct = ((float(price) - float(entry_price)) / float(entry_price)) * 100 if float(entry_price) > 0 else 0
+    if position != "Not Invested" and entry_price and shares and price:
+        try:
+            pl = (float(price) - float(entry_price)) * float(shares)
+            pl_pct = ((float(price) - float(entry_price)) / float(entry_price)) * 100 if float(entry_price) > 0 else 0
+        except (ValueError, ZeroDivisionError):
+            pl, pl_pct = 0, 0
         position_str = (f"\nPosition: {position} | Entry: ${entry_price} | "
                         f"Shares: {shares} | P&L: ${pl:.2f} ({pl_pct:.2f}%)")
 
@@ -205,9 +208,12 @@ def analyze_crypto(name, ticker, price, position, entry_price,
     if not name:
         return "Please enter a cryptocurrency name."
     position_str = ""
-    if position != "Not Invested" and entry_price and amount:
-        pl = (float(price) - float(entry_price)) * float(amount)
-        pl_pct = ((float(price) - float(entry_price)) / float(entry_price)) * 100 if float(entry_price) > 0 else 0
+    if position != "Not Invested" and entry_price and amount and price:
+        try:
+            pl = (float(price) - float(entry_price)) * float(amount)
+            pl_pct = ((float(price) - float(entry_price)) / float(entry_price)) * 100 if float(entry_price) > 0 else 0
+        except (ValueError, ZeroDivisionError):
+            pl, pl_pct = 0, 0
         position_str = (f"\nPosition: {position} | Entry: ${entry_price} | "
                         f"Amount: {amount} | P&L: ${pl:.2f} ({pl_pct:.2f}%)")
 
