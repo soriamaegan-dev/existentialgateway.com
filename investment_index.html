@@ -772,7 +772,7 @@
 
   async function callGradio(endpoint, data, loadIdx, rbId) {
     setLoading(loadIdx, true);
-    showResult(rbId, '<span style="color:var(--gold);font-family:DM Mono,monospace;font-size:0.75rem;">⟳ Analyzing... please wait 1-2 minutes</span>');
+    document.getElementById(rbId).innerHTML = '<span style="color:var(--gold);font-family:DM Mono,monospace;font-size:0.75rem;">⟳ Analyzing... please wait 1-2 minutes</span>';
     try {
       const res = await fetch(G + '/run' + endpoint, {
         method: 'POST',
