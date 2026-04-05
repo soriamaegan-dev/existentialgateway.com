@@ -1183,6 +1183,17 @@ def media_chat(message, history):
 
 # ─── Gradio UI ────────────────────────────────────────────────────────────────
 
+
+def fetch_article_content(url):
+    """Fetch article content from URL for frontend use."""
+    if not url or not url.startswith('http'):
+        return ""
+    try:
+        result = fetch_url_content(url)
+        return result if result else ""
+    except Exception:
+        return ""
+
 with gr.Blocks(title="AI Media Bias Analyzer", theme=gr.themes.Base(
         primary_hue=gr.themes.colors.Color(
             c50="#fef9ec", c100="#faefd0", c200="#f4dea0", c300="#edc970",
@@ -1492,6 +1503,13 @@ with gr.Blocks(title="AI Media Bias Analyzer", theme=gr.themes.Base(
                 ],
                 title="",
             )
+
+
+        with gr.Tab("🔧 Fetch API", visible=False):
+            fa_url = gr.Textbox(label="URL")
+            fa_btn = gr.Button("Fetch")
+            fa_content = gr.Textbox(label="Content")
+            fa_btn.click(fetch_article_content, inputs=[fa_url], outputs=[fa_content])
 
     gr.Markdown(WATERMARK)
 

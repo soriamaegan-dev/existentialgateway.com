@@ -585,38 +585,60 @@ Visit quantusdata.ai to upgrade.'); };
 
     try {
       let data = [];
+
+      // Fetch URL content if context is a URL
+      let resolvedContext = context;
+      if (context && context.trim().startsWith('http')) {
+        try {
+          const fetchRes = await fetch(GRADIO_URL + '/run/fetch_article_content', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({data: [context]})
+          });
+          if (fetchRes.ok) {
+            const fetchResult = await fetchRes.json();
+            const fetched = fetchResult.data?.[0];
+            if (fetched && fetched.length > 50) {
+              resolvedContext = fetched;
+            }
+          }
+        } catch(e) {
+          // Keep original context if fetch fails
+        }
+      }
+
       // Build correct data array per endpoint
       if (endpoint === '/analyze_article') {
         const isUrl = context.startsWith('http');
         const outlet = document.getElementById('outlet-0') ? document.getElementById('outlet-0').value : '';
         const extra = document.getElementById('extra-0') ? document.getElementById('extra-0').value : '';
-        data = [isUrl ? '' : context, isUrl ? context : '', outlet, extra];
+        data = [isUrl ? '' : resolvedContext, isUrl ? context : '', outlet, extra];
       } else if (endpoint === '/analyze_outlet') {
         // analyze_outlet(outlet_name, outlet_type, country, extra_context)
-        data = [context, 'Online News', 'United States', ''];
+        data = [resolvedContext, 'Online News', 'United States', ''];
       } else if (endpoint === '/compare_stories') {
         // compare_stories(topic, outlet1, article1, outlet2, article2, extra_context)
-        data = [context, '', '', '', '', '', '', ''];
+        data = [resolvedContext, '', '', '', '', '', '', ''];
       } else if (endpoint === '/profile_journalist') {
         // profile_journalist(name, outlet, beat, work_examples, extra_context)
         data = [context, '', '', '', ''];
       } else if (endpoint === '/analyze_headline') {
         // analyze_headline(headline, article_body, outlet_name, extra_context)
-        data = [context, '', '', ''];
+        data = [resolvedContext, '', '', ''];
       } else if (endpoint === '/score_bias') {
         // score_bias(article_text, content_type, outlet_name, political_lean, extra_context)
-        data = [context, 'News Article', '', 'Center', ''];
+        data = [resolvedContext, 'News Article', '', 'Center', ''];
       } else if (endpoint === '/analyze_sources') {
         // analyze_sources(article_text, source_list, extra_context)
-        data = [context, '', ''];
+        data = [resolvedContext, '', ''];
       } else if (endpoint === '/generate_media_viz') {
         // generate_bias_report(viz_type, outlets, topic)
         data = ['Political Lean Spectrum', context, ''];
       } else if (endpoint === '/generate_report') {
         // fact_check(article_text, outlet_name, content_type)
-        data = [context, '', 'PDF Report'];
+        data = [resolvedContext, '', 'PDF Report'];
       } else {
-        data = [context];
+        data = [resolvedContext];
       }
       const res = await fetch(GRADIO_URL + '/run' + endpoint, {
         method: 'POST',
