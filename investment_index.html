@@ -639,7 +639,12 @@
         </div>
         <div class="field-group">
           <label class="field-label">Action You Are Considering</label>
-          <textarea id="fg-action" placeholder="e.g. Selling everything, buying the dip, doubling down on crypto..."></textarea>
+          <select id="fg-action">
+            <option value="Thinking of Buying">Thinking of Buying</option>
+            <option value="Thinking of Selling">Thinking of Selling</option>
+            <option value="Holding" selected>Holding</option>
+            <option value="Unsure">Unsure</option>
+          </select>
         </div>
         <div class="field-group">
           <label class="field-label">Context / URL</label>
@@ -895,10 +900,10 @@
       document.getElementById('b-platform').value,
       '',
       document.getElementById('b-question').value,
-      document.getElementById('b-yes').value || '50',
+      parseFloat(document.getElementById('b-yes').value) || 50,
       document.getElementById('b-position').value,
-      document.getElementById('b-entry').value || '0',
-      document.getElementById('b-amount').value || '0',
+      parseFloat(document.getElementById('b-entry').value) || 0,
+      parseFloat(document.getElementById('b-amount').value) || 0,
       document.getElementById('b-date').value || 'Not specified',
       document.getElementById('b-category').value,
       document.getElementById('b-context').value || ''
@@ -928,10 +933,10 @@
   function runScenario() {
     callGradio('/analyze_scenario', [
       document.getElementById('sc-scenario').value,
-      document.getElementById('sc-prob').value || '50',
+      parseFloat(document.getElementById('sc-prob').value) || 50,
       document.getElementById('sc-timeframe').value,
       document.getElementById('sc-holdings').value || 'Not specified',
-      document.getElementById('sc-cash').value || '0',
+      parseFloat(document.getElementById('sc-cash').value) || 0,
       document.getElementById('sc-risk').value,
       document.getElementById('sc-context').value || ''
     ], 5, 'rb-5');
@@ -954,7 +959,7 @@
       document.getElementById('fg-market').value,
       document.getElementById('fg-events').value || 'None specified',
       document.getElementById('fg-emotion').value,
-      document.getElementById('fg-action').value || 'None specified',
+      document.getElementById('fg-action').value,
       document.getElementById('fg-context').value || ''
     ], 7, 'rb-7');
   }
@@ -985,7 +990,7 @@
       const res = await fetch(G + '/run/investment_chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({data: [msg]})
+        body: JSON.stringify({data: [msg, []]})
       });
       const result = await res.json();
       const reply = result.data?.[0] || 'No response';

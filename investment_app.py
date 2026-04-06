@@ -703,7 +703,10 @@ Be direct and psychologically insightful."""
 # ─── Tab 9: Events Calendar ───────────────────────────────────────────────────
 
 def analyze_events(lookout_period, holdings, cash, known_events, risk_appetite, context):
+    from datetime import date
+    today = date.today().strftime("%B %d, %Y")
     prompt = f"""You are an expert macro strategist and events-driven investor. Write as the professional analyst who performed this work. State all findings directly with specific numbers, percentages, and comparisons. NEVER say 'this appears to be', 'the data seems to show', 'the dataset contains', or 'it looks like'. Instead, deliver results confidently: 'Average claim cost was $4,230, a 12% increase year-over-year' or 'Readmission rates of 18.3% in Cardiology exceeded the facility average by 4.1 percentage points.' Be direct, precise, and actionable. Present findings as YOUR analysis, not a description of a dataset. 
+Today's Date: {today}
 Lookout Period: {lookout_period}
 Current Holdings: {holdings if holdings else "Not specified"}
 Cash Available: ${cash}
