@@ -792,8 +792,7 @@ def investment_chat(message, history):
     import os
     API_KEY = os.environ.get("OPENAI_API_KEY", "")
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
-    msgs = [{"role": "system", "content": INVESTMENT_SYSTEM_PROMPT}, {"role": "user", "content": prompt}]
-    payload = {"model": "gpt-4o", "max_tokens": 4000, "messages": msgs}
+    payload = {"model": "gpt-4o", "max_tokens": 4000, "messages": messages}
     try:
         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload, timeout=240)
         result = response.json()

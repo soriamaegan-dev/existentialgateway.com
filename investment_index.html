@@ -362,7 +362,7 @@
           <div class="field-group">
             <label class="field-label">Your Position</label>
             <select id="b-position">
-              <option>Not Invested</option>
+              <option value="Not Entered">Not Entered</option>
               <option>YES</option>
               <option>NO</option>
             </select>
@@ -993,7 +993,9 @@
         body: JSON.stringify({data: [msg, []]})
       });
       const result = await res.json();
-      const reply = result.data?.[0] || 'No response';
+      let reply = result.data?.[0];
+      if (Array.isArray(reply)) reply = reply[reply.length - 1]?.[1] || 'No response';
+      if (!reply) reply = 'No response';
       document.getElementById('chat-thinking')?.remove();
       msgs.innerHTML += '<p><strong style="color:var(--gold);">AI:</strong> ' + md(reply) + '</p>';
     } catch(e) {
