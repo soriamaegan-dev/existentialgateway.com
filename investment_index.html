@@ -214,9 +214,9 @@
           <div class="field-group">
             <label class="field-label">Time Horizon</label>
             <select id="s-horizon">
-              <option>Short-term (days-weeks)</option>
-              <option>Medium-term (months)</option>
-              <option>Long-term (1+ years)</option>
+              <option value="Short Term">Short-term (days-weeks)</option>
+              <option value="Medium Term" selected>Medium-term (months)</option>
+              <option value="Long Term">Long-term (1+ years)</option>
               <option>Day Trade</option>
             </select>
           </div>
@@ -513,12 +513,12 @@
           <div class="field-group">
             <label class="field-label">Timeframe</label>
             <select id="sc-timeframe">
-              <option>Next 24 hours</option>
-              <option>Next week</option>
-              <option>Next month</option>
-              <option>Next 3-6 months</option>
-              <option>Next 1-2 years</option>
-              <option>5+ years</option>
+              <option value="Happening Now">Next 24 hours</option>
+              <option value="Within 1 Week">Next week</option>
+              <option value="Within 1 Month" selected>Next month</option>
+              <option value="Within 3-6 Months">Next 3-6 months</option>
+              <option value="Within 1-2 Years">Next 1-2 years</option>
+              <option value="5+ Years">5+ years</option>
             </select>
           </div>
         </div>
@@ -611,7 +611,13 @@
       <div>
         <div class="field-group">
           <label class="field-label">Investment Focus</label>
-          <input type="text" id="fg-focus" placeholder="e.g. Tech stocks, crypto, gold, overall market">
+          <select id="fg-focus">
+            <option value="Stocks">Stocks</option>
+            <option value="Crypto">Crypto</option>
+            <option value="Both" selected>Both</option>
+            <option value="Prediction Markets">Prediction Markets</option>
+            <option value="All">All</option>
+          </select>
         </div>
         <div class="field-group">
           <label class="field-label">Current Market Conditions</label>
@@ -976,7 +982,7 @@
     msgs.innerHTML += '<p id="chat-thinking" style="color:var(--muted);font-style:italic;">⟳ Thinking...</p>';
     msgs.scrollTop = msgs.scrollHeight;
     try {
-      const res = await fetch(G + '/run/financial_chat', {
+      const res = await fetch(G + '/run/investment_chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({data: [msg]})
