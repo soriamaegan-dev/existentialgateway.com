@@ -768,7 +768,7 @@
 
   function showResult(rbId, text) {
     const el = document.getElementById(rbId);
-    if (el) { el.className = 'results-body'; el.innerHTML = md(text); }
+    if (el) { el.className = 'results-body'; el.innerHTML = md(text); el.dataset.raw = text; }
   }
 
   function showError(rbId, msg) {
@@ -779,15 +779,17 @@
   function cp(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    const text = el.innerText || el.textContent || '';
-    navigator.clipboard.writeText(text).catch(() => {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-    });
+    const text = el.dataset.raw || el.innerText || el.textContent || '';
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    navigator.clipboard.writeText(text).catch(() => {});
   }
 
   async function callGradio(endpoint, data, loadIdx, rbId) {
