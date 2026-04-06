@@ -79,11 +79,13 @@ def fetch_url_content(text):
     for url in urls[:3]:  # limit to 3 URLs
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (compatible; ExistentialGateway/1.0)",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Referer": "https://www.google.com/"
             }
             r = requests.get(url, timeout=15, headers=headers)
-            if r.status_code == 200:
+            if r.status_code in (200, 401, 403):
                 from html.parser import HTMLParser
                 class TextExtractor(HTMLParser):
                     def __init__(self):
