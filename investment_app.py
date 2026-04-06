@@ -770,19 +770,7 @@ Be specific with dates, assets, and dollar amounts."""
 
 def investment_chat(message, history):
     messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are an expert investment analyst AI assistant specializing in stocks, "
-                "cryptocurrencies, prediction markets (Polymarket, Kalshi, PredictIt, "
-                "Manifold Markets, Metaculus, Robinhood Prediction Markets), portfolio management, "
-                "macroeconomics, and behavioral finance. When asked a question, deliver the answer immediately with specific numbers. Do NOT explain how to calculate. Analyze investments, understand "
-                "markets, evaluate bidding opportunities, and make informed decisions. Always remind "
-                "users that nothing you say constitutes financial advice and they should consult a "
-                "licensed financial advisor before making investment decisions. "
-                "You can lose your entire investment."
-            )
-        }
+        {"role": "system", "content": INVESTMENT_SYSTEM_PROMPT}
     ]
     for user_msg, bot_msg in history:
         messages.append({"role": "user", "content": user_msg})
