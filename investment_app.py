@@ -148,6 +148,7 @@ def query_llm(prompt):
 
 def analyze_stock(ticker, company, price, position, entry_price,
                   shares, horizon, risk, context):
+    context = enrich_with_urls(context)
     if not ticker or not company:
         return "Please enter a stock ticker and company name."
     position_str = ""
@@ -215,6 +216,7 @@ Be specific, professional, and use real market knowledge."""
 
 def analyze_crypto(name, ticker, price, position, entry_price,
                    amount, horizon, risk, network, context):
+    context = enrich_with_urls(context)
     if not name:
         return "Please enter a cryptocurrency name."
     position_str = ""
@@ -289,6 +291,7 @@ Be specific and professional."""
 def analyze_bidding(platform, platform_other, question, yes_price,
                     position, entry_price, bet_amount,
                     resolution_date, category, context):
+    context = enrich_with_urls(context)
     if not question:
         return "Please enter a contract or market question."
 
@@ -481,6 +484,7 @@ Be specific with dollar amounts and percentages."""
 # ─── Tab 5: News Impact Engine ────────────────────────────────────────────────
 
 def analyze_news(headline, source, datetime_str, holdings, market_open, context):
+    context = enrich_with_urls(context)
     if not headline:
         return "Please enter a news headline."
 
@@ -534,6 +538,7 @@ Be specific and actionable."""
 # ─── Tab 6: Scenario Builder ──────────────────────────────────────────────────
 
 def analyze_scenario(scenario, probability, timeframe, holdings, cash, risk_appetite, context):
+    context = enrich_with_urls(context)
     if not scenario:
         return "Please describe a scenario."
 
@@ -592,6 +597,7 @@ Be specific and strategic."""
 # ─── Tab 7: Contrarian Detector ───────────────────────────────────────────────
 
 def analyze_contrarian(asset, asset_type, consensus, price_odds, why_wrong, context):
+    context = enrich_with_urls(context)
     if not asset:
         return "Please enter an asset to analyze."
 
@@ -648,6 +654,7 @@ Be intellectually rigorous and specific."""
 
 def analyze_fear_greed(focus, market_conditions, recent_events,
                        emotional_state, action_thinking, context):
+    context = enrich_with_urls(context)
     prompt = f"""You are an expert behavioral finance and market sentiment analyst. Write as the professional analyst who performed this work. State all findings directly with specific numbers, percentages, and comparisons. NEVER say 'this appears to be', 'the data seems to show', 'the dataset contains', or 'it looks like'. Instead, deliver results confidently: 'Average claim cost was $4,230, a 12% increase year-over-year' or 'Readmission rates of 18.3% in Cardiology exceeded the facility average by 4.1 percentage points.' Be direct, precise, and actionable. Present findings as YOUR analysis, not a description of a dataset. 
 Investment Focus: {focus}
 Current Market Conditions: {market_conditions}
@@ -703,6 +710,7 @@ Be direct and psychologically insightful."""
 # ─── Tab 9: Events Calendar ───────────────────────────────────────────────────
 
 def analyze_events(lookout_period, holdings, cash, known_events, risk_appetite, context):
+    context = enrich_with_urls(context)
     from datetime import date
     today = date.today().strftime("%B %d, %Y")
     prompt = f"""You are an expert macro strategist and events-driven investor. Write as the professional analyst who performed this work. State all findings directly with specific numbers, percentages, and comparisons. NEVER say 'this appears to be', 'the data seems to show', 'the dataset contains', or 'it looks like'. Instead, deliver results confidently: 'Average claim cost was $4,230, a 12% increase year-over-year' or 'Readmission rates of 18.3% in Cardiology exceeded the facility average by 4.1 percentage points.' Be direct, precise, and actionable. Present findings as YOUR analysis, not a description of a dataset. 
