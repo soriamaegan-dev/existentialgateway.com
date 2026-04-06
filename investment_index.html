@@ -790,6 +790,15 @@
     try { document.execCommand('copy'); } catch(e) {}
     document.body.removeChild(ta);
     navigator.clipboard.writeText(text).catch(() => {});
+    // Visual feedback on the button
+    const btn = el.closest('.results-box')?.querySelector('.copy-btn');
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      btn.style.color = '#4caf50';
+      btn.style.borderColor = '#4caf50';
+      setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+    }
   }
 
   async function callGradio(endpoint, data, loadIdx, rbId) {
